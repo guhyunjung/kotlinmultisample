@@ -22,4 +22,12 @@ class ApplicationTest {
 		assertEquals(200, response.statusCode.value())
 		assertEquals("Spring Boot: ${Greeting().greet()}", response.body)
 	}
+
+	@Test
+	fun testActuatorHealth() {
+		val response = restTemplate.getForEntity("http://localhost:$port/actuator/health", String::class.java)
+		assertEquals(200, response.statusCode.value())
+		// Check that the response contains "UP" which indicates the service is running
+		assert(response.body?.contains("UP") ?: false)
+	}
 }

@@ -15,6 +15,7 @@ application {
 dependencies {
 	implementation(projects.shared)
 	implementation(libs.spring.boot.starter.web)
+	implementation(libs.spring.boot.starter.actuator)
 	testImplementation(libs.spring.boot.starter.test)
 	testImplementation(libs.kotlin.testJunit)
 	implementation(kotlin("stdlib"))
