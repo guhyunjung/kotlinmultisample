@@ -17,9 +17,13 @@ dependencies {
 	implementation(projects.shared)
 	implementation(libs.spring.boot.starter.web)
 	implementation(libs.spring.boot.starter.actuator)
+	implementation(libs.spring.boot.starter.data.jpa)
 	testImplementation(libs.spring.boot.starter.test)
 	testImplementation(libs.kotlin.testJunit)
 	implementation(kotlin("stdlib"))
+	implementation(kotlin("reflect"))
+	// PostgreSQL JDBC Driver
+	runtimeOnly(libs.postgresql)
 }
 repositories {
 	mavenCentral()
