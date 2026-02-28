@@ -1,0 +1,31 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_size = 4
+indent_style = space
+insert_final_newline = false
+max_line_length = 120
+tab_width = 4
+
+[{*.apinotes,*.yaml,*.yml}]
+indent_size = 2
+
+[{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
+indent_size = 2
+
+[{*.html,*.htm}]
+indent_size = 2
+indent_style = tab
+tab_width = 2
+
+[{*.js,*.jsx,*.ts,*.tsx}]
+indent_size = 2
+indent_style = tab
+tab_width = 2
+
+[{*.kt,*.kts}]
+indent_size = 2
+indent_style = tab
+tab_width = 2
