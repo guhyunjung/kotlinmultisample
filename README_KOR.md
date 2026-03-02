@@ -7,7 +7,7 @@
       예를 들어, Kotlin 앱의 iOS 부분에 Apple의 CoreCrypto를 사용하고 싶다면,
       [iosMain](./composeApp/src/iosMain/kotlin) 폴더가 그러한 호출을 하기에 적절한 장소입니다.
       마찬가지로 Desktop (JVM) 특정 부분을 편집하려면, [jvmMain](./composeApp/src/jvmMain/kotlin)
-      폴더가 적절한 위치입니다.
+      폴더가 적절한 위치입니다..
 
 * [/shared](./shared/src)는 프로젝트의 모든 대상 간에 공유될 코드를 위한 것입니다.
   가장 중요한 하위 폴더는 [commonMain](./shared/src/commonMain/kotlin)입니다. 원하신다면,
