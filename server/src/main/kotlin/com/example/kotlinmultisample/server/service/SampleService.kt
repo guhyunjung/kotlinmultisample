@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.service
+package com.example.kotlinmultisample.server.service
 
 import org.springframework.stereotype.Service
 

@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.entity
+package com.example.kotlinmultisample.server.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Entity

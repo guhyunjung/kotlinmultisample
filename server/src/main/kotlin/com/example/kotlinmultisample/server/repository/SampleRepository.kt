@@ -1,6 +1,6 @@
-package com.example.kotlinmultisample.repository
+package com.example.kotlinmultisample.server.repository
 
-import com.example.kotlinmultisample.entity.Sample
+import com.example.kotlinmultisample.server.entity.Sample
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
