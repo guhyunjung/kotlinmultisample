@@ -15,6 +15,7 @@ junitVersion = "4.13.2"
 kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
 material3 = "1.10.0-alpha05"
+dokka = "1.9.20"
 springBoot = "3.2.2"
 springDependencyManagement = "1.1.4"
 
@@ -48,6 +49,7 @@ spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

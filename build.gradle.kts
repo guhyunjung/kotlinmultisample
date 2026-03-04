@@ -8,6 +8,7 @@ plugins {
 	alias(libs.plugins.composeCompiler) apply false
 	alias(libs.plugins.kotlinMultiplatform) apply false
 	alias(libs.plugins.kotlinJvm) apply false
+	id("org.jetbrains.dokka") version "1.9.20"
 	kotlin("plugin.spring") version "2.3.0" apply false
 }
 

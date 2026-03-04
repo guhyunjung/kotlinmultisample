@@ -7,6 +7,7 @@ plugins {
 	alias(libs.plugins.composeMultiplatform)
 	alias(libs.plugins.composeCompiler)
 	alias(libs.plugins.composeHotReload)
+	alias(libs.plugins.dokka)
 }
 
 kotlin {
@@ -59,7 +60,7 @@ android {
 	}
 	packaging {
 		resources {
-			excludes += "/META-INF/{AL2.0,LGPL2.1}"
+		 excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
 	buildTypes {
