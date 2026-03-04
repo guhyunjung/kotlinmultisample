@@ -28,9 +28,12 @@ kotlin {
 	sourceSets {
 		commonMain.dependencies {
 			// put your Multiplatform dependencies here
+			implementation(project.dependencies.platform(libs.koin.bom))
+			implementation(libs.koin.core)
 		}
 		commonTest.dependencies {
 			implementation(libs.kotlin.test)
+			implementation(libs.koin.test)
 		}
 	}
 }

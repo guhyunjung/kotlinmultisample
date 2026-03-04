@@ -1,3 +1,4 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -23,6 +24,8 @@ kotlin {
 		androidMain.dependencies {
 			implementation(libs.compose.uiToolingPreview)
 			implementation(libs.androidx.activity.compose)
+			implementation(project.dependencies.platform(libs.koin.bom))
+			implementation(libs.koin.android)
 		}
 		commonMain.dependencies {
 			implementation(libs.compose.runtime)
@@ -35,6 +38,8 @@ kotlin {
 			implementation(libs.androidx.lifecycle.viewmodelCompose)
 			implementation(libs.androidx.lifecycle.runtimeCompose)
 			implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+			implementation(project.dependencies.platform(libs.koin.bom))
+			implementation(libs.koin.compose)
 			implementation(projects.shared)
 		}
 		commonTest.dependencies {
