@@ -1,0 +1,161 @@
+﻿Calculating task graph as no cached configuration is available for tasks: dokkaHtmlMultiModule
+Type-safe project accessors is an incubating feature.
+
+> Configure project :composeApp
+w: The 'org.jetbrains.kotlin.multiplatform' plugin deprecated compatibility with Android Gradle plugin: 'com.android.application'
+The 'org.jetbrains.kotlin.multiplatform' plugin will not be compatible with 'com.android.application' starting with Android Gradle Plugin 9.0.0.
+
+Please change the structure of the your project and move the usage of 'com.android.application' into a separate subproject. The new subproject should add a dependency on this KMP subproject.
+
+Read more: https://kotl.in/kmp-project-structure-migration
+Solution: Please change the structure of your project and move the usage of 'com.android.application' into a separate subproject.
+See https://kotl.in/gradle/agp-new-kmp for more details.
+
+
+> Configure project :shared
+w: The 'org.jetbrains.kotlin.multiplatform' plugin deprecated compatibility with Android Gradle plugin: 'com.android.library'
+The 'org.jetbrains.kotlin.multiplatform' plugin will not be compatible with 'com.android.library' starting with Android Gradle Plugin 9.0.0.
+Solution: Please use the 'com.android.kotlin.multiplatform.library' plugin instead of 'com.android.library'.
+See https://kotl.in/gradle/agp-new-kmp for more details.
+
+
+> Task :composeApp:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :composeApp:convertXmlValueResourcesForCommonMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForCommonMain
+> Task :composeApp:prepareComposeResourcesTaskForCommonMain
+> Task :composeApp:generateResourceAccessorsForCommonMain
+> Task :composeApp:generateActualResourceCollectorsForAndroidMain
+> Task :composeApp:convertXmlValueResourcesForJvmMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForJvmMain NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForJvmMain NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForJvmMain NO-SOURCE
+> Task :composeApp:generateActualResourceCollectorsForJvmMain
+> Task :composeApp:generateComposeResClass
+> Task :composeApp:generateExpectResourceCollectorsForCommonMain
+> Task :composeApp:convertXmlValueResourcesForAndroidDebug NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForAndroidDebug NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForAndroidDebug NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForAndroidDebug NO-SOURCE
+> Task :composeApp:convertXmlValueResourcesForAndroidRelease NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForAndroidRelease NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForAndroidRelease NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForAndroidRelease NO-SOURCE
+> Task :composeApp:preBuild UP-TO-DATE
+> Task :composeApp:preDebugBuild UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:writeDebugAarMetadata
+> Task :composeApp:generateDebugResValues FROM-CACHE
+> Task :shared:generateDebugResValues FROM-CACHE
+> Task :shared:generateDebugResources FROM-CACHE
+> Task :composeApp:checkDebugAarMetadata
+> Task :shared:packageDebugResources FROM-CACHE
+> Task :composeApp:mapDebugSourceSetPaths
+> Task :composeApp:generateDebugResources FROM-CACHE
+> Task :composeApp:mergeDebugResources FROM-CACHE
+> Task :composeApp:packageDebugResources FROM-CACHE
+> Task :composeApp:parseDebugLocalResources FROM-CACHE
+> Task :composeApp:createDebugCompatibleScreenManifests
+> Task :composeApp:extractDeepLinksDebug FROM-CACHE
+> Task :shared:extractDeepLinksDebug FROM-CACHE
+> Task :shared:processDebugManifest FROM-CACHE
+> Task :composeApp:processDebugMainManifest FROM-CACHE
+> Task :composeApp:processDebugManifest FROM-CACHE
+> Task :composeApp:processDebugManifestForPackage FROM-CACHE
+> Task :shared:compileDebugLibraryResources FROM-CACHE
+> Task :shared:parseDebugLocalResources FROM-CACHE
+> Task :shared:generateDebugRFile FROM-CACHE
+> Task :composeApp:processDebugResources FROM-CACHE
+> Task :composeApp:preReleaseBuild UP-TO-DATE
+> Task :shared:preReleaseBuild UP-TO-DATE
+> Task :shared:writeReleaseAarMetadata
+> Task :composeApp:generateReleaseResValues FROM-CACHE
+> Task :shared:generateReleaseResValues FROM-CACHE
+> Task :shared:generateReleaseResources FROM-CACHE
+> Task :composeApp:checkReleaseAarMetadata
+> Task :shared:packageReleaseResources FROM-CACHE
+> Task :composeApp:mapReleaseSourceSetPaths
+> Task :composeApp:generateReleaseResources FROM-CACHE
+> Task :composeApp:mergeReleaseResources FROM-CACHE
+> Task :composeApp:packageReleaseResources FROM-CACHE
+> Task :composeApp:parseReleaseLocalResources FROM-CACHE
+> Task :composeApp:createReleaseCompatibleScreenManifests
+> Task :composeApp:extractDeepLinksRelease FROM-CACHE
+> Task :shared:extractDeepLinksRelease FROM-CACHE
+> Task :shared:processReleaseManifest FROM-CACHE
+> Task :composeApp:processReleaseMainManifest FROM-CACHE
+> Task :composeApp:processReleaseManifest FROM-CACHE
+> Task :composeApp:processReleaseManifestForPackage FROM-CACHE
+> Task :shared:compileReleaseLibraryResources FROM-CACHE
+> Task :shared:parseReleaseLocalResources FROM-CACHE
+> Task :shared:generateReleaseRFile FROM-CACHE
+> Task :composeApp:processReleaseResources FROM-CACHE
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:transformCommonMainDependenciesMetadata
+> Task :shared:compileCommonMainKotlinMetadata FROM-CACHE
+> Task :shared:generateProjectStructureMetadata UP-TO-DATE
+> Task :shared:metadataCommonMainProcessResources NO-SOURCE
+> Task :shared:metadataCommonMainClasses UP-TO-DATE
+> Task :shared:allMetadataJar
+> Task :shared:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+> Task :composeApp:transformCommonMainDependenciesMetadata
+> Task :shared:compileDebugKotlinAndroid FROM-CACHE
+> Task :shared:javaPreCompileDebug FROM-CACHE
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :shared:bundleLibCompileToJarDebug
+> Task :shared:compileReleaseKotlinAndroid FROM-CACHE
+> Task :shared:javaPreCompileRelease FROM-CACHE
+> Task :shared:compileReleaseJavaWithJavac NO-SOURCE
+> Task :shared:bundleLibCompileToJarRelease
+> Task :shared:compileKotlinJvm FROM-CACHE
+> Task :shared:compileJvmMainJava NO-SOURCE
+> Task :shared:jvmProcessResources NO-SOURCE
+> Task :shared:processJvmMainResources SKIPPED
+> Task :shared:jvmMainClasses UP-TO-DATE
+> Task :shared:jvmJar
+
+> Task :composeApp:dokkaHtmlPartial
+Initializing plugins
+Dokka is performing: documentation for composeApp
+Validity check
+Creating documentation models
+Transforming documentation model before merging
+Merging documentation models
+Transforming documentation model after merging
+Creating pages
+Transforming pages
+Rendering
+Running post-actions
+
+
+> Task :server:dokkaHtmlPartial
+Initializing plugins
+Dokka is performing: documentation for server
+Validity check
+Creating documentation models
+Transforming documentation model before merging
+Merging documentation models
+Transforming documentation model after merging
+Creating pages
+Transforming pages
+Rendering
+Running post-actions
+
+
+> Task :shared:dokkaHtmlPartial
+Initializing plugins
+Dokka is performing: documentation for shared
+Validity check
+Creating documentation models
+Transforming documentation model before merging
+Merging documentation models
+Transforming documentation model after merging
+Creating pages
+Transforming pages
+Rendering
+Running post-actions
+
