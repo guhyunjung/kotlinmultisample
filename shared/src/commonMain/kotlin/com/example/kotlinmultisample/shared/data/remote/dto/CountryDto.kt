@@ -1,5 +1,20 @@
 package com.example.kotlinmultisample.shared.data.remote.dto
 
+import com.example.kotlinmultisample.shared.domain.model.CapitalInfo
+import com.example.kotlinmultisample.shared.domain.model.Car
+import com.example.kotlinmultisample.shared.domain.model.CoatOfArms
+import com.example.kotlinmultisample.shared.domain.model.Country
+import com.example.kotlinmultisample.shared.domain.model.CountryName
+import com.example.kotlinmultisample.shared.domain.model.CurrencyInfo
+import com.example.kotlinmultisample.shared.domain.model.Demonym
+import com.example.kotlinmultisample.shared.domain.model.Demonyms
+import com.example.kotlinmultisample.shared.domain.model.Flag
+import com.example.kotlinmultisample.shared.domain.model.Idd
+import com.example.kotlinmultisample.shared.domain.model.Maps
+import com.example.kotlinmultisample.shared.domain.model.NativeNameEntry
+import com.example.kotlinmultisample.shared.domain.model.PostalCode
+import com.example.kotlinmultisample.shared.domain.model.TranslationEntry
+
 /**
  * 국제 전화 코드 (IDD: International Direct Dialing)
  *
@@ -294,6 +309,66 @@ data class CountryDto(
 
     /** 유니코드 국기 이모지 (예: "🇨🇴") */
     val flag: String? = null
+)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DTO → Domain 변환 함수
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * [CountryDto]를 도메인 모델 [Country]로 변환합니다.
+ *
+ * - null 가능 컬렉션은 emptyList() / emptyMap()으로 기본값 처리합니다.
+ * - 중첩 Dto도 각 변환 함수를 통해 도메인 타입으로 변환합니다.
+ */
+fun CountryDto.toDomain(): Country = Country(
+    tld           = tld ?: emptyList(),
+    cca2          = cca2,
+    ccn3          = ccn3,
+    cca3          = cca3,
+    cioc          = cioc,
+    independent   = independent,
+    status        = status,
+    unMember      = unMember,
+    idd           = idd?.let { Idd(it.root, it.suffixes) },
+    capital       = capital ?: emptyList(),
+    altSpellings  = altSpellings,
+    region        = region,
+    subregion     = subregion,
+    landlocked    = landlocked,
+    borders       = borders ?: emptyList(),
+    area          = area,
+    maps          = maps?.let { Maps(it.googleMaps, it.openStreetMaps) },
+    latlng        = latlng,
+    continents    = continents,
+    population    = population,
+    gini          = gini ?: emptyMap(),
+    fifa          = fifa,
+    name          = name.toDomain(),
+    languages     = languages ?: emptyMap(),
+    translations  = translations?.mapValues { TranslationEntry(it.value.official, it.value.common) } ?: emptyMap(),
+    demonyms      = demonyms?.let {
+        Demonyms(
+            eng = it.eng?.let { d -> Demonym(d.f, d.m) },
+            fra = it.fra?.let { d -> Demonym(d.f, d.m) }
+        )
+    },
+    currencies    = currencies?.mapValues { CurrencyInfo(it.value.symbol, it.value.name) } ?: emptyMap(),
+    car           = car?.let { Car(it.signs, it.side) },
+    timezones     = timezones,
+    startOfWeek   = startOfWeek,
+    capitalInfo   = capitalInfo?.let { CapitalInfo(it.latlng) },
+    postalCode    = postalCode?.let { PostalCode(it.format, it.regex) },
+    flags         = flags?.let { Flag(it.png, it.svg, it.alt) },
+    coatOfArms    = coatOfArms?.let { CoatOfArms(it.png, it.svg) },
+    flag          = flag
+)
+
+/** [NameDto]를 도메인 모델 [CountryName]으로 변환합니다. */
+private fun NameDto.toDomain(): CountryName = CountryName(
+    common      = common,
+    official    = official,
+    nativeName  = nativeName.mapValues { NativeNameEntry(it.value.official, it.value.common) }
 )
 
 
