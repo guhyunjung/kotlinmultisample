@@ -47,13 +47,17 @@ val networkModule = module {
 	/**
 	 * Retrofit 싱글톤 등록 (Android)
 	 *
-	 * - baseUrl: API 서버 기본 URL
+	 * - baseUrl: Spring Boot 서버 주소
+	 *   - Android 에뮬레이터: 10.0.2.2 는 호스트 PC의 localhost를 가리킵니다.
+	 *   - 실제 기기: PC의 로컬 IP 주소 또는 배포 서버 URL로 변경하세요.
 	 * - client: OkHttpClient 주입
 	 * - GsonConverterFactory: JSON 변환
 	 */
 	single<Retrofit> {
 		Retrofit.Builder()
-			.baseUrl("https://api.example.com/") // TODO: 실제 API URL로 변경하세요.
+			// 에뮬레이터: 10.0.2.2:8080 (= 호스트 PC의 localhost:8080)
+			// 실제 기기: 192.168.x.x:8080 또는 운영 서버 URL
+			.baseUrl("http://10.0.2.2:8080/")
 			.client(get<OkHttpClient>())
 			.addConverterFactory(GsonConverterFactory.create())
 			.build()

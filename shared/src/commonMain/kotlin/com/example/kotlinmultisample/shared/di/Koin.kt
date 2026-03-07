@@ -29,7 +29,7 @@ fun initKoin(
 
 /**
  * iOS, JS 등 단순 초기화가 필요한 플랫폼에서 호출되는 오버로드
- * additionalModules 없이 공통 모듈만 등록됩니다.
+ * - additionalModules 없이 공통 모듈만 등록됩니다.
  */
 fun initKoin() = initKoin {}
 

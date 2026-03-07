@@ -56,8 +56,10 @@ val networkModule = module {
 	 */
 	single<Retrofit> {
 		Retrofit.Builder()
-			.baseUrl("https://api.example.com/") // TODO: 실제 API URL로 변경하세요.
-			.client(get<OkHttpClient>())          // OkHttpClient 주입
+			// Spring Boot 서버 주소 (로컬 개발: localhost:8080, 운영: 실제 서버 URL로 변경)
+			// Android 에뮬레이터에서는 10.0.2.2:8080 을 사용하세요.
+			.baseUrl("http://localhost:8080/")
+			.client(get<OkHttpClient>())
 			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 	}
