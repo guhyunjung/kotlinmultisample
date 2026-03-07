@@ -34,6 +34,7 @@ kotlin {
 		commonTest.dependencies {
 			implementation(libs.kotlin.test)
 			implementation(libs.koin.test)
+			implementation(libs.kotlinx.coroutines.test)
 		}
 		// Retrofit, OkHttp는 JS에서 사용할 수 없으므로 commonMain이 아닌
 		// jvmMain, androidMain에 각각 추가합니다.
@@ -44,6 +45,16 @@ kotlin {
 			implementation(libs.okhttp.logging.interceptor)
 		}
 		androidMain.dependencies {
+			implementation(libs.retrofit.core)
+			implementation(libs.retrofit.converter.gson)
+			implementation(libs.okhttp.core)
+			implementation(libs.okhttp.logging.interceptor)
+		}
+		// JVM 전용 테스트: 실제 Retrofit API 호출 통합 테스트
+		jvmTest.dependencies {
+			implementation(libs.kotlin.test)
+			implementation(libs.kotlinx.coroutines.test)
+			implementation(libs.mockk)
 			implementation(libs.retrofit.core)
 			implementation(libs.retrofit.converter.gson)
 			implementation(libs.okhttp.core)

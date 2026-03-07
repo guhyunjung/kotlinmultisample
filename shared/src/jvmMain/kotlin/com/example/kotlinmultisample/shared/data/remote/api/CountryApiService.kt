@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
- * REST Countries API Service (Android 전용)
+ * REST Countries API Service (JVM Desktop 전용)
  * https://restcountries.com 기반
  */
 interface CountryApiService {
@@ -16,6 +16,7 @@ interface CountryApiService {
      * GET /v3.1/all?fields=cca2,cca3,...
      *
      * @param fields 반환받을 필드 목록 (쉼표 구분 문자열)
+     *   기본값으로 필요한 필드만 요청하여 응답 크기를 줄입니다.
      */
     @GET("v3.1/all")
     suspend fun getCountries(
@@ -34,3 +35,7 @@ interface CountryApiService {
     @GET("v3.1/alpha/{code}")
     suspend fun getCountryByCode(@Path("code") code: String): List<CountryDto>
 }
+
+
+
+

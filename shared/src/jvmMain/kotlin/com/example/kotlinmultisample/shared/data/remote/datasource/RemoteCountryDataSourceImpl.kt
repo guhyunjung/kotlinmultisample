@@ -4,7 +4,7 @@ import com.example.kotlinmultisample.shared.data.remote.api.CountryApiService
 import com.example.kotlinmultisample.shared.data.remote.dto.CountryDto
 
 /**
- * [RemoteCountryDataSource] Retrofit 구현체 (Android 전용)
+ * [RemoteCountryDataSource] Retrofit 구현체 (JVM Desktop 전용)
  *
  * @property apiService Koin으로 주입받은 CountryApiService
  */
@@ -15,7 +15,9 @@ class RemoteCountryDataSourceImpl(
     /** 전체 국가 목록 조회 */
     override suspend fun getCountries(): List<CountryDto> {
         // fields 파라미터를 명시적으로 전달 (Retrofit 인터페이스 default 파라미터 미지원)
-        val fields = "name,capital,currencies"
+        val fields = "cca2,cca3,ccn3,cioc,status,unMember,name,capital,region," +
+                "subregion,landlocked,borders,area,latlng,continents," +
+                "population,flags,timezones,languages,currencies"
         return apiService.getCountries(fields)
     }
 
@@ -31,3 +33,5 @@ class RemoteCountryDataSourceImpl(
         }
     }
 }
+
+

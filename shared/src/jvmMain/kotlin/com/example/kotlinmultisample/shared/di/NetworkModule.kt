@@ -1,6 +1,9 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.remote.api.CountryApiService
 import com.example.kotlinmultisample.shared.data.remote.api.ProjectApiService
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountryDataSource
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountryDataSourceImpl
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSource
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSourceImpl
 import org.koin.dsl.module
@@ -44,6 +47,12 @@ actual val networkModule = module {
 	 * ProjectApiService를 주입받아 실제 HTTP 요청을 수행합니다.
 	 */
 	single<RemoteProjectDataSource> { RemoteProjectDataSourceImpl(get()) }
+
+	/** CountryApiService 싱글톤 등록 (REST Countries API) */
+	single<CountryApiService> { get<Retrofit>().create(CountryApiService::class.java) }
+
+	/** RemoteCountryDataSource 싱글톤 등록 */
+	single<RemoteCountryDataSource> { RemoteCountryDataSourceImpl(get()) }
 
 	// ── JVM Desktop 전용 API Service 추가 시 여기에 등록하세요 ──────────────
 }
