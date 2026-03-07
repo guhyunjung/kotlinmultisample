@@ -5,10 +5,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 /**
- * REST Countries API Service (JVM Desktop 전용)
+ * REST Countries API Service (Android 전용)
  * https://restcountries.com 기반
  */
-interface RestCountryApiService {
+interface CountryApiService {
 
     /**
      * 전체 국가 목록 조회
@@ -25,4 +25,3 @@ interface RestCountryApiService {
     @GET("v3.1/alpha/{code}")
     suspend fun getCountryByCode(@Path("code") code: String): List<CountryDto>
 }
-

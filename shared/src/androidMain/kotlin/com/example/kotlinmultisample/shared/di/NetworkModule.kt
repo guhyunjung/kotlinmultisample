@@ -1,11 +1,11 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.remote.api.CountryApiService
 import com.example.kotlinmultisample.shared.data.remote.api.ProjectApiService
-import com.example.kotlinmultisample.shared.data.remote.api.RestCountryApiService
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountryDataSource
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountryDataSourceImpl
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSource
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSourceImpl
-import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteRestCountryDataSource
-import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteRestCountryDataSourceImpl
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -47,6 +47,6 @@ actual val networkModule = module {
 	single<RemoteProjectDataSource> { RemoteProjectDataSourceImpl(get()) }
 
 	// ── Android 전용 API Service 추가 시 여기에 등록하세요 ───────────────────
-	single<RestCountryApiService> { get<Retrofit>().create(RestCountryApiService::class.java) }
-	single<RemoteRestCountryDataSource> { RemoteRestCountryDataSourceImpl(get()) }
+	single<CountryApiService> { get<Retrofit>().create(CountryApiService::class.java) }
+	single<RemoteCountryDataSource> { RemoteCountryDataSourceImpl(get()) }
 }

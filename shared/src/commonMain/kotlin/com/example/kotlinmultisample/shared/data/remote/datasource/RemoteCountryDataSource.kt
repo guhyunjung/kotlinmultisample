@@ -8,7 +8,7 @@ import com.example.kotlinmultisample.shared.data.remote.dto.CountryDto
  * REST Countries API 등 외부 API와의 통신을 담당합니다.
  * 실제 구현체는 jvmMain / androidMain에 정의합니다.
  */
-interface RemoteRestCountryDataSource {
+interface RemoteCountryDataSource {
 
     /**
      * 전체 국가 목록 조회

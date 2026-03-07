@@ -1,11 +1,8 @@
 package com.example.kotlinmultisample.shared.di
 
 import com.example.kotlinmultisample.shared.data.remote.api.ProjectApiService
-import com.example.kotlinmultisample.shared.data.remote.api.RestCountryApiService
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSource
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSourceImpl
-import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteRestCountryDataSource
-import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteRestCountryDataSourceImpl
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -15,6 +12,9 @@ import retrofit2.Retrofit
  * - OkHttpClient / Retrofit 생성은 NetworkUtils.kt의 공통 함수를 재사용합니다.
  * - baseUrl: "http://localhost:8080/" (로컬 Spring Boot 서버)
  * - Android actual: shared/androidMain/di/NetworkModule.kt
+ *
+ * ※ CountryApiService는 Android 전용입니다.
+ *   JVM Desktop에서 국가 정보 API가 필요한 경우 이 모듈에 추가하세요.
  */
 actual val networkModule = module {
 
@@ -31,7 +31,7 @@ actual val networkModule = module {
 	 * - 로컬 개발: "http://localhost:8080/"
 	 * - 운영 환경: "https://your-domain.com/" 으로 변경하세요.
 	 */
-	single<Retrofit> { buildRetrofit(get(), "https://restcountries.com/") }
+	single<Retrofit> { buildRetrofit(get(), "http://localhost:8080/") }
 
 	/**
 	 * ProjectApiService 싱글톤 등록
@@ -45,15 +45,5 @@ actual val networkModule = module {
 	 */
 	single<RemoteProjectDataSource> { RemoteProjectDataSourceImpl(get()) }
 
-	/**
-	 * RestCountryApiService 싱글톤 등록
-	 * REST Countries API (https://restcountries.com) 호출용
-	 * JVM Desktop 전용 Retrofit 인스턴스를 사용합니다.
-	 */
-	single<RestCountryApiService> { get<Retrofit>().create(RestCountryApiService::class.java) }
-
-	/**
-	 * RemoteRestCountryDataSource 싱글톤 등록
-	 */
-	single<RemoteRestCountryDataSource> { RemoteRestCountryDataSourceImpl(get()) }
+	// ── JVM Desktop 전용 API Service 추가 시 여기에 등록하세요 ──────────────
 }

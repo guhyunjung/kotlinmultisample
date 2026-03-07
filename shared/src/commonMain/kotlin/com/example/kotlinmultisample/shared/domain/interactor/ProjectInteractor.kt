@@ -13,10 +13,10 @@ import com.example.kotlinmultisample.shared.domain.repository.ProjectRepository
  *
  * 이 클래스는 프로젝트를 조회, 저장 및 삭제하는 메서드를 제공합니다.
  *
- * @property respository 프로젝트 관련 데이터 작업을 수행하는 데 사용되는 저장소입니다.
+ * @property repository 프로젝트 관련 데이터 작업을 수행하는 데 사용되는 저장소입니다.
  */
 class ProjectInteractor(
-    private val respository: ProjectRepository
+    private val repository: ProjectRepository
 ) {
     /**
      * 시작 날짜를 기준으로 내림차순 정렬된 프로젝트 목록을 조회합니다.
@@ -24,7 +24,7 @@ class ProjectInteractor(
      * @return 정렬된 프로젝트 목록입니다.
      */
     suspend fun getProjects(): List<Project> {
-        return respository.getProjects().sortedByDescending { it.startDate }
+        return repository.getProjects().sortedByDescending { it.startDate }
     }
 
     /**
@@ -34,7 +34,7 @@ class ProjectInteractor(
      * @return 지정된 ID를 가진 프로젝트, 찾을 수 없는 경우 null입니다.
      */
     suspend fun getProjectById(id: String): Project? {
-        return respository.getProjectById(id)
+        return repository.getProjectById(id)
     }
 
     /**
@@ -47,7 +47,7 @@ class ProjectInteractor(
         require(project.title.isNotBlank()) {
             "프로젝트 제목은 비워둘 수 없습니다"
         }
-        respository.saveProject(project)
+        repository.saveProject(project)
     }
 
     /**
@@ -56,6 +56,6 @@ class ProjectInteractor(
      * @param id 삭제할 프로젝트의 고유 식별자입니다.
      */
     suspend fun deleteProject(id: String) {
-        respository.deleteProject(id)
+        repository.deleteProject(id)
     }
 }

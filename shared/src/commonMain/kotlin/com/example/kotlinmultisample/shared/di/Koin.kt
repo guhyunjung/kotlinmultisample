@@ -28,10 +28,10 @@ fun initKoin(
 }
 
 /**
- * iOS, JS 등 단순 초기화가 필요한 플랫폼에서 호출되는 오버로드
- * - additionalModules 없이 공통 모듈만 등록됩니다.
+ * iOS, JS 등 추가 모듈이 필요 없는 플랫폼에서 호출하는 오버로드
+ * 공통 모듈만 등록됩니다.
  */
-fun initKoin() = initKoin {}
+fun initKoin() = initKoin(emptyList())
 
 /**
  * 모든 플랫폼에서 공통으로 사용되는 Koin 모듈
@@ -54,6 +54,7 @@ val commonModule = module {
 	single<ProjectRepository> {
 		ProjectRepositoryImpl(get())
 	}
+
 
 	/**
 	 * ProjectInteractor 싱글톤 등록

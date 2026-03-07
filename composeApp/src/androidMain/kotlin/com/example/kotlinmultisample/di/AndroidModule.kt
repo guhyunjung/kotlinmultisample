@@ -2,7 +2,9 @@ package com.example.kotlinmultisample.di
 
 import androidx.room.Room
 import com.example.kotlinmultisample.database.AppDatabase
+import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl
 import com.example.kotlinmultisample.shared.di.networkModule
+import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -55,5 +57,9 @@ val androidDatabaseModule = module {
  */
 val androidModules = listOf(
 	networkModule,         // Retrofit + OkHttp + API Service + RemoteDataSource
-	androidDatabaseModule  // Room Database + ProjectDao (Context 기반)
+	androidDatabaseModule, // Room Database + ProjectDao (Context 기반)
+	module {
+		// CountryRepository는 Android 전용 (RemoteCountryDataSource가 androidMain에만 있음)
+		single<CountryRepository> { CountryRepositoryImpl(get()) }
+	}
 )
