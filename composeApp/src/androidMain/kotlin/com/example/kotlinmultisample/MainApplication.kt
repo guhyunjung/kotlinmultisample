@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample
 
 import android.app.Application
+import com.example.kotlinmultisample.di.androidModules
 import com.example.kotlinmultisample.shared.di.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -17,8 +18,11 @@ class MainApplication : Application() {
 	override fun onCreate() {
 		super.onCreate()
 
-		// Android 관련 구성으로 Koin 초기화
-		initKoin {
+		// Android 전용 모듈(Network + Database)을 포함하여 Koin 초기화
+		// androidModules = listOf(networkModule, androidDatabaseModule)
+		initKoin(
+			additionalModules = androidModules
+		) {
 			androidLogger()
 			androidContext(this@MainApplication)
 		}

@@ -8,16 +8,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * JVM/Android 전용 네트워크 Koin 모듈
+ * JVM Desktop 전용 네트워크 Koin 모듈
  *
  * Retrofit은 JVM 기반 라이브러리이므로 commonMain이 아닌
  * jvmMain에 정의합니다.
  *
- * 사용법 (JVM main.kt):
- *   initKoin(additionalModules = listOf(networkModule))
+ * ※ Android용 networkModule은 shared/androidMain/di/NetworkModule.kt에 별도 정의되어 있습니다.
  *
- * 사용법 (Android Application):
- *   initKoin(additionalModules = listOf(networkModule))
+ * 사용법 (JVM Desktop main.kt):
+ *   initKoin(additionalModules = jvmModules)
  */
 val networkModule = module {
 
