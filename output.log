@@ -20,10 +20,17 @@ See https://kotl.in/gradle/agp-new-kmp for more details.
 
 > Task :shared:kmpPartiallyResolvedDependenciesChecker
 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:preBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:generateDebugResValues
+> Task :shared:generateDebugResources
+> Task :shared:packageDebugResources
 > Task :shared:jvmProcessResources NO-SOURCE
 > Task :shared:processJvmMainResources SKIPPED
 > Task :shared:jvmTestProcessResources NO-SOURCE
 > Task :shared:processJvmTestResources SKIPPED
+> Task :shared:parseDebugLocalResources
+> Task :shared:generateDebugRFile
 > Task :shared:compileKotlinJvm
 > Task :shared:compileJvmMainJava NO-SOURCE
 > Task :shared:jvmMainClasses
@@ -31,9 +38,10 @@ See https://kotl.in/gradle/agp-new-kmp for more details.
 > Task :shared:compileTestKotlinJvm
 > Task :shared:compileJvmTestJava NO-SOURCE
 > Task :shared:jvmTestClasses
+> Task :shared:compileDebugKotlinAndroid
 > Task :shared:jvmTest
 
 [Incubating] Problems report is available at: file:///C:/Project/Workspace/Kotlin/kotlinmultisample/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 7s
-5 actionable tasks: 5 executed
+BUILD SUCCESSFUL in 4s
+11 actionable tasks: 11 executed
