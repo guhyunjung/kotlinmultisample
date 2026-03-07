@@ -2,15 +2,47 @@ package com.example.kotlinmultisample
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.example.kotlinmultisample.di.jvmModules
 import com.example.kotlinmultisample.shared.di.initKoin
 
+/**
+ * JVM(Desktop) 애플리케이션의 진입점(Entry Point)
+ *
+ * [application] 블록은 Compose for Desktop에서 제공하는
+ * 애플리케이션 생명주기(Lifecycle)를 관리하는 스코프입니다.
+ * 이 블록 내에서 Window를 생성하고 DI를 초기화합니다.
+ */
 fun main() = application {
-	initKoin()
 
+	/**
+	 * Koin DI(Dependency Injection) 초기화
+	 *
+	 * - [initKoin]은 shared 모듈에 정의된 공통 DI 설정을 시작합니다.
+	 * - [jvmModules]에는 JVM 전용 의존성이 포함됩니다:
+	 *   - networkModule: Retrofit + OkHttp 네트워크 설정
+	 *   - jvmDatabaseModule: Room 로컬 DB 설정
+	 *
+	 * ※ DI 초기화는 반드시 UI 렌더링(Window 생성) 이전에 호출해야 의존성 주입이 올바르게 동작합니다.
+	 */
+	initKoin(additionalModules = jvmModules)
+
+	/**
+	 * 애플리케이션 메인 윈도우(Window) 생성
+	 *
+	 * @param onCloseRequest 윈도우 닫기 버튼 클릭 시 호출되는 콜백.
+	 *   [exitApplication]을 통해 애플리케이션 프로세스를 종료합니다.
+	 * @param title 운영체제 타이틀 바에 표시될 애플리케이션 이름입니다.
+	 */
 	Window(
-		onCloseRequest = ::exitApplication,
-		title = "kotlinmultisample",
+		onCloseRequest = ::exitApplication, // 창 닫기 시 앱 종료
+		title = "kotlinmultisample",        // 타이틀 바 텍스트
 	) {
+		/**
+		 * 실제 UI 컴포저블(Composable) 진입점
+		 *
+		 * [App]은 shared 모듈에 정의된 공통 루트 Composable로,
+		 * Android/iOS/Desktop 모든 플랫폼에서 동일한 UI를 렌더링합니다.
+		 */
 		App()
 	}
 }

@@ -1,4 +1,6 @@
 plugins {
+	id("org.jetbrains.dokka") version "2.1.0"
+	kotlin("plugin.spring") version "2.3.0" apply false
 	// this is necessary to avoid the plugins to be loaded multiple times
 	// in each subproject's classloader
 	alias(libs.plugins.androidApplication) apply false
@@ -8,9 +10,8 @@ plugins {
 	alias(libs.plugins.composeCompiler) apply false
 	alias(libs.plugins.kotlinMultiplatform) apply false
 	alias(libs.plugins.kotlinJvm) apply false
-	id("org.jetbrains.dokka") version "2.1.0"
-	kotlin("plugin.spring") version "2.3.0" apply false
 	alias(libs.plugins.benManesVersions)
+	alias(libs.plugins.ksp) apply false
 }
 
 repositories {
