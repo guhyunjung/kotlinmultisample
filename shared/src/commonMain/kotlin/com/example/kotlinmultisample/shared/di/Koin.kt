@@ -1,5 +1,6 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.repository.ProjectRepositoryImpl
 import com.example.kotlinmultisample.shared.domain.interactor.ProjectInteractor
 import com.example.kotlinmultisample.shared.domain.repository.ProjectRepository
 import org.koin.core.context.startKoin
@@ -41,18 +42,17 @@ fun initKoin() = initKoin {}
 val commonModule = module {
 
 	/**
-	 * ProjectRepository 기본 바인딩
+	 * ProjectRepository → ProjectRepositoryImpl 바인딩
 	 *
-	 * 실제 구현체는 각 플랫폼(Android/JVM)의 additionalModules에서 override해야 합니다.
-	 * 구현체 없이 실행하면 런타임 에러가 발생합니다.
+	 * ProjectRepositoryImpl은 RemoteProjectDataSource를 주입받아
+	 * 원격 서버와 통신합니다.
+	 * - get(): Koin이 플랫폼별 networkModule에 등록된
+	 *   RemoteProjectDataSource 구현체를 자동으로 주입합니다.
 	 *
-	 * 예시 (JVM):
-	 * val jvmModule = module {
-	 *     single<ProjectRepository> { ProjectRepositoryImpl(get()) }
-	 * }
+	 * ※ networkModule(JVM/Android)이 additionalModules에 반드시 포함되어야 합니다.
 	 */
 	single<ProjectRepository> {
-		error("ProjectRepository implementation not provided. 플랫폼별 모듈에서 구현체를 등록해주세요.")
+		ProjectRepositoryImpl(get())
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.remote.api.ProjectApiService
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSource
+import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSourceImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -56,11 +59,26 @@ val networkModule = module {
 			.build()
 	}
 
-	// ─────────────────────────────────────────────────────────────
-	// API Service 등록 예시
-	// single<ProjectApiService> {
-	//     get<Retrofit>().create(ProjectApiService::class.java)
-	// }
-	// ─────────────────────────────────────────────────────────────
+	/**
+	 * ProjectApiService 싱글톤 등록 (Android)
+	 *
+	 * Retrofit.create()를 통해 [ProjectApiService] 인터페이스의 구현체를
+	 * 런타임에 자동 생성합니다.
+	 * - get<Retrofit>(): 위에서 등록한 Retrofit 인스턴스를 자동 주입
+	 */
+	single<ProjectApiService> {
+		get<Retrofit>().create(ProjectApiService::class.java)
+	}
+
+	/**
+	 * RemoteProjectDataSource 싱글톤 등록 (Android)
+	 *
+	 * [RemoteProjectDataSourceImpl]에 [ProjectApiService]를 주입하여
+	 * 원격 데이터 소스 구현체를 등록합니다.
+	 * - get(): Koin이 [ProjectApiService] 인스턴스를 자동으로 찾아 주입합니다.
+	 */
+	single<RemoteProjectDataSource> {
+		RemoteProjectDataSourceImpl(get())
+	}
 }
 

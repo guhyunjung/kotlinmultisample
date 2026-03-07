@@ -39,12 +39,13 @@ val jvmDatabaseModule = module {
 			.build()
 	}
 
-	// ─────────────────────────────────────────────────────────────
-	// DAO 등록 예시
-	// AppDatabase에서 DAO 추상 메서드를 선언한 후 아래와 같이 등록하세요.
-	//
-	// single { get<AppDatabase>().projectDao() }
-	// ─────────────────────────────────────────────────────────────
+	/**
+	 * ProjectDao 싱글톤 등록
+	 *
+	 * AppDatabase 인스턴스에서 DAO를 꺼내 Koin에 등록합니다.
+	 * get<AppDatabase>()으로 위에서 등록한 DB 인스턴스를 자동 주입합니다.
+	 */
+	single { get<AppDatabase>().projectDao() }
 }
 
 /**
@@ -54,12 +55,12 @@ val jvmDatabaseModule = module {
  * additionalModules 파라미터에 전달하여 사용합니다.
  *
  * 포함된 모듈:
- * - [networkModule]: Retrofit, OkHttp 네트워크 모듈 (shared/jvmMain 정의)
- * - [jvmDatabaseModule]: Room 로컬 DB 모듈 (JVM Desktop 전용)
+ * - [networkModule]: Retrofit + OkHttp + ProjectApiService + RemoteProjectDataSource (shared/jvmMain 정의)
+ * - [jvmDatabaseModule]: Room 로컬 DB + ProjectDao (JVM Desktop 전용)
  */
 val jvmModules = listOf(
-	networkModule,    // Retrofit + OkHttp
-	jvmDatabaseModule // Room Database
+	networkModule,    // Retrofit + OkHttp + API Service + RemoteDataSource
+	jvmDatabaseModule // Room Database + ProjectDao
 )
 
 

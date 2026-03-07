@@ -35,12 +35,13 @@ val androidDatabaseModule = module {
 			.build()
 	}
 
-	// ─────────────────────────────────────────────────────────────
-	// DAO 등록 예시
-	// AppDatabase에서 DAO 추상 메서드를 선언한 후 아래와 같이 등록하세요.
-	//
-	// single { get<AppDatabase>().projectDao() }
-	// ─────────────────────────────────────────────────────────────
+	/**
+	 * ProjectDao 싱글톤 등록
+	 *
+	 * AppDatabase 인스턴스에서 DAO를 꺼내 Koin에 등록합니다.
+	 * get<AppDatabase>()으로 위에서 등록한 DB 인스턴스를 자동 주입합니다.
+	 */
+	single { get<AppDatabase>().projectDao() }
 }
 
 /**
@@ -49,10 +50,10 @@ val androidDatabaseModule = module {
  * MainApplication의 initKoin(additionalModules = androidModules)에 전달합니다.
  *
  * 포함된 모듈:
- * - [networkModule]: Retrofit, OkHttp 네트워크 모듈 (shared/androidMain 정의)
- * - [androidDatabaseModule]: Room 로컬 DB 모듈 (Android 전용, Context 기반)
+ * - [networkModule]: Retrofit, OkHttp + ProjectApiService + RemoteProjectDataSource
+ * - [androidDatabaseModule]: Room 로컬 DB + ProjectDao (Android 전용, Context 기반)
  */
 val androidModules = listOf(
-	networkModule,         // Retrofit + OkHttp
-	androidDatabaseModule  // Room Database (Context 기반)
+	networkModule,         // Retrofit + OkHttp + API Service + RemoteDataSource
+	androidDatabaseModule  // Room Database + ProjectDao (Context 기반)
 )

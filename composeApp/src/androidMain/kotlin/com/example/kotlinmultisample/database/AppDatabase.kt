@@ -12,13 +12,17 @@ import androidx.room.RoomDatabase
  */
 @Database(
 	entities = [
-		PlaceholderEntity::class // TODO: 실제 Entity로 교체 후 PlaceholderEntity 제거하세요.
+		ProjectEntity::class  // 프로젝트 로컬 캐시 테이블
 	],
 	version = 1,
 	exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-	// TODO: DAO 인터페이스를 아래에 추가하세요.
-	// abstract fun projectDao(): ProjectDao
+	/**
+	 * 프로젝트 DAO 접근자
+	 *
+	 * Room이 컴파일 타임에 [ProjectDao] 구현체를 자동 생성합니다.
+	 * Koin 모듈에서 single { get<AppDatabase>().projectDao() } 로 등록하세요.
+	 */
+	abstract fun projectDao(): ProjectDao
 }
-
