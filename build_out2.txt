@@ -1,0 +1,30 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Reusing configuration cache.
+> Task :composeApp:copyNonXmlValueResourcesForJvmMain NO-SOURCE
+> Task :composeApp:convertXmlValueResourcesForCommonMain NO-SOURCE
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :composeApp:kmpPartiallyResolvedDependenciesChecker
+> Task :composeApp:convertXmlValueResourcesForJvmMain NO-SOURCE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :composeApp:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :composeApp:prepareComposeResourcesTaskForJvmMain NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForJvmMain NO-SOURCE
+> Task :composeApp:generateExpectResourceCollectorsForCommonMain UP-TO-DATE
+> Task :composeApp:generateComposeResClass UP-TO-DATE
+> Task :composeApp:copyNonXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :composeApp:prepareComposeResourcesTaskForCommonMain UP-TO-DATE
+> Task :composeApp:generateResourceAccessorsForCommonMain UP-TO-DATE
+> Task :composeApp:generateActualResourceCollectorsForJvmMain UP-TO-DATE
+> Task :shared:kspKotlinJvm UP-TO-DATE
+> Task :shared:jvmProcessResources NO-SOURCE
+> Task :shared:processJvmMainResources SKIPPED
+> Task :shared:compileKotlinJvm UP-TO-DATE
+> Task :shared:compileJvmMainJava NO-SOURCE
+> Task :shared:jvmMainClasses UP-TO-DATE
+> Task :shared:jvmJar UP-TO-DATE
+> Task :composeApp:compileKotlinJvm UP-TO-DATE
+
+BUILD SUCCESSFUL in 6s
+12 actionable tasks: 2 executed, 10 up-to-date
+Configuration cache entry reused.
