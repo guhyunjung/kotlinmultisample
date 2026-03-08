@@ -2,6 +2,8 @@ package com.example.kotlinmultisample.di
 
 import androidx.room.Room
 import com.example.kotlinmultisample.database.AppDatabase
+import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
+import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSourceImpl
 import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
@@ -39,12 +41,15 @@ val jvmDatabaseModule = module {
             .build()
     }
 
+    /** CountryDao 싱글톤 등록 */
+    single { get<AppDatabase>().countryDao() }
+
     /**
-     * ProjectDao 싱글톤 등록
+     * LocalCountryDataSource → LocalCountryDataSourceImpl 바인딩
      *
-     * AppDatabase 인스턴스에서 DAO를 꺼내 Koin에 등록합니다.
+     * Room CountryDao를 주입받아 로컬 캐시를 담당합니다.
      */
-    single { get<AppDatabase>().projectDao() }
+    single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
 }
 
 /**
@@ -55,11 +60,14 @@ val jvmDatabaseModule = module {
  */
 val jvmCountryModule = module {
     /**
-     * CountryRepository → CountryRepositoryImpl 바인딩
+     * CountryRepository → CountryRepositoryImpl 바인딩 (JVM Desktop)
      *
-     * RemoteCountryDataSource는 networkModule(jvmMain)에 등록된 구현체가 주입됩니다.
+     * RemoteCountryDataSource : networkModule에 등록
+     * LocalCountryDataSource  : jvmDatabaseModule에 등록
      */
-    single<CountryRepository> { CountryRepositoryImpl(get()) }
+    single<CountryRepository> {
+        CountryRepositoryImpl(get(), get())
+    }
 }
 
 /**
@@ -69,14 +77,14 @@ val jvmCountryModule = module {
  * additionalModules 파라미터에 전달하여 사용합니다.
  *
  * 포함된 모듈:
- * - [networkModule]     : Retrofit + OkHttp + ProjectApiService + CountryApiService + 각 DataSource
- * - [jvmDatabaseModule] : Room 로컬 DB + ProjectDao (JVM Desktop 전용)
+ * - [networkModule]     : Retrofit + OkHttp + CountryApiService + RemoteCountryDataSource
+ * - [jvmDatabaseModule] : Room 로컬 DB (JVM Desktop 전용)
  * - [jvmCountryModule]  : CountryRepository 바인딩 (JVM Desktop 전용)
  * - [viewModelModule]   : ViewModel 등록
  */
 val jvmModules = listOf(
     networkModule,      // Retrofit + OkHttp + API Services + RemoteDataSources
-    jvmDatabaseModule,  // Room Database + ProjectDao
+    jvmDatabaseModule,  // Room Database
     jvmCountryModule,   // CountryRepository
     viewModelModule     // ViewModel 등록
 )

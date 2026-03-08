@@ -11,18 +11,19 @@ import androidx.room.RoomDatabase
  * - exportSchema: CI/CD에서 스키마 변경 이력 추적 시 true로 설정.
  */
 @Database(
-	entities = [
-		ProjectEntity::class  // 프로젝트 로컬 캐시 테이블
-	],
-	version = 1,
-	exportSchema = false
+    entities = [
+        CountryEntity::class  // 국가 정보 캐시 테이블
+    ],
+    version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-	/**
-	 * 프로젝트 DAO 접근자
-	 *
-	 * Room이 컴파일 타임에 [ProjectDao] 구현체를 자동 생성합니다.
-	 * Koin 모듈에서 single { get<AppDatabase>().projectDao() } 로 등록하세요.
-	 */
-	abstract fun projectDao(): ProjectDao
+
+    /**
+     * 국가 DAO 접근자
+     *
+     * Room이 컴파일 타임에 [CountryDao] 구현체를 자동 생성합니다.
+     * Koin 모듈에서 single { get<AppDatabase>().countryDao() } 로 등록하세요.
+     */
+    abstract fun countryDao(): CountryDao
 }

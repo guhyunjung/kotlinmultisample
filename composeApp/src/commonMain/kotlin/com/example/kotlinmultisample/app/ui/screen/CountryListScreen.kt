@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,6 +24,10 @@ import com.example.kotlinmultisample.shared.domain.model.Country
 /**
  * 국가 목록 화면
  *
+ * Offline-First:
+ * - 첫 진입 시 캐시가 있으면 즉시 표시, 없으면 API 호출
+ * - 상단 새로고침 버튼으로 강제 API 갱신 가능
+ *
  * @param viewModel 국가 ViewModel
  * @param onCountryClick 국가 클릭 시 상세 화면으로 이동
  */
@@ -33,7 +38,7 @@ fun CountryListScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    // 화면 진입 시 목록 로드
+    // 화면 진입 시 목록 로드 (캐시가 없을 때만 API 호출)
     LaunchedEffect(Unit) {
         if (state.countries.isEmpty()) {
             viewModel.loadCountries()
@@ -42,16 +47,35 @@ fun CountryListScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        // ── 검색바 ────────────────────────────────────────────────────────
-        SearchBar(
-            query = state.searchQuery,
-            onQueryChange = { viewModel.search(it) },
+        // ── 상단 바: 검색 + 새로고침 ──────────────────────────────────────
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SearchBar(
+                query = state.searchQuery,
+                onQueryChange = { viewModel.search(it) },
+                modifier = Modifier.weight(1f)
+            )
+            // 새로고침 버튼 - 항상 API를 호출하여 최신 데이터로 갱신
+            IconButton(
+                onClick = { viewModel.refresh() },
+                enabled = !state.isRefreshing && !state.isLoading
+            ) {
+                if (state.isRefreshing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(Icons.Default.Refresh, contentDescription = "새로고침")
+                }
+            }
+        }
 
-        // ── 결과 수 표시 ──────────────────────────────────────────────────
+        // ── 결과 수 / 캐시 상태 표시 ─────────────────────────────────────
         if (!state.isLoading && state.countries.isNotEmpty()) {
             Text(
                 text = "${state.filteredCountries.size}개 국가",
@@ -232,4 +256,3 @@ private fun ErrorContent(
         }
     }
 }
-
