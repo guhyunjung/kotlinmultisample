@@ -83,7 +83,7 @@ kotlinmultisample/
 │       └── commonTest/
 │           └── CountryRepositoryTest.kt                    ← 단위 테스트 (Fake 기반)
 │
-├── composeApp/                      ← UI + 플랫폼별 DI / DB
+├── composeApp/                      ← UI + 플랫폼별 DI
 │   └── src/
 │       ├── commonMain/
 │       │   └── kotlin/.../
@@ -101,24 +101,15 @@ kotlinmultisample/
 │       │   └── kotlin/.../
 │       │       ├── MainActivity.kt
 │       │       ├── MainApplication.kt                      ← Koin 초기화
-│       │       ├── database/
-│       │       │   ├── AppDatabase.kt                      ← Room DB (Android)
-│       │       │   ├── CountryEntity.kt                    ← Room Entity + 변환 함수
-│       │       │   └── CountryDao.kt                       ← Room DAO
 │       │       ├── di/AndroidModule.kt                     ← Android DI 모듈
 │       │       └── shared/data/local/datasource/
 │       │           └── LocalCountryDataSourceImpl.kt       ← Room 구현체 (Android)
 │       └── jvmMain/
 │           └── kotlin/.../
 │               ├── Main.kt                                 ← JVM 진입점, Koin 초기화
-│               ├── database/
-│               │   ├── AppDatabase.kt                      ← Room DB (JVM)
-│               │   ├── CountryEntity.kt                    ← Room Entity + 변환 함수
-│               │   └── CountryDao.kt                       ← Room DAO
 │               ├── di/JvmModule.kt                         ← JVM DI 모듈
 │               └── shared/data/local/datasource/
 │                   └── LocalCountryDataSourceImpl.kt       ← Room 구현체 (JVM)
-│
 └── server/                          ← Spring Boot 백엔드 (샘플)
     └── src/main/kotlin/.../server/
         ├── Application.kt
@@ -254,6 +245,14 @@ actual val networkModule = module { ... }
   - `ProjectViewModel`, `ProjectUiState`, `ProjectEvent`
   - `ProjectScreen`
   - 서버 측 Project 관련 파일 (Controller, Service, Repository, Entity, DTO)
+
+### Phase 5: 구조 리팩토링 및 안정화
+- [x] **패키지 구조 개선**: `database` 패키지를 `shared/data/local/database`로 이동 (Android/JVM 공통)
+  - `AppDatabase.kt`, `CountryDao.kt`, `CountryEntity.kt` 이동 및 import 정리
+  - `LocalCountryDataSourceImpl`의 import 수정
+  - `composeApp`의 `AndroidModule` / `JvmModule` 의존성 경로 수정
+- [x] **DI 설정 명확화**: `CountryRepositoryImpl` 생성 시 의존성 주입 모호성 제거 (named argument 사용)
+- [x] **빌드 오류 수정**: 패키지 이동에 따른 참조 오류 및 Room 의존성 문제 해결
 
 ---
 
