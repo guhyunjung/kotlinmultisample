@@ -58,6 +58,7 @@ val androidDatabaseModule = module {
 val androidModules = listOf(
 	networkModule,         // Retrofit + OkHttp + API Service + RemoteDataSource
 	androidDatabaseModule, // Room Database + ProjectDao (Context 기반)
+	viewModelModule,       // ViewModel 등록
 	module {
 		// CountryRepository는 Android 전용 (RemoteCountryDataSource가 androidMain에만 있음)
 		single<CountryRepository> { CountryRepositoryImpl(get()) }

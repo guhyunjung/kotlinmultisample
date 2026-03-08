@@ -6,47 +6,53 @@ import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountry
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountryDataSourceImpl
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSource
 import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteProjectDataSourceImpl
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
 /**
  * Android 전용 네트워크 Koin 모듈 (actual 구현)
  *
- * - OkHttpClient / Retrofit 생성은 NetworkUtils.kt의 공통 함수를 재사용합니다.
- * - baseUrl: "http://10.0.2.2:8080/" (에뮬레이터 → 호스트 PC localhost)
- * - JVM Desktop actual: shared/jvmMain/di/NetworkModule.kt
+ * ProjectApiService와 CountryApiService는 baseUrl이 다르므로
+ * Retrofit 인스턴스를 qualifier로 분리합니다.
+ *
+ * - projectRetrofit : "http://10.0.2.2:8080/" (에뮬레이터 → 로컬 Spring Boot)
+ * - countryRetrofit : "https://restcountries.com/" (외부 REST Countries API)
  */
 actual val networkModule = module {
 
-	/**
-	 * OkHttpClient 싱글톤 등록
-	 * NetworkUtils.buildOkHttpClient() 공통 함수로 생성합니다.
-	 */
-	single { buildOkHttpClient() }
+    /** 공통 OkHttpClient 싱글톤 */
+    single { buildOkHttpClient() }
 
-	/**
-	 * Retrofit 싱글톤 등록
-	 * NetworkUtils.buildRetrofit()에 Android용 baseUrl을 전달합니다.
-	 *
-	 * - 에뮬레이터  : "http://10.0.2.2:8080/" (10.0.2.2 = 호스트 PC의 localhost)
-	 * - 실제 기기   : "http://192.168.x.x:8080/" (PC 로컬 IP)
-	 * - 운영 환경   : "https://your-domain.com/" 으로 변경하세요.
-	 */
-	single<Retrofit> { buildRetrofit(get(), "http://10.0.2.2:8080/") }
+    /**
+     * Project API용 Retrofit (로컬 서버)
+     * qualifier: "project"
+     */
+    single<Retrofit>(named("project")) {
+        buildRetrofit(get(), "http://10.0.2.2:8080/")
+    }
 
-	/**
-	 * ProjectApiService 싱글톤 등록
-	 * Retrofit.create()로 인터페이스 구현체를 자동 생성합니다.
-	 */
-	single<ProjectApiService> { get<Retrofit>().create(ProjectApiService::class.java) }
+    /**
+     * Country API용 Retrofit (REST Countries 외부 API)
+     * qualifier: "country"
+     */
+    single<Retrofit>(named("country")) {
+        buildRetrofit(get(), "https://restcountries.com/")
+    }
 
-	/**
-	 * RemoteProjectDataSource 싱글톤 등록
-	 * ProjectApiService를 주입받아 실제 HTTP 요청을 수행합니다.
-	 */
-	single<RemoteProjectDataSource> { RemoteProjectDataSourceImpl(get()) }
+    /** ProjectApiService - project Retrofit 사용 */
+    single<ProjectApiService> {
+        get<Retrofit>(named("project")).create(ProjectApiService::class.java)
+    }
 
-	// ── Android 전용 API Service 추가 시 여기에 등록하세요 ───────────────────
-	single<CountryApiService> { get<Retrofit>().create(CountryApiService::class.java) }
-	single<RemoteCountryDataSource> { RemoteCountryDataSourceImpl(get()) }
+    /** RemoteProjectDataSource 싱글톤 등록 */
+    single<RemoteProjectDataSource> { RemoteProjectDataSourceImpl(get()) }
+
+    /** CountryApiService - country Retrofit 사용 */
+    single<CountryApiService> {
+        get<Retrofit>(named("country")).create(CountryApiService::class.java)
+    }
+
+    /** RemoteCountryDataSource 싱글톤 등록 */
+    single<RemoteCountryDataSource> { RemoteCountryDataSourceImpl(get()) }
 }

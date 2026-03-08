@@ -1,19 +1,6 @@
 package com.example.kotlinmultisample.shared.data.remote.dto
 
-import com.example.kotlinmultisample.shared.domain.model.CapitalInfo
-import com.example.kotlinmultisample.shared.domain.model.Car
-import com.example.kotlinmultisample.shared.domain.model.CoatOfArms
-import com.example.kotlinmultisample.shared.domain.model.Country
-import com.example.kotlinmultisample.shared.domain.model.CountryName
-import com.example.kotlinmultisample.shared.domain.model.CurrencyInfo
-import com.example.kotlinmultisample.shared.domain.model.Demonym
-import com.example.kotlinmultisample.shared.domain.model.Demonyms
-import com.example.kotlinmultisample.shared.domain.model.Flag
-import com.example.kotlinmultisample.shared.domain.model.Idd
-import com.example.kotlinmultisample.shared.domain.model.Maps
-import com.example.kotlinmultisample.shared.domain.model.NativeNameEntry
-import com.example.kotlinmultisample.shared.domain.model.PostalCode
-import com.example.kotlinmultisample.shared.domain.model.TranslationEntry
+import com.example.kotlinmultisample.shared.domain.model.*
 
 /**
  * 국제 전화 코드 (IDD: International Direct Dialing)
@@ -22,9 +9,9 @@ import com.example.kotlinmultisample.shared.domain.model.TranslationEntry
  */
 data class IddDto(
     /** 전화 코드 루트 (예: "+5") */
-    val root: String,
+    val root: String? = null,
     /** 루트 뒤에 붙는 접미사 목록 (예: ["7"]) */
-    val suffixes: List<String>
+    val suffixes: List<String>? = null
 )
 
 /**
@@ -32,9 +19,9 @@ data class IddDto(
  */
 data class MapsDto(
     /** Google Maps URL */
-    val googleMaps: String,
+    val googleMaps: String? = null,
     /** OpenStreetMap URL */
-    val openStreetMaps: String
+    val openStreetMaps: String? = null
 )
 
 /**
@@ -42,9 +29,9 @@ data class MapsDto(
  */
 data class CarDto(
     /** 차량 번호판 국가 코드 (예: ["CO"]) */
-    val signs: List<String>,
+    val signs: List<String>? = null,
     /** 운전 방향 (예: "right" / "left") */
-    val side: String
+    val side: String? = null
 )
 
 /**
@@ -52,9 +39,9 @@ data class CarDto(
  */
 data class FlagDto(
     /** PNG 이미지 URL */
-    val png: String,
+    val png: String? = null,
     /** SVG 이미지 URL */
-    val svg: String,
+    val svg: String? = null,
     /** 국기 설명 (접근성 alt 텍스트) */
     val alt: String? = null
 )
@@ -76,9 +63,9 @@ data class CoatOfArmsDto(
  */
 data class NativeNameEntryDto(
     /** 공식 명칭 */
-    val official: String,
+    val official: String? = null,
     /** 일반 명칭 */
-    val common: String
+    val common: String? = null
 )
 
 /**
@@ -86,15 +73,15 @@ data class NativeNameEntryDto(
  */
 data class NameDto(
     /** 영어 일반 명칭 (예: "Colombia") */
-    val common: String,
+    val common: String? = null,
     /** 영어 공식 명칭 (예: "Republic of Colombia") */
-    val official: String,
+    val official: String? = null,
     /**
      * 원어 이름 목록
      * key: ISO 639-3 언어 코드 (예: "spa")
      * value: 해당 언어의 공식/일반 명칭
      */
-    val nativeName: Map<String, NativeNameEntryDto>
+    val nativeName: Map<String, NativeNameEntryDto>? = null
 )
 
 /**
@@ -104,9 +91,9 @@ data class NameDto(
  */
 data class CurrencyInfoDto(
     /** 통화 기호 (예: "$") */
-    val symbol: String,
+    val symbol: String? = null,
     /** 통화 이름 (예: "Colombian peso") */
-    val name: String
+    val name: String? = null
 )
 
 /**
@@ -114,9 +101,9 @@ data class CurrencyInfoDto(
  */
 data class DemonymDto(
     /** 여성형 (예: "Colombian") */
-    val f: String,
+    val f: String? = null,
     /** 남성형 (예: "Colombian") */
-    val m: String
+    val m: String? = null
 )
 
 /**
@@ -136,9 +123,9 @@ data class DemonymsDto(
  */
 data class TranslationEntryDto(
     /** 공식 명칭 */
-    val official: String,
+    val official: String? = null,
     /** 일반 명칭 */
-    val common: String
+    val common: String? = null
 )
 
 /**
@@ -180,14 +167,20 @@ data class CountryDto(
     /** 최상위 도메인 목록 (예: [".co"]) */
     val tld: List<String>? = null,
 
-    /** ISO 3166-1 alpha-2 코드 (예: "CO") */
-    val cca2: String,
+    /**
+     * ISO 3166-1 alpha-2 코드 (예: "CO")
+     * 일부 국가/지역은 API 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val cca2: String? = null,
 
     /** ISO 3166-1 numeric 코드 (예: "170") */
     val ccn3: String? = null,
 
-    /** ISO 3166-1 alpha-3 코드 (예: "COL") */
-    val cca3: String,
+    /**
+     * ISO 3166-1 alpha-3 코드 (예: "COL")
+     * 일부 국가/지역은 API 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val cca3: String? = null,
 
     /** IOC(국제올림픽위원회) 코드 (예: "COL") */
     val cioc: String? = null,
@@ -197,11 +190,14 @@ data class CountryDto(
     /** 독립국 여부 */
     val independent: Boolean? = null,
 
-    /** ISO 3166-1 등록 상태 (예: "officially-assigned") */
-    val status: String,
+    /**
+     * ISO 3166-1 등록 상태 (예: "officially-assigned")
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val status: String? = null,
 
     /** UN 회원국 여부 */
-    val unMember: Boolean,
+    val unMember: Boolean? = null,
 
     // ── 전화/통신 ──────────────────────────────────────────────────────────────
 
@@ -213,37 +209,49 @@ data class CountryDto(
     /** 수도 목록 (예: ["Bogotá"]) */
     val capital: List<String>? = null,
 
-    /** 다른 표기/별칭 목록 */
-    val altSpellings: List<String>,
+    /**
+     * 다른 표기/별칭 목록
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val altSpellings: List<String>? = null,
 
-    /** 대륙 구분 (예: "Americas") */
-    val region: String,
+    /**
+     * 대륙 구분 (예: "Americas")
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val region: String? = null,
 
     /** 세부 지역 (예: "South America") */
     val subregion: String? = null,
 
     /** 내륙국 여부 (true = 바다 접근 불가) */
-    val landlocked: Boolean,
+    val landlocked: Boolean? = null,
 
     /** 인접 국가 코드 목록 (ISO alpha-3, 예: ["BRA", "ECU"]) */
     val borders: List<String>? = null,
 
     /** 면적 (㎢) */
-    val area: Double,
+    val area: Double? = null,
 
     /** 지도 링크 */
     val maps: MapsDto? = null,
 
-    /** 위도/경도 [위도, 경도] (예: [4.0, -72.0]) */
-    val latlng: List<Double>,
+    /**
+     * 위도/경도 [위도, 경도] (예: [4.0, -72.0])
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val latlng: List<Double>? = null,
 
-    /** 대륙 목록 (예: ["South America"]) */
-    val continents: List<String>,
+    /**
+     * 대륙 목록 (예: ["South America"])
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val continents: List<String>? = null,
 
     // ── 인구/사회 ──────────────────────────────────────────────────────────────
 
     /** 인구 수 */
-    val population: Long,
+    val population: Long? = null,
 
     /**
      * 지니 계수 (소득 불평등 지수)
@@ -256,8 +264,11 @@ data class CountryDto(
 
     // ── 이름/언어 ──────────────────────────────────────────────────────────────
 
-    /** 국가 이름 (공식명/일반명/원어명) */
-    val name: NameDto,
+    /**
+     * 국가 이름 (공식명/일반명/원어명)
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val name: NameDto? = null,
 
     /**
      * 공용어 목록
@@ -287,8 +298,11 @@ data class CountryDto(
 
     // ── 시간/행정 ──────────────────────────────────────────────────────────────
 
-    /** 타임존 목록 (예: ["UTC-05:00"]) */
-    val timezones: List<String>,
+    /**
+     * 타임존 목록 (예: ["UTC-05:00"])
+     * 일부 응답에서 누락될 수 있으므로 nullable 처리
+     */
+    val timezones: List<String>? = null,
 
     /** 주간 시작 요일 (예: "monday") */
     val startOfWeek: String? = null,
@@ -323,52 +337,62 @@ data class CountryDto(
  */
 fun CountryDto.toDomain(): Country = Country(
     tld           = tld ?: emptyList(),
-    cca2          = cca2,
+    // cca2가 null인 경우 cca3로 fallback, 둘 다 없으면 빈 문자열 (LazyColumn key는 UI에서 별도 처리)
+    cca2          = cca2 ?: cca3 ?: "",
     ccn3          = ccn3,
-    cca3          = cca3,
+    cca3          = cca3 ?: "",
     cioc          = cioc,
     independent   = independent,
-    status        = status,
-    unMember      = unMember,
-    idd           = idd?.let { Idd(it.root, it.suffixes) },
+    status        = status ?: "",
+    unMember      = unMember ?: false,
+    // IddDto 내부 필드도 nullable이므로 기본값 처리
+    idd           = idd?.let { Idd(root = it.root ?: "", suffixes = it.suffixes ?: emptyList()) },
     capital       = capital ?: emptyList(),
-    altSpellings  = altSpellings,
-    region        = region,
+    altSpellings  = altSpellings ?: emptyList(),
+    region        = region ?: "",
     subregion     = subregion,
-    landlocked    = landlocked,
+    landlocked    = landlocked ?: false,
     borders       = borders ?: emptyList(),
-    area          = area,
-    maps          = maps?.let { Maps(it.googleMaps, it.openStreetMaps) },
-    latlng        = latlng,
-    continents    = continents,
-    population    = population,
+    area          = area ?: 0.0,
+    // MapsDto 내부 필드도 nullable이므로 기본값 처리
+    maps          = maps?.let { Maps(googleMaps = it.googleMaps ?: "", openStreetMaps = it.openStreetMaps ?: "") },
+    latlng        = latlng ?: emptyList(),
+    continents    = continents ?: emptyList(),
+    population    = population ?: 0L,
     gini          = gini ?: emptyMap(),
     fifa          = fifa,
-    name          = name.toDomain(),
+    // name이 null인 경우 빈 이름 객체로 대체
+    name          = name?.toDomain() ?: CountryName(common = "", official = "", nativeName = emptyMap()),
     languages     = languages ?: emptyMap(),
-    translations  = translations?.mapValues { TranslationEntry(it.value.official, it.value.common) } ?: emptyMap(),
+    // TranslationEntry 생성 시 nullable 처리
+    translations  = translations?.mapValues { TranslationEntry(official = it.value.official ?: "", common = it.value.common ?: "") } ?: emptyMap(),
     demonyms      = demonyms?.let {
         Demonyms(
-            eng = it.eng?.let { d -> Demonym(d.f, d.m) },
-            fra = it.fra?.let { d -> Demonym(d.f, d.m) }
+            // DemonymDto 내부 f, m 필드도 nullable이므로 기본값 처리
+            eng = it.eng?.let { d -> Demonym(f = d.f ?: "", m = d.m ?: "") },
+            fra = it.fra?.let { d -> Demonym(f = d.f ?: "", m = d.m ?: "") }
         )
     },
-    currencies    = currencies?.mapValues { CurrencyInfo(it.value.symbol, it.value.name) } ?: emptyMap(),
-    car           = car?.let { Car(it.signs, it.side) },
-    timezones     = timezones,
+    // CurrencyInfoDto 내부 필드도 nullable이므로 기본값 처리
+    currencies    = currencies?.mapValues { CurrencyInfo(symbol = it.value.symbol ?: "", name = it.value.name ?: "") } ?: emptyMap(),
+    // CarDto 내부 필드도 nullable이므로 기본값 처리
+    car           = car?.let { Car(signs = it.signs ?: emptyList(), side = it.side ?: "") },
+    timezones     = timezones ?: emptyList(),
     startOfWeek   = startOfWeek,
     capitalInfo   = capitalInfo?.let { CapitalInfo(it.latlng) },
     postalCode    = postalCode?.let { PostalCode(it.format, it.regex) },
-    flags         = flags?.let { Flag(it.png, it.svg, it.alt) },
+    // FlagDto 내부 필드도 nullable이므로 기본값 처리
+    flags         = flags?.let { Flag(png = it.png ?: "", svg = it.svg ?: "", alt = it.alt) },
     coatOfArms    = coatOfArms?.let { CoatOfArms(it.png, it.svg) },
     flag          = flag
 )
 
 /** [NameDto]를 도메인 모델 [CountryName]으로 변환합니다. */
 private fun NameDto.toDomain(): CountryName = CountryName(
-    common      = common,
-    official    = official,
-    nativeName  = nativeName.mapValues { NativeNameEntry(it.value.official, it.value.common) }
+    common      = common ?: "",
+    official    = official ?: "",
+    // NativeNameEntryDto 내부 필드도 nullable이므로 기본값 처리
+    nativeName  = nativeName?.mapValues { NativeNameEntry(official = it.value.official ?: "", common = it.value.common ?: "") } ?: emptyMap()
 )
 
 

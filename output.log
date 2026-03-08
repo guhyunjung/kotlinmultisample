@@ -1,3 +1,4 @@
+Starting a Gradle Daemon, 1 incompatible and 1 stopped Daemons could not be reused, use --status for details
 Type-safe project accessors is an incubating feature.
 
 > Configure project :composeApp
@@ -18,30 +19,73 @@ Solution: Please use the 'com.android.kotlin.multiplatform.library' plugin inste
 See https://kotl.in/gradle/agp-new-kmp for more details.
 
 
+> Task :composeApp:kmpPartiallyResolvedDependenciesChecker
+> Task :composeApp:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :composeApp:convertXmlValueResourcesForCommonMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForCommonMain UP-TO-DATE
+> Task :composeApp:prepareComposeResourcesTaskForCommonMain UP-TO-DATE
+> Task :composeApp:generateResourceAccessorsForCommonMain UP-TO-DATE
+> Task :composeApp:convertXmlValueResourcesForJvmMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForJvmMain NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForJvmMain NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForJvmMain NO-SOURCE
+> Task :composeApp:generateActualResourceCollectorsForJvmMain
+> Task :composeApp:generateComposeResClass UP-TO-DATE
+> Task :composeApp:generateExpectResourceCollectorsForCommonMain UP-TO-DATE
 > Task :shared:kmpPartiallyResolvedDependenciesChecker
 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :shared:preBuild UP-TO-DATE
-> Task :shared:preDebugBuild UP-TO-DATE
-> Task :shared:generateDebugResValues
-> Task :shared:generateDebugResources
-> Task :shared:packageDebugResources
+> Task :shared:compileKotlinJvm FROM-CACHE
+> Task :shared:compileJvmMainJava NO-SOURCE
 > Task :shared:jvmProcessResources NO-SOURCE
 > Task :shared:processJvmMainResources SKIPPED
-> Task :shared:jvmTestProcessResources NO-SOURCE
-> Task :shared:processJvmTestResources SKIPPED
-> Task :shared:parseDebugLocalResources
-> Task :shared:generateDebugRFile
-> Task :shared:compileKotlinJvm
-> Task :shared:compileJvmMainJava NO-SOURCE
-> Task :shared:jvmMainClasses
+> Task :shared:jvmMainClasses UP-TO-DATE
 > Task :shared:jvmJar
-> Task :shared:compileTestKotlinJvm
-> Task :shared:compileJvmTestJava NO-SOURCE
-> Task :shared:jvmTestClasses
-> Task :shared:compileDebugKotlinAndroid
-> Task :shared:jvmTest
+> Task :composeApp:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :composeApp:generateActualResourceCollectorsForAndroidMain UP-TO-DATE
+> Task :composeApp:convertXmlValueResourcesForAndroidDebug NO-SOURCE
+> Task :composeApp:copyNonXmlValueResourcesForAndroidDebug NO-SOURCE
+> Task :composeApp:prepareComposeResourcesTaskForAndroidDebug NO-SOURCE
+> Task :composeApp:generateResourceAccessorsForAndroidDebug NO-SOURCE
+> Task :composeApp:preBuild UP-TO-DATE
+> Task :composeApp:preDebugBuild UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:writeDebugAarMetadata
+> Task :composeApp:generateDebugResValues UP-TO-DATE
+> Task :composeApp:checkDebugAarMetadata UP-TO-DATE
+> Task :shared:generateDebugResValues FROM-CACHE
+> Task :shared:generateDebugResources FROM-CACHE
+> Task :shared:packageDebugResources FROM-CACHE
+> Task :composeApp:mapDebugSourceSetPaths UP-TO-DATE
+> Task :composeApp:generateDebugResources UP-TO-DATE
+> Task :composeApp:mergeDebugResources UP-TO-DATE
+> Task :composeApp:copyDebugComposeResourcesToAndroidAssets UP-TO-DATE
+> Task :composeApp:packageDebugResources UP-TO-DATE
+> Task :composeApp:parseDebugLocalResources UP-TO-DATE
+> Task :composeApp:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :composeApp:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:extractDeepLinksDebug FROM-CACHE
+> Task :shared:processDebugManifest FROM-CACHE
+> Task :composeApp:processDebugMainManifest UP-TO-DATE
+> Task :composeApp:processDebugManifest UP-TO-DATE
+> Task :composeApp:processDebugManifestForPackage UP-TO-DATE
+> Task :shared:compileDebugLibraryResources FROM-CACHE
+> Task :shared:parseDebugLocalResources FROM-CACHE
+> Task :shared:generateDebugRFile FROM-CACHE
+> Task :composeApp:processDebugResources UP-TO-DATE
+> Task :shared:compileDebugKotlinAndroid FROM-CACHE
+> Task :shared:javaPreCompileDebug FROM-CACHE
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :shared:bundleLibCompileToJarDebug
+> Task :composeApp:kspDebugKotlinAndroid
+> Task :composeApp:kspKotlinJvm
+> Task :composeApp:compileDebugKotlinAndroid
+> Task :composeApp:compileKotlinJvm
 
 [Incubating] Problems report is available at: file:///C:/Project/Workspace/Kotlin/kotlinmultisample/build/reports/problems/problems-report.html
 
-BUILD SUCCESSFUL in 4s
-11 actionable tasks: 11 executed
+BUILD SUCCESSFUL in 44s
+41 actionable tasks: 10 executed, 11 from cache, 20 up-to-date

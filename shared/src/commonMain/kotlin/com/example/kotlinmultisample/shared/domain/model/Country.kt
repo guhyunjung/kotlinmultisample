@@ -218,3 +218,4 @@ data class Country(
     /** 유니코드 국기 이모지 (예: "🇨🇴") */
     val flag: String?
 )
+
