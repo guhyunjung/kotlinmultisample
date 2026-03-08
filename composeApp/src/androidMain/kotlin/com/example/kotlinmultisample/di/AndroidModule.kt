@@ -54,7 +54,10 @@ val androidModules = listOf(
          * LocalCountryDataSource  : androidDatabaseModule에 등록
          */
         single<CountryRepository> {
-            CountryRepositoryImpl(get(), get())
+            CountryRepositoryImpl(
+                remoteDataSource = get(),
+                localDataSource = get()
+            )
         }
     }
 )

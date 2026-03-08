@@ -66,7 +66,10 @@ val jvmCountryModule = module {
      * LocalCountryDataSource  : jvmDatabaseModule에 등록
      */
     single<CountryRepository> {
-        CountryRepositoryImpl(get(), get())
+        CountryRepositoryImpl(
+            remoteDataSource = get(),
+            localDataSource = get()
+        )
     }
 }
 
