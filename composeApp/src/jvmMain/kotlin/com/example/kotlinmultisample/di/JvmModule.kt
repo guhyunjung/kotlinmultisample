@@ -31,6 +31,9 @@ val jvmDatabaseModule = module {
         val dbDir = File(System.getProperty("user.home"), ".kotlinmultisample").also { it.mkdirs() }
         val dbFile = File(dbDir, "app_database.db")
 
+        // 개발 중 DB 파일 위치를 쉽게 확인하기 위해 로그 출력
+        println("📦 [JVM DB] Database Path: ${dbFile.absolutePath}")
+
         Room.databaseBuilder<AppDatabase>(
             name = dbFile.absolutePath
         )
