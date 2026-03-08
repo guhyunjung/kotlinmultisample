@@ -1,7 +1,7 @@
 package com.example.kotlinmultisample.di
 
 import androidx.room.Room
-import com.example.kotlinmultisample.database.AppDatabase
+import com.example.kotlinmultisample.shared.data.local.database.AppDatabase
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSourceImpl
 import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl

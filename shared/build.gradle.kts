@@ -4,6 +4,7 @@ plugins {
 	alias(libs.plugins.kotlinMultiplatform)
 	alias(libs.plugins.androidLibrary)
 	alias(libs.plugins.dokka)
+	alias(libs.plugins.ksp)  // Room 어노테이션 프로세서용
 }
 
 kotlin {
@@ -36,19 +37,24 @@ kotlin {
 			implementation(libs.koin.test)
 			implementation(libs.kotlinx.coroutines.test)
 		}
-		// Retrofit, OkHttp는 JS에서 사용할 수 없으므로 commonMain이 아닌
+		// Retrofit, OkHttp, Room은 JS에서 사용할 수 없으므로
 		// jvmMain, androidMain에 각각 추가합니다.
 		jvmMain.dependencies {
 			implementation(libs.retrofit.core)
 			implementation(libs.retrofit.converter.gson)
 			implementation(libs.okhttp.core)
 			implementation(libs.okhttp.logging.interceptor)
+			// Room (JVM Desktop)
+			implementation(libs.androidx.room.runtime)
 		}
 		androidMain.dependencies {
 			implementation(libs.retrofit.core)
 			implementation(libs.retrofit.converter.gson)
 			implementation(libs.okhttp.core)
 			implementation(libs.okhttp.logging.interceptor)
+			// Room (Android)
+			implementation(libs.androidx.room.runtime)
+			implementation(libs.androidx.room.ktx)
 		}
 		// JVM 전용 테스트: 실제 Retrofit API 호출 통합 테스트
 		jvmTest.dependencies {
@@ -73,4 +79,10 @@ android {
 	defaultConfig {
 		minSdk = libs.versions.android.minSdk.get().toInt()
 	}
+}
+
+// Room 어노테이션 프로세서 (KSP)
+dependencies {
+	add("kspAndroid", libs.androidx.room.compiler)  // Android용 Room 코드 생성
+	add("kspJvm", libs.androidx.room.compiler)      // JVM Desktop용 Room 코드 생성
 }

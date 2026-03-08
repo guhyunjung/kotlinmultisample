@@ -1,10 +1,10 @@
-package com.example.kotlinmultisample.database
+package com.example.kotlinmultisample.shared.data.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
 /**
- * Room 로컬 데이터베이스 (JVM Desktop)
+ * Room 로컬 데이터베이스 (Android)
  *
  * - entities: 관리할 Entity(테이블) 목록. 추가 시 버전도 올려야 합니다.
  * - version: 스키마 버전. 구조 변경 시 Migration 필요.
@@ -27,3 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
      */
     abstract fun countryDao(): CountryDao
 }
+
+
+

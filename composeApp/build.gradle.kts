@@ -8,7 +8,6 @@ plugins {
 	alias(libs.plugins.composeCompiler)
 	alias(libs.plugins.composeHotReload)
 	alias(libs.plugins.dokka)
-	alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -30,7 +29,7 @@ kotlin {
 			implementation(libs.androidx.activity.compose)
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.android)
-			// Room (Android 전용)
+			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.room.ktx)
 			// Retrofit + OkHttp
@@ -61,7 +60,7 @@ kotlin {
 		jvmMain.dependencies {
 			implementation(compose.desktop.currentOs)
 			implementation(libs.kotlinx.coroutinesSwing)
-			// Room (JVM Desktop - room-ktx는 Android 전용이므로 제외)
+			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			// Retrofit + OkHttp
 			implementation(libs.retrofit.core)
@@ -101,8 +100,7 @@ android {
 
 dependencies {
 	debugImplementation(libs.compose.uiTooling)
-	add("kspAndroid", libs.androidx.room.compiler) // Room 어노테이션 프로세서 (Android)
-	add("kspJvm", libs.androidx.room.compiler)     // Room 어노테이션 프로세서 (JVM Desktop)
+	// Room KSP는 shared 모듈에서 처리하므로 여기서는 제거
 }
 
 compose.desktop {

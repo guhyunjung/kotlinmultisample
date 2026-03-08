@@ -1,8 +1,8 @@
 package com.example.kotlinmultisample.shared.data.local.datasource
 
-import com.example.kotlinmultisample.database.CountryDao
-import com.example.kotlinmultisample.database.toDomain
-import com.example.kotlinmultisample.database.toEntity
+import com.example.kotlinmultisample.shared.data.local.database.CountryDao
+import com.example.kotlinmultisample.shared.data.local.database.toDomain
+import com.example.kotlinmultisample.shared.data.local.database.toEntity
 import com.example.kotlinmultisample.shared.domain.model.Country
 
 /**
@@ -56,4 +56,3 @@ class LocalCountryDataSourceImpl(
         dao.deleteAll()
     }
 }
-
