@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample.di
 
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.example.kotlinmultisample.shared.data.local.database.AppDatabase
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSourceImpl
@@ -33,6 +34,7 @@ val jvmDatabaseModule = module {
         Room.databaseBuilder<AppDatabase>(
             name = dbFile.absolutePath
         )
+            .setDriver(BundledSQLiteDriver())
             // TODO: 스키마 변경 시 아래와 같이 Migration을 추가하세요.
             // .addMigrations(MIGRATION_1_2)
             .fallbackToDestructiveMigration(true) // 개발 중: 마이그레이션 없으면 DB 초기화

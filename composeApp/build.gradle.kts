@@ -62,6 +62,7 @@ kotlin {
 			implementation(libs.kotlinx.coroutinesSwing)
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
+			implementation(libs.androidx.sqlite.bundled)
 			// Retrofit + OkHttp
 			implementation(libs.retrofit.core)
 			implementation(libs.retrofit.converter.gson)
