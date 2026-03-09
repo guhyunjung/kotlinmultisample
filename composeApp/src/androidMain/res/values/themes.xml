@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        앱 기본 테마 (Android 11 이하)
+        시스템 스플래시 배경색을 Compose SplashScreen 시작색(#EADDFF)과 동일하게 설정.
+        색상을 맞춰 전환이 자연스럽게 보이도록 합니다.
+    -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+</resources>

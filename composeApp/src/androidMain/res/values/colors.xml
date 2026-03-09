@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        스플래시 배경색: Compose SplashScreen의 primaryContainer(그라데이션 시작 색)와 동일하게 설정.
+        Material3 기본 라이트 테마 primaryContainer = #EADDFF
+        앱 시작 시 시스템 스플래시 → Compose 스플래시가 자연스럽게 이어집니다.
+    -->
+    <color name="splash_background">#EADDFF</color>
+</resources>
+

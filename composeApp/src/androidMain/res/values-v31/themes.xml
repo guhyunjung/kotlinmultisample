@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        앱 기본 테마 (Android 12+ / API 31+)
+        시스템 스플래시 배경색을 Compose SplashScreen 시작색(#EADDFF)과 동일하게 설정.
+        아이콘 배경(ic_launcher_background)도 동일 색상으로 맞춰져 있어
+        시스템 스플래시 → Compose 스플래시 전환이 자연스럽게 이어집니다.
+    -->
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splash_background</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
+</resources>
