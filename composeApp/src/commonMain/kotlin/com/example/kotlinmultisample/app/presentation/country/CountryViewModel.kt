@@ -2,7 +2,10 @@ package com.example.kotlinmultisample.app.presentation.country
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import com.example.kotlinmultisample.shared.domain.model.Country
+import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.RefreshCountriesUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.SearchCountriesUseCase
 import com.example.kotlinmultisample.shared.util.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,10 +18,19 @@ import kotlinx.coroutines.launch
  * - loadCountries(): 캐시가 있으면 즉시 표시, 없으면 API 호출
  * - refresh(): 강제로 API를 호출하여 최신 데이터로 갱신
  *
- * @property repository 국가 데이터를 가져오는 CountryRepository
+ * UseCase 기반 설계:
+ * - [GetCountriesUseCase]   : 목록 조회 (Cache-First)
+ * - [RefreshCountriesUseCase]: 강제 갱신
+ * - [SearchCountriesUseCase] : 검색/필터링 (순수 도메인 로직)
+ *
+ * @property getCountriesUseCase 국가 목록 조회 UseCase
+ * @property refreshCountriesUseCase 국가 목록 강제 갱신 UseCase
+ * @property searchCountriesUseCase 국가 검색 UseCase
  */
 class CountryViewModel(
-    private val repository: CountryRepository
+    private val getCountriesUseCase: GetCountriesUseCase,
+    private val refreshCountriesUseCase: RefreshCountriesUseCase,
+    private val searchCountriesUseCase: SearchCountriesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CountryUiState())
@@ -36,7 +48,7 @@ class CountryViewModel(
             Logger.i(TAG, "loadCountries() 시작")
             _state.value = _state.value.copy(isLoading = true, error = null)
             try {
-                val countries = repository.getCountries()
+                val countries = getCountriesUseCase()
                 Logger.i(TAG, "국가 목록 로드 성공: ${countries.size}개")
                 applyCountriesWithQuery(countries, _state.value.searchQuery.ifBlank { "kor" })
             } catch (e: Exception) {
@@ -60,7 +72,7 @@ class CountryViewModel(
             Logger.i(TAG, "refresh() 시작 - 강제 API 호출")
             _state.value = _state.value.copy(isRefreshing = true, error = null)
             try {
-                val countries = repository.refreshCountries()
+                val countries = refreshCountriesUseCase()
                 Logger.i(TAG, "강제 갱신 성공: ${countries.size}개")
                 applyCountriesWithQuery(countries, _state.value.searchQuery)
             } catch (e: Exception) {
@@ -76,26 +88,14 @@ class CountryViewModel(
     /**
      * 검색어로 국가 필터링
      *
+     * [SearchCountriesUseCase]에 검색 로직을 위임합니다.
      * 국가명(영어/원어), 지역, 수도 기준으로 검색합니다.
-     * 기존 전체 목록을 유지하면서 필터링 결과만 업데이트합니다.
      *
      * @param query 검색어
      */
     fun search(query: String) {
         Logger.d(TAG, "search() query=\"$query\"")
-        val filtered = if (query.isBlank()) {
-            _state.value.countries
-        } else {
-            _state.value.countries.filter { country ->
-                country.name.common.contains(query, ignoreCase = true) ||
-                country.name.official.contains(query, ignoreCase = true) ||
-                country.region.contains(query, ignoreCase = true) ||
-                country.capital.any { it.contains(query, ignoreCase = true) } ||
-                country.name.nativeName.values.any {
-                    it.common.contains(query, ignoreCase = true)
-                }
-            }
-        }
+        val filtered = searchCountriesUseCase(_state.value.countries, query)
         _state.value = _state.value.copy(
             searchQuery = query,
             filteredCountries = filtered
@@ -107,22 +107,10 @@ class CountryViewModel(
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * 전체 국가 목록을 상태에 반영하고, 현재 검색어로 필터링합니다.
+     * 전체 국가 목록을 상태에 반영하고, [SearchCountriesUseCase]로 필터링합니다.
      */
-    private fun applyCountriesWithQuery(countries: List<com.example.kotlinmultisample.shared.domain.model.Country>, query: String) {
-        val filtered = if (query.isBlank()) {
-            countries
-        } else {
-            countries.filter { country ->
-                country.name.common.contains(query, ignoreCase = true) ||
-                country.name.official.contains(query, ignoreCase = true) ||
-                country.region.contains(query, ignoreCase = true) ||
-                country.capital.any { it.contains(query, ignoreCase = true) } ||
-                country.name.nativeName.values.any {
-                    it.common.contains(query, ignoreCase = true)
-                }
-            }
-        }
+    private fun applyCountriesWithQuery(countries: List<Country>, query: String) {
+        val filtered = searchCountriesUseCase(countries, query)
         Logger.i(TAG, "\"$query\" 필터링 결과: ${filtered.size}개")
         _state.value = _state.value.copy(
             isLoading = false,
@@ -137,3 +125,4 @@ class CountryViewModel(
         private const val TAG = "CountryViewModel"
     }
 }
+

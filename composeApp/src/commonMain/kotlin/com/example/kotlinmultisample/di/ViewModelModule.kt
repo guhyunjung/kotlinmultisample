@@ -14,9 +14,10 @@ val viewModelModule = module {
 
     /**
      * CountryViewModel 등록
-     * CountryRepository를 주입받습니다.
-     * Android    : androidModules에 CountryRepository가 등록됨
-     * JVM Desktop: jvmCountryModule에 CountryRepository가 등록됨
+     *
+     * UseCase는 shared commonModule에서 등록됩니다.
+     * Koin이 자동으로 GetCountriesUseCase, RefreshCountriesUseCase,
+     * SearchCountriesUseCase를 주입합니다.
      */
-    viewModel { CountryViewModel(get()) }
+    viewModel { CountryViewModel(get(), get(), get()) }
 }

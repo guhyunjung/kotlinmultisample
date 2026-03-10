@@ -1,5 +1,10 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesByRegionUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.GetCountryByCodeUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.RefreshCountriesUseCase
+import com.example.kotlinmultisample.shared.domain.usecase.SearchCountriesUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -37,6 +42,12 @@ fun initKoin() = initKoin(emptyList())
  *   각 플랫폼의 additionalModules를 통해 주입합니다.
  */
 val commonModule = module {
-	// 공통 도메인 레이어 바인딩은 이 곳에 추가하세요.
-	// 플랫폼별 Repository/DataSource는 각 플랫폼 모듈에서 등록합니다.
+	// ── Country UseCase 등록 ──────────────────────────────────────────────────
+	// Repository는 플랫폼별 모듈(androidMain / jvmMain)에서 등록됩니다.
+	// UseCase는 공통 모듈에서 한 번만 등록하여 모든 플랫폼에서 재사용합니다.
+	factory { GetCountriesUseCase(get()) }
+	factory { GetCountryByCodeUseCase(get()) }
+	factory { RefreshCountriesUseCase(get()) }
+	factory { SearchCountriesUseCase() }
+	factory { GetCountriesByRegionUseCase() }
 }
