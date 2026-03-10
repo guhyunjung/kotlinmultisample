@@ -45,96 +45,104 @@ fun CountryListScreen(
 		}
 	}
 
-	Column(modifier = Modifier.fillMaxSize()) {
-
-		// ── 상단 바: 검색 + 새로고침 ──────────────────────────────────────
-		Row(
+	Scaffold(
+		modifier = Modifier.fillMaxSize()
+	) { innerPadding ->
+		Column(
 			modifier = Modifier
-				.fillMaxWidth()
-				.padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 4.dp),
-			verticalAlignment = Alignment.CenterVertically
+				.fillMaxSize()
+				.padding(innerPadding)
 		) {
-			SearchBar(
-				query = state.searchQuery,
-				onQueryChange = { viewModel.search(it) },
-				modifier = Modifier.weight(1f)
-			)
-			// 새로고침 버튼 - 항상 API를 호출하여 최신 데이터로 갱신
-			IconButton(
-				onClick = { viewModel.refresh() },
-				enabled = !state.isRefreshing && !state.isLoading
+
+			// ── 상단 바: 검색 + 새로고침 ──────────────────────────────────────
+			Row(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 4.dp),
+				verticalAlignment = Alignment.CenterVertically
 			) {
-				if (state.isRefreshing) {
-					CircularProgressIndicator(
-						modifier = Modifier.size(20.dp),
-						strokeWidth = 2.dp
-					)
-				} else {
-					Icon(Icons.Default.Refresh, contentDescription = "새로고침")
+				SearchBar(
+					query = state.searchQuery,
+					onQueryChange = { viewModel.search(it) },
+					modifier = Modifier.weight(1f)
+				)
+				// 새로고침 버튼 - 항상 API를 호출하여 최신 데이터로 갱신
+				IconButton(
+					onClick = { viewModel.refresh() },
+					enabled = !state.isRefreshing && !state.isLoading
+				) {
+					if (state.isRefreshing) {
+						CircularProgressIndicator(
+							modifier = Modifier.size(20.dp),
+							strokeWidth = 2.dp
+						)
+					} else {
+						Icon(Icons.Default.Refresh, contentDescription = "새로고침")
+					}
 				}
 			}
-		}
 
-		// ── 결과 수 / 캐시 상태 표시 ─────────────────────────────────────
-		if (!state.isLoading && state.countries.isNotEmpty()) {
-			Text(
-				text = "${state.filteredCountries.size}개 국가",
-				style = MaterialTheme.typography.labelMedium,
-				color = MaterialTheme.colorScheme.onSurfaceVariant,
-				modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-			)
-		}
+			// ── 결과 수 / 캐시 상태 표시 ─────────────────────────────────────
+			if (!state.isLoading && state.countries.isNotEmpty()) {
+				Text(
+					text = "${state.filteredCountries.size}개 국가",
+					style = MaterialTheme.typography.labelMedium,
+					color = MaterialTheme.colorScheme.onSurfaceVariant,
+					modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+				)
+			}
 
-		// ── 콘텐츠 ────────────────────────────────────────────────────────
-		Box(modifier = Modifier.fillMaxSize()) {
-			when {
-				state.isLoading -> {
-					CircularProgressIndicator(
-						modifier = Modifier.align(Alignment.Center)
-					)
-				}
+			// ── 콘텐츠 ────────────────────────────────────────────────────────
+			Box(modifier = Modifier.fillMaxSize()) {
+				when {
+					state.isLoading -> {
+						CircularProgressIndicator(
+							modifier = Modifier.align(Alignment.Center)
+						)
+					}
 
-				state.error != null -> {
-					ErrorContent(
-						message = state.error!!,
-						onRetry = { viewModel.loadCountries() },
-						modifier = Modifier.align(Alignment.Center)
-					)
-				}
+					state.error != null -> {
+						ErrorContent(
+							message = state.error!!,
+							onRetry = { viewModel.loadCountries() },
+							modifier = Modifier.align(Alignment.Center)
+						)
+					}
 
-				state.filteredCountries.isEmpty() && state.searchQuery.isNotBlank() -> {
-					Text(
-						text = "'${state.searchQuery}' 검색 결과가 없습니다",
-						style = MaterialTheme.typography.bodyLarge,
-						color = MaterialTheme.colorScheme.onSurfaceVariant,
-						modifier = Modifier.align(Alignment.Center)
-					)
-				}
+					state.filteredCountries.isEmpty() && state.searchQuery.isNotBlank() -> {
+						Text(
+							text = "'${state.searchQuery}' 검색 결과가 없습니다",
+							style = MaterialTheme.typography.bodyLarge,
+							color = MaterialTheme.colorScheme.onSurfaceVariant,
+							modifier = Modifier.align(Alignment.Center)
+						)
+					}
 
-				else -> {
-					LazyColumn(
-						contentPadding = PaddingValues(
-							horizontal = 16.dp,
-							vertical = 8.dp
-						),
-						verticalArrangement = Arrangement.spacedBy(8.dp)
-					) {
-						items(
-							items = state.filteredCountries,
-							// cca2가 빈 문자열인 국가(일부 특수 지역)가 있을 수 있으므로
-							// cca3, name.common 순으로 fallback하여 항상 고유한 키 보장
-							key = { country ->
-								country.cca2.ifBlank {
-									country.cca3.ifBlank {
-										country.name.common.ifBlank { country.hashCode().toString() }
+					else -> {
+						LazyColumn(
+							contentPadding = PaddingValues(
+								horizontal = 16.dp,
+								vertical = 8.dp
+							),
+							verticalArrangement = Arrangement.spacedBy(8.dp)
+						) {
+							items(
+								items = state.filteredCountries,
+								// cca2가 빈 문자열인 국가(일부 특수 지역)가 있을 수 있으므로
+								// cca3, name.common 순으로 fallback하여 항상 고유한 키 보장
+								key = { country ->
+									country.cca2.ifBlank {
+										country.cca3.ifBlank {
+											country.name.common.ifBlank { country.hashCode().toString() }
+										}
 									}
 								}
+							) { country ->
+								CountryItem(
+									country = country,
+									onClick = { onCountryClick(country) }
+								)
 							}
-						) { country ->
-							CountryItem(
-								country = country,
-								onClick = { onCountryClick(country) }
-							)
 						}
 					}
 				}
