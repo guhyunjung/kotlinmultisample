@@ -24,6 +24,8 @@ import com.example.kotlinmultisample.app.ui.screen.CountryListScreen
 import com.example.kotlinmultisample.app.ui.screen.SplashScreen
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import com.example.kotlinmultisample.simple.FruitScreen
+import com.example.kotlinmultisample.simple.FruitViewModel
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -37,7 +39,7 @@ enum class AppDestinations(
 ) {
 	HOME("Home", Icons.Default.Home),
 	COUNTRIES("Countries", Icons.Default.Place),
-	FAVORITES("Favorites", Icons.Default.Favorite),
+	FAVORITES("Simple", Icons.Default.Favorite),
 	PROFILE("Profile", Icons.Default.AccountBox)
 }
 
@@ -162,6 +164,11 @@ fun MainContent() {
 							selectedCountry = country
 						}
 					)
+				}
+
+				AppDestinations.FAVORITES -> {
+					val viewModel = koinViewModel<FruitViewModel>()
+					FruitScreen(viewModel = viewModel)
 				}
 
 				else -> ScaffoldContent(destination)

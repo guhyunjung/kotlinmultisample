@@ -1,6 +1,8 @@
 package com.example.kotlinmultisample.di
 
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
+import com.example.kotlinmultisample.simple.FruitRepository
+import com.example.kotlinmultisample.simple.FruitViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -11,6 +13,13 @@ import org.koin.dsl.module
  * 각 플랫폼의 additionalModules에 이 모듈을 추가해야 합니다.
  */
 val viewModelModule = module {
+
+    /**
+     * 간소화된 기능 (Simple Feature)
+     * Repository와 ViewModel을 한 곳에 등록 (간결함 강조)
+     */
+    single { FruitRepository() }
+    viewModel { FruitViewModel(get()) }
 
     /**
      * CountryViewModel 등록
