@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample.di
 
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
+import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.simple.FruitRepository
 import com.example.kotlinmultisample.simple.FruitViewModel
 import org.koin.core.module.dsl.viewModel
@@ -21,12 +22,14 @@ val viewModelModule = module {
     single { FruitRepository() }
     viewModel { FruitViewModel(get()) }
 
+    // Theme 설정 (앱 전역 상태 공유를 위해 single로 등록)
+    single { SettingsViewModel() }
+
     /**
-     * CountryViewModel 등록
-     *
-     * UseCase는 shared commonModule에서 등록됩니다.
-     * Koin이 자동으로 GetCountriesUseCase, RefreshCountriesUseCase,
-     * SearchCountriesUseCase를 주입합니다.
+     * 국가 관련 (Domain Layer + Presentation Layer)
+     * - Repository는 Shared 모듈에서 제공 (Use Case 생략 가능 -> 바로 ViewModel 주입)
+     * - ViewModel은 Shared 모듈이 아닌 ComposeApp 모듈에서 정의 (UI 로직)
+     * - Shared 모듈의 Use Case나 Repository를 생성자로 주입받음
      */
     viewModel { CountryViewModel(get(), get(), get()) }
 }

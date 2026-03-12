@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,6 +57,12 @@ fun AppDrawerContent(
             label = "Simple",
             isSelected = currentRoute == "Simple",
             onClick = { onDestinationClick("Simple") }
+        )
+        DrawerMenuItem(
+            icon = Icons.Default.Settings,
+            label = "Settings",
+            isSelected = currentRoute == "Settings",
+            onClick = { onDestinationClick("Settings") }
         )
         DrawerMenuItem(
             icon = Icons.Default.AccountBox,

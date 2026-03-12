@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -15,10 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
+import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
+import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
 import com.example.kotlinmultisample.app.ui.screen.CountryDetailScreen
 import com.example.kotlinmultisample.app.ui.screen.CountryListScreen
 import com.example.kotlinmultisample.app.ui.screen.HomeScreen
+import com.example.kotlinmultisample.app.ui.screen.SettingsScreen
 import com.example.kotlinmultisample.app.ui.screen.SplashScreen
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
@@ -39,12 +43,26 @@ enum class AppDestinations(
 	HOME("Home", Icons.Default.Home),
 	COUNTRIES("Countries", Icons.Default.Place),
 	FAVORITES("Simple", Icons.Default.Favorite),
+	SETTINGS("Settings", Icons.Default.Settings),
 	PROFILE("Profile", Icons.Default.AccountBox)
 }
 
 @Composable
 fun App() {
-	MaterialTheme {
+    // 테마 설정을 위한 ViewModel 주입
+    val settingsViewModel = koinInject<SettingsViewModel>()
+    val themeMode by settingsViewModel.themeMode.collectAsState()
+    val isSystemDark = isSystemInDarkTheme()
+
+    val isDarkTheme = when(themeMode) {
+        ThemeMode.SYSTEM -> isSystemDark
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+    }
+
+	MaterialTheme(
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+    ) {
 		// 앱 실행 준비 상태 (스플래시 화면 표시 여부)
 		var isAppReady by rememberSaveable { mutableStateOf(false) }
 
@@ -166,6 +184,9 @@ fun MainContent() {
 								viewModel = viewModel,
 								onMenuClick = openDrawer
 							)
+						}
+						AppDestinations.SETTINGS -> {
+							SettingsScreen(onMenuClick = openDrawer)
 						}
 						else -> ScaffoldContent(destination, onMenuClick = openDrawer)
 					}
