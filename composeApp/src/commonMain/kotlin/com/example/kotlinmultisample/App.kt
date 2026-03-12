@@ -4,10 +4,10 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,11 +19,7 @@ import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
-import com.example.kotlinmultisample.app.ui.screen.CountryDetailScreen
-import com.example.kotlinmultisample.app.ui.screen.CountryListScreen
-import com.example.kotlinmultisample.app.ui.screen.HomeScreen
-import com.example.kotlinmultisample.app.ui.screen.SettingsScreen
-import com.example.kotlinmultisample.app.ui.screen.SplashScreen
+import com.example.kotlinmultisample.app.ui.screen.*
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.simple.FruitScreen
@@ -49,20 +45,20 @@ enum class AppDestinations(
 
 @Composable
 fun App() {
-    // 테마 설정을 위한 ViewModel 주입
-    val settingsViewModel = koinInject<SettingsViewModel>()
-    val themeMode by settingsViewModel.themeMode.collectAsState()
-    val isSystemDark = isSystemInDarkTheme()
+	// 테마 설정을 위한 ViewModel 주입
+	val settingsViewModel = koinInject<SettingsViewModel>()
+	val themeMode by settingsViewModel.themeMode.collectAsState()
+	val isSystemDark = isSystemInDarkTheme()
 
-    val isDarkTheme = when(themeMode) {
-        ThemeMode.SYSTEM -> isSystemDark
-        ThemeMode.LIGHT -> false
-        ThemeMode.DARK -> true
-    }
+	val isDarkTheme = when (themeMode) {
+		ThemeMode.SYSTEM -> isSystemDark
+		ThemeMode.LIGHT -> false
+		ThemeMode.DARK -> true
+	}
 
 	MaterialTheme(
-        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
-    ) {
+		colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+	) {
 		// 앱 실행 준비 상태 (스플래시 화면 표시 여부)
 		var isAppReady by rememberSaveable { mutableStateOf(false) }
 
@@ -140,6 +136,9 @@ fun MainContent() {
 		}
 	) {
 		Scaffold(
+			// 상단 상태 표시줄(Status Bar) 영역은 각 화면(HomeScreen 등)의 TopAppBar에서 처리하도록
+			// 외부 Scaffold에서는 상단 Inset을 제외합니다. (중복 패딩 방지)
+			contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
 			bottomBar = {
 				AppBottomNavigationBar(
 					currentDestination = currentDestination,
@@ -170,6 +169,7 @@ fun MainContent() {
 								onNavigateToSimple = { currentDestination = AppDestinations.FAVORITES }
 							)
 						}
+
 						AppDestinations.COUNTRIES -> {
 							val viewModel = koinViewModel<CountryViewModel>()
 							CountryListScreen(
@@ -178,6 +178,7 @@ fun MainContent() {
 								onCountryClick = { country -> selectedCountry = country }
 							)
 						}
+
 						AppDestinations.FAVORITES -> {
 							val viewModel = koinViewModel<FruitViewModel>()
 							FruitScreen(
@@ -185,9 +186,11 @@ fun MainContent() {
 								onMenuClick = openDrawer
 							)
 						}
+
 						AppDestinations.SETTINGS -> {
 							SettingsScreen(onMenuClick = openDrawer)
 						}
+
 						else -> ScaffoldContent(destination, onMenuClick = openDrawer)
 					}
 				}

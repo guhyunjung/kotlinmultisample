@@ -47,28 +47,41 @@ fun SettingsScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "테마 설정",
+                text = "화면 테마",
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            ThemeRadioButton(
-                label = "시스템 설정 따르기",
-                isSelected = themeMode == ThemeMode.SYSTEM,
-                onClick = { viewModel.updateTheme(ThemeMode.SYSTEM) }
-            )
-            ThemeRadioButton(
-                label = "라이트 모드",
-                isSelected = themeMode == ThemeMode.LIGHT,
-                onClick = { viewModel.updateTheme(ThemeMode.LIGHT) }
-            )
-            ThemeRadioButton(
-                label = "다크 모드",
-                isSelected = themeMode == ThemeMode.DARK,
-                onClick = { viewModel.updateTheme(ThemeMode.DARK) }
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                )
+            ) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    ThemeRadioButton(
+                        label = "시스템 설정 따르기",
+                        description = "기기 설정에 따라 자동으로 변경됩니다",
+                        isSelected = themeMode == ThemeMode.SYSTEM,
+                        onClick = { viewModel.updateTheme(ThemeMode.SYSTEM) }
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    ThemeRadioButton(
+                        label = "라이트 모드",
+                        description = "항상 밝은 화면을 유지합니다",
+                        isSelected = themeMode == ThemeMode.LIGHT,
+                        onClick = { viewModel.updateTheme(ThemeMode.LIGHT) }
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    ThemeRadioButton(
+                        label = "다크 모드",
+                        description = "항상 어두운 화면을 유지합니다",
+                        isSelected = themeMode == ThemeMode.DARK,
+                        onClick = { viewModel.updateTheme(ThemeMode.DARK) }
+                    )
+                }
+            }
         }
     }
 }
@@ -76,6 +89,7 @@ fun SettingsScreen(
 @Composable
 fun ThemeRadioButton(
     label: String,
+    description: String? = null,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -84,14 +98,27 @@ fun ThemeRadioButton(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            if (description != null) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(8.dp))
         RadioButton(
             selected = isSelected,
             onClick = null // Row 클릭으로 처리
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = label, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

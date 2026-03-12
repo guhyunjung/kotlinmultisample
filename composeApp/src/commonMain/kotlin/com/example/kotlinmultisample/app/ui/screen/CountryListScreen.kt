@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,9 +80,18 @@ fun CountryListScreen(
 			}
 
 			// ── 콘텐츠 ────────────────────────────────────────────────────────
-			Box(modifier = Modifier.fillMaxSize()) {
+			// PullToRefreshBox로 감싸서 당겨서 새로고침 기능 추가
+			val pullRefreshState = rememberPullToRefreshState()
+			
+			PullToRefreshBox(
+				isRefreshing = state.isRefreshing,
+				onRefresh = { viewModel.refresh() },
+				state = pullRefreshState,
+				modifier = Modifier.fillMaxSize()
+			) {
 				when {
-					state.isLoading -> {
+					state.isLoading && !state.isRefreshing -> {
+						// 초기 로딩 중 (새로고침 중일 때는 PullToRefresh 인디케이터가 표시되므로 중복 방지)
 						CircularProgressIndicator(
 							modifier = Modifier.align(Alignment.Center)
 						)
@@ -109,7 +120,8 @@ fun CountryListScreen(
 								horizontal = 16.dp,
 								vertical = 8.dp
 							),
-							verticalArrangement = Arrangement.spacedBy(8.dp)
+							verticalArrangement = Arrangement.spacedBy(8.dp),
+							modifier = Modifier.fillMaxSize()
 						) {
 							items(
 								items = state.filteredCountries,
