@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -31,9 +32,11 @@ import com.example.kotlinmultisample.shared.domain.model.Country
  * @param viewModel 국가 ViewModel
  * @param onCountryClick 국가 클릭 시 상세 화면으로 이동
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryListScreen(
 	viewModel: CountryViewModel,
+	onMenuClick: () -> Unit = {},
 	onCountryClick: (Country) -> Unit
 ) {
 	val state by viewModel.state.collectAsState()
@@ -46,41 +49,23 @@ fun CountryListScreen(
 	}
 
 	Scaffold(
-		modifier = Modifier.fillMaxSize()
+		modifier = Modifier.fillMaxSize(),
+		topBar = {
+			CountryListAppBar(
+				query = state.searchQuery,
+				onQueryChange = { viewModel.search(it) },
+				isRefreshing = state.isRefreshing,
+				isLoading = state.isLoading,
+				onRefresh = { viewModel.refresh() },
+				onMenuClick = onMenuClick
+			)
+		}
 	) { innerPadding ->
 		Column(
 			modifier = Modifier
 				.fillMaxSize()
 				.padding(innerPadding)
 		) {
-
-			// ── 상단 바: 검색 + 새로고침 ──────────────────────────────────────
-			Row(
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 4.dp),
-				verticalAlignment = Alignment.CenterVertically
-			) {
-				SearchBar(
-					query = state.searchQuery,
-					onQueryChange = { viewModel.search(it) },
-					modifier = Modifier.weight(1f)
-				)
-				// 새로고침 버튼 - 항상 API를 호출하여 최신 데이터로 갱신
-				IconButton(
-					onClick = { viewModel.refresh() },
-					enabled = !state.isRefreshing && !state.isLoading
-				) {
-					if (state.isRefreshing) {
-						CircularProgressIndicator(
-							modifier = Modifier.size(20.dp),
-							strokeWidth = 2.dp
-						)
-					} else {
-						Icon(Icons.Default.Refresh, contentDescription = "새로고침")
-					}
-				}
-			}
 
 			// ── 결과 수 / 캐시 상태 표시 ─────────────────────────────────────
 			if (!state.isLoading && state.countries.isNotEmpty()) {
@@ -149,6 +134,55 @@ fun CountryListScreen(
 			}
 		}
 	}
+}
+
+// ── 상단 바 컴포넌트 ──────────────────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CountryListAppBar(
+	query: String,
+	onQueryChange: (String) -> Unit,
+	isRefreshing: Boolean,
+	isLoading: Boolean,
+	onRefresh: () -> Unit,
+	onMenuClick: () -> Unit = {},
+	modifier: Modifier = Modifier
+) {
+	TopAppBar(
+		modifier = modifier,
+		title = {
+			SearchBar(
+				query = query,
+				onQueryChange = onQueryChange,
+				modifier = Modifier.fillMaxWidth()
+			)
+		},
+		navigationIcon = {
+			// 햄버거 버튼
+			IconButton(onClick = onMenuClick) {
+				Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
+			}
+		},
+		actions = {
+			IconButton(
+				onClick = onRefresh,
+				enabled = !isRefreshing && !isLoading
+			) {
+				if (isRefreshing) {
+					CircularProgressIndicator(
+						modifier = Modifier.size(20.dp),
+						strokeWidth = 2.dp
+					)
+				} else {
+					Icon(Icons.Default.Refresh, contentDescription = "새로고침")
+				}
+			}
+		},
+		colors = TopAppBarDefaults.topAppBarColors(
+			containerColor = MaterialTheme.colorScheme.surface
+		)
+	)
 }
 
 // ── 검색바 컴포넌트 ────────────────────────────────────────────────────────────

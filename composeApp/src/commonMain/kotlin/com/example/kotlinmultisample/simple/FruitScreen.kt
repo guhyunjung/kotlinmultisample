@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,7 +21,8 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FruitScreen(
-    viewModel: FruitViewModel
+    viewModel: FruitViewModel,
+    onMenuClick: () -> Unit = {}
 ) {
     val fruits by viewModel.fruits.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -29,6 +31,12 @@ fun FruitScreen(
         topBar = {
             TopAppBar(
                 title = { Text("간단한 과일 목록 (Simple MVVM)") },
+                navigationIcon = {
+                    // 햄버거 버튼
+                    IconButton(onClick = onMenuClick) {
+                        Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer

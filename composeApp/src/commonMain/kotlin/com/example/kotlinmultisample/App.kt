@@ -6,12 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -19,8 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
+import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
 import com.example.kotlinmultisample.app.ui.screen.CountryDetailScreen
 import com.example.kotlinmultisample.app.ui.screen.CountryListScreen
+import com.example.kotlinmultisample.app.ui.screen.HomeScreen
 import com.example.kotlinmultisample.app.ui.screen.SplashScreen
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
@@ -29,6 +27,7 @@ import com.example.kotlinmultisample.simple.FruitViewModel
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -88,13 +87,19 @@ fun App() {
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
 	var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-	// 국가 상세 화면 상태 (null이면 목록, 값이 있으면 상세)
 	var selectedCountry by remember { mutableStateOf<Country?>(null) }
 
-	// 국가 상세 화면이 열려 있으면 상세 화면 표시
+	// 드로어 상태 관리
+	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+	val scope = rememberCoroutineScope()
+
+	val openDrawer: () -> Unit = { scope.launch { drawerState.open() } }
+
+	// 국가 상세 화면이 열려 있으면 상세 화면만 표시
 	if (selectedCountry != null && currentDestination == AppDestinations.COUNTRIES) {
 		CountryDetailScreen(
 			country = selectedCountry!!,
@@ -103,83 +108,133 @@ fun MainContent() {
 		return
 	}
 
-	NavigationSuiteScaffold(
-		navigationSuiteItems = {
-			AppDestinations.entries.forEach { destination ->
-				val isSelected = currentDestination == destination
-				item(
-					icon = {
-						// 아이콘 선택 시 크기 변화 애니메이션 (Scale 효과)
-						// 슬라이딩보다 이쪽이 NavigationBar UX에 더 자연스럽습니다.
-						AnimatedContent(
-							targetState = isSelected,
-							transitionSpec = {
-								if (targetState) {
-									// 선택될 때: 커지면서 등장
-									(scaleIn() + fadeIn()) togetherWith (fadeOut())
-								} else {
-									// 선택 해제될 때: 작아지면서 퇴장
-									(scaleIn() + fadeIn()) togetherWith (scaleOut() + fadeOut())
-								}
-							}
-						) { selected ->
-							Icon(
-								imageVector = destination.icon,
-								contentDescription = destination.label,
-								// 선택된 아이콘은 색상을 다르게 하거나 채워진 아이콘 사용 가능
-								tint = if (selected) MaterialTheme.colorScheme.primary
-								else MaterialTheme.colorScheme.onSurfaceVariant
-							)
-						}
-					},
-					label = { Text(destination.label) },
-					selected = isSelected,
-					onClick = { currentDestination = destination }
-				)
-			}
+	ModalNavigationDrawer(
+		drawerState = drawerState,
+		drawerContent = {
+			AppDrawerContent(
+				currentRoute = currentDestination.label,
+				onDestinationClick = { label ->
+					val destination = AppDestinations.entries.firstOrNull { it.label == label }
+					if (destination != null) currentDestination = destination
+					scope.launch { drawerState.close() }
+				}
+			)
 		}
 	) {
-		AnimatedContent(
-			targetState = currentDestination,
-			transitionSpec = {
-				val direction = if (targetState.ordinal > initialState.ordinal) {
-					// 오른쪽(다음) 탭으로 갈 때: 오른쪽에서 들어오고 왼쪽으로 나감
-					slideInHorizontally { width -> width } + fadeIn() togetherWith
-						slideOutHorizontally { width -> -width } + fadeOut()
-				} else {
-					// 왼쪽(이전) 탭으로 갈 때: 왼쪽에서 들어오고 오른쪽으로 나감
-					slideInHorizontally { width -> -width } + fadeIn() togetherWith
-						slideOutHorizontally { width -> width } + fadeOut()
-				}
-				direction.using(SizeTransform(clip = false))
-			},
-			label = "NavigationTransition"
-		) { destination ->
-			when (destination) {
-				AppDestinations.COUNTRIES -> {
-					val viewModel = koinViewModel<CountryViewModel>()
-					CountryListScreen(
-						viewModel = viewModel,
-						onCountryClick = { country ->
-							selectedCountry = country
-						}
-					)
-				}
-
-				AppDestinations.FAVORITES -> {
-					val viewModel = koinViewModel<FruitViewModel>()
-					FruitScreen(viewModel = viewModel)
-				}
-
-				else -> ScaffoldContent(destination)
+		Scaffold(
+			bottomBar = {
+				AppBottomNavigationBar(
+					currentDestination = currentDestination,
+					onDestinationClick = { currentDestination = it }
+				)
 			}
+		) { innerPadding ->
+			Box(modifier = Modifier.padding(innerPadding)) {
+				AnimatedContent(
+					targetState = currentDestination,
+					transitionSpec = {
+						val direction = if (targetState.ordinal > initialState.ordinal) {
+							slideInHorizontally { width -> width } + fadeIn() togetherWith
+								slideOutHorizontally { width -> -width } + fadeOut()
+						} else {
+							slideInHorizontally { width -> -width } + fadeIn() togetherWith
+								slideOutHorizontally { width -> width } + fadeOut()
+						}
+						direction.using(SizeTransform(clip = false))
+					},
+					label = "NavigationTransition"
+				) { destination ->
+					when (destination) {
+						AppDestinations.HOME -> {
+							HomeScreen(
+								onMenuClick = openDrawer,
+								onNavigateToCountries = { currentDestination = AppDestinations.COUNTRIES },
+								onNavigateToSimple = { currentDestination = AppDestinations.FAVORITES }
+							)
+						}
+						AppDestinations.COUNTRIES -> {
+							val viewModel = koinViewModel<CountryViewModel>()
+							CountryListScreen(
+								viewModel = viewModel,
+								onMenuClick = openDrawer,
+								onCountryClick = { country -> selectedCountry = country }
+							)
+						}
+						AppDestinations.FAVORITES -> {
+							val viewModel = koinViewModel<FruitViewModel>()
+							FruitScreen(
+								viewModel = viewModel,
+								onMenuClick = openDrawer
+							)
+						}
+						else -> ScaffoldContent(destination, onMenuClick = openDrawer)
+					}
+				}
+			}
+		}
+	} // ModalNavigationDrawer 끝
+}
+
+// ── 하단 네비게이션 바 ─────────────────────────────────────────────────────────
+
+@Composable
+private fun AppBottomNavigationBar(
+	currentDestination: AppDestinations,
+	onDestinationClick: (AppDestinations) -> Unit
+) {
+	NavigationBar {
+		AppDestinations.entries.forEach { destination ->
+			val isSelected = currentDestination == destination
+			NavigationBarItem(
+				icon = {
+					AnimatedContent(
+						targetState = isSelected,
+						transitionSpec = {
+							if (targetState) {
+								(scaleIn() + fadeIn()) togetherWith fadeOut()
+							} else {
+								(scaleIn() + fadeIn()) togetherWith (scaleOut() + fadeOut())
+							}
+						},
+						label = "NavIconAnim_${destination.label}"
+					) { selected ->
+						Icon(
+							imageVector = destination.icon,
+							contentDescription = destination.label,
+							tint = if (selected) MaterialTheme.colorScheme.primary
+							else MaterialTheme.colorScheme.onSurfaceVariant
+						)
+					}
+				},
+				label = { Text(destination.label) },
+				selected = isSelected,
+				onClick = { onDestinationClick(destination) }
+			)
 		}
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldContent(destination: AppDestinations) {
-	Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+fun ScaffoldContent(destination: AppDestinations, onMenuClick: () -> Unit) {
+	Scaffold(
+		modifier = Modifier.fillMaxSize(),
+		topBar = {
+			TopAppBar(
+				title = { Text(destination.label) },
+				navigationIcon = {
+					IconButton(onClick = onMenuClick) {
+						Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
+					}
+				},
+				colors = TopAppBarDefaults.topAppBarColors(
+					containerColor = MaterialTheme.colorScheme.primaryContainer,
+					titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+					navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+				)
+			)
+		}
+	) { innerPadding ->
 		var showContent by remember { mutableStateOf(false) }
 		Column(
 			modifier = Modifier
@@ -189,7 +244,6 @@ fun ScaffoldContent(destination: AppDestinations) {
 				.padding(innerPadding),
 			horizontalAlignment = Alignment.CenterHorizontally,
 		) {
-			// 미사용 파라미터 경고 해결: destination.label 표시
 			Text(
 				text = "${destination.label} Screen",
 				style = MaterialTheme.typography.titleLarge,
