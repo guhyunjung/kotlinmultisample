@@ -53,6 +53,12 @@ kotlin {
 			// Android Room (implementation)
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.room.ktx)
+
+			// Retrofit + OkHttp
+			implementation(libs.retrofit.core)
+			implementation(libs.retrofit.converter.gson)
+			implementation(libs.okhttp.core)
+			implementation(libs.okhttp.logging.interceptor)
 		}
 		// JVM 전용 테스트: 실제 Retrofit API 호출 통합 테스트
 		jvmTest.dependencies {

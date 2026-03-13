@@ -14,6 +14,11 @@ application {
 	mainClass.set("com.example.kotlinmultisample.ApplicationKt")
 }
 
+repositories {
+	google()
+	mavenCentral()
+}
+
 dependencies {
 	implementation(projects.shared)
 	implementation(libs.spring.boot.starter.web)
@@ -25,7 +30,4 @@ dependencies {
 	implementation(kotlin("reflect"))
 	// PostgreSQL JDBC Driver
 	runtimeOnly(libs.postgresql)
-}
-repositories {
-	mavenCentral()
 }
