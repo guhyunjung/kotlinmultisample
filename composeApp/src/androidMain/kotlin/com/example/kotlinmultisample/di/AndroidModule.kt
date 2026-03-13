@@ -7,6 +7,8 @@ import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDa
 import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import com.example.kotlinmultisample.shared.network.ConnectivityObserver
+import com.example.kotlinmultisample.util.AndroidConnectivityObserver
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -58,6 +60,10 @@ val androidModules = listOf(
                 remoteDataSource = get(),
                 localDataSource = get()
             )
+        }
+
+        single<ConnectivityObserver> {
+            AndroidConnectivityObserver(androidContext())
         }
     }
 )

@@ -24,6 +24,7 @@ import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.simple.FruitScreen
 import com.example.kotlinmultisample.simple.FruitViewModel
+import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -104,6 +105,27 @@ fun App() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
+    // Koin DI를 통해 현재 플랫폼에 맞는 ConnectivityObserver 구현체를 주입받습니다.
+    val connectivityObserver = koinInject<ConnectivityObserver>()
+    
+    // Connectivity Flow를 관찰하여 UI 상태(State)로 변환합니다. 초기값은 'Available'로 설정합니다.
+    val status by connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Available)
+    
+    // Snackbar를 표시하기 위한 HostState 생성
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // 네트워크 상태(status)가 변경될 때마다 실행되는 로직
+    LaunchedEffect(status) {
+        // 연결이 불안정하거나 끊긴 경우 사용자에게 알림
+        if (status == ConnectivityObserver.Status.Unavailable || status == ConnectivityObserver.Status.Lost) {
+            snackbarHostState.showSnackbar(
+                message = "인터넷 연결을 확인해주세요.",
+                duration = SnackbarDuration.Indefinite, // 사용자가 확인하거나 연결될 때까지 유지
+                withDismissAction = true // 닫기 버튼 표시
+            )
+        }
+    }
+
 	var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 	var selectedCountry by remember { mutableStateOf<Country?>(null) }
 
@@ -139,6 +161,7 @@ fun MainContent() {
 			// 상단 상태 표시줄(Status Bar) 영역은 각 화면(HomeScreen 등)의 TopAppBar에서 처리하도록
 			// 외부 Scaffold에서는 상단 Inset을 제외합니다. (중복 패딩 방지)
 			contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
+            snackbarHost = { SnackbarHost(snackbarHostState) },
 			bottomBar = {
 				AppBottomNavigationBar(
 					currentDestination = currentDestination,

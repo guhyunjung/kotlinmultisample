@@ -29,6 +29,7 @@ kotlin {
 	sourceSets {
 		commonMain.dependencies {
 			// 모든 플랫폼에서 공통으로 사용하는 의존성
+			implementation(libs.kotlinx.coroutines.core) // Coroutines Core
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.core)
 		}
@@ -48,11 +49,8 @@ kotlin {
 			implementation(libs.androidx.room.runtime)
 		}
 		androidMain.dependencies {
-			implementation(libs.retrofit.core)
-			implementation(libs.retrofit.converter.gson)
-			implementation(libs.okhttp.core)
-			implementation(libs.okhttp.logging.interceptor)
-			// Room (Android)
+			implementation(libs.kotlinx.coroutines.android) // Coroutines Android
+			// Android Room (implementation)
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.room.ktx)
 		}

@@ -8,6 +8,8 @@ import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDa
 import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import com.example.kotlinmultisample.shared.network.ConnectivityObserver
+import com.example.kotlinmultisample.util.JvmConnectivityObserver
 import org.koin.dsl.module
 import java.io.File
 
@@ -64,18 +66,16 @@ val jvmDatabaseModule = module {
  * CountryRepository 바인딩만 추가합니다.
  */
 val jvmCountryModule = module {
-    /**
-     * CountryRepository → CountryRepositoryImpl 바인딩 (JVM Desktop)
-     *
-     * RemoteCountryDataSource : networkModule에 등록
-     * LocalCountryDataSource  : jvmDatabaseModule에 등록
-     */
     single<CountryRepository> {
         CountryRepositoryImpl(
             remoteDataSource = get(),
             localDataSource = get()
         )
     }
+}
+
+val jvmConnectivityModule = module {
+    single<ConnectivityObserver> { JvmConnectivityObserver() }
 }
 
 /**
@@ -94,5 +94,6 @@ val jvmModules = listOf(
     networkModule,      // Retrofit + OkHttp + API Services + RemoteDataSources
     jvmDatabaseModule,  // Room Database
     jvmCountryModule,   // CountryRepository
-    viewModelModule     // ViewModel 등록
+    viewModelModule,    // ViewModel 등록
+    jvmConnectivityModule
 )
