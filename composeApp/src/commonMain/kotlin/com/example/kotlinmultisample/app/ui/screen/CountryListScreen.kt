@@ -25,14 +25,14 @@ import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
 import com.example.kotlinmultisample.shared.domain.model.Country
 
 /**
- * 국가 목록 화면
+ * 국가 목록 화면 컴포저블
  *
- * Offline-First:
- * - 첫 진입 시 캐시가 있으면 즉시 표시, 없으면 API 호출
- * - 상단 새로고침 버튼으로 강제 API 갱신 가능
+ * 이 화면은 서버 또는 로컬 캐시로부터 국가 목록을 가져와 표시합니다.
+ * Offline-First 전략을 사용하며, 검색 및 당겨서 새로고침 기능을 제공합니다.
  *
- * @param viewModel 국가 ViewModel
- * @param onCountryClick 국가 클릭 시 상세 화면으로 이동
+ * @param viewModel 국가 데이터를 관리하는 ViewModel
+ * @param onMenuClick 햄버거 버튼 클릭 시 드로어를 여는 콜백
+ * @param onCountryClick 특정 국가 선택 시 상세 화면으로 이동하는 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +41,10 @@ fun CountryListScreen(
 	onMenuClick: () -> Unit = {},
 	onCountryClick: (Country) -> Unit
 ) {
+	// ViewModel의 상태를 관찰 가능한 Compose State로 변환
 	val state by viewModel.state.collectAsState()
 
-	// 화면 진입 시 목록 로드 (캐시가 없을 때만 API 호출)
+	// 화면 진입 시 초기 데이터 로드 (이미 데이터가 있다면 생략하여 불필요한 네트워크 요청 방지)
 	LaunchedEffect(Unit) {
 		if (state.countries.isEmpty()) {
 			viewModel.loadCountries()
@@ -53,6 +54,7 @@ fun CountryListScreen(
 	Scaffold(
 		modifier = Modifier.fillMaxSize(),
 		topBar = {
+			// 검색 기능과 새로고침 버튼이 포함된 커스텀 앱 바
 			CountryListAppBar(
 				query = state.searchQuery,
 				onQueryChange = { viewModel.search(it) },
@@ -68,19 +70,17 @@ fun CountryListScreen(
 				.fillMaxSize()
 				.padding(innerPadding)
 		) {
-
-			// ── 결과 수 / 캐시 상태 표시 ─────────────────────────────────────
+			// 검색 결과 개수 및 상태 요약 표시
 			if (!state.isLoading && state.countries.isNotEmpty()) {
 				Text(
-					text = "${state.filteredCountries.size}개 국가",
+					text = "${state.filteredCountries.size}개 국가 검색됨",
 					style = MaterialTheme.typography.labelMedium,
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
 					modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
 				)
 			}
 
-			// ── 콘텐츠 ────────────────────────────────────────────────────────
-			// PullToRefreshBox로 감싸서 당겨서 새로고침 기능 추가
+			// 콘텐츠 영역 (새로고침 기능을 포함한 리스트)
 			val pullRefreshState = rememberPullToRefreshState()
 			
 			PullToRefreshBox(
@@ -90,13 +90,14 @@ fun CountryListScreen(
 				modifier = Modifier.fillMaxSize()
 			) {
 				when {
+					// 1. 초기 데이터 로딩 상태 (새로고침이 아닐 때만 중앙 인디케이터 표시)
 					state.isLoading && !state.isRefreshing -> {
-						// 초기 로딩 중 (새로고침 중일 때는 PullToRefresh 인디케이터가 표시되므로 중복 방지)
 						CircularProgressIndicator(
 							modifier = Modifier.align(Alignment.Center)
 						)
 					}
 
+					// 2. 에러 발생 시 에러 메시지 및 재시도 버튼 표시
 					state.error != null -> {
 						ErrorContent(
 							message = state.error!!,
@@ -105,34 +106,28 @@ fun CountryListScreen(
 						)
 					}
 
+					// 3. 검색 결과가 비어있는 상태
 					state.filteredCountries.isEmpty() && state.searchQuery.isNotBlank() -> {
 						Text(
-							text = "'${state.searchQuery}' 검색 결과가 없습니다",
+							text = "'${state.searchQuery}'에 매칭되는 국가가 없습니다.",
 							style = MaterialTheme.typography.bodyLarge,
 							color = MaterialTheme.colorScheme.onSurfaceVariant,
 							modifier = Modifier.align(Alignment.Center)
 						)
 					}
 
+					// 4. 정상적인 국가 목록 표시
 					else -> {
 						LazyColumn(
-							contentPadding = PaddingValues(
-								horizontal = 16.dp,
-								vertical = 8.dp
-							),
+							contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
 							verticalArrangement = Arrangement.spacedBy(8.dp),
 							modifier = Modifier.fillMaxSize()
 						) {
 							items(
 								items = state.filteredCountries,
-								// cca2가 빈 문자열인 국가(일부 특수 지역)가 있을 수 있으므로
-								// cca3, name.common 순으로 fallback하여 항상 고유한 키 보장
+								// 고유 키 설정을 통해 리스트 업데이트 성능 최적화
 								key = { country ->
-									country.cca2.ifBlank {
-										country.cca3.ifBlank {
-											country.name.common.ifBlank { country.hashCode().toString() }
-										}
-									}
+									country.cca3.ifBlank { country.name.common }
 								}
 							) { country ->
 								CountryItem(
@@ -148,8 +143,9 @@ fun CountryListScreen(
 	}
 }
 
-// ── 상단 바 컴포넌트 ──────────────────────────────────────────────────────────
-
+/**
+ * 국가 목록 화면 전용 상단 앱 바
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CountryListAppBar(
@@ -164,6 +160,7 @@ private fun CountryListAppBar(
 	TopAppBar(
 		modifier = modifier,
 		title = {
+			// 앱 바 내부에 검색창 배치
 			SearchBar(
 				query = query,
 				onQueryChange = onQueryChange,
@@ -171,17 +168,19 @@ private fun CountryListAppBar(
 			)
 		},
 		navigationIcon = {
-			// 햄버거 버튼
+			// 드로어를 열기 위한 햄버거 아이콘
 			IconButton(onClick = onMenuClick) {
 				Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
 			}
 		},
 		actions = {
+			// 수동 새로고침 버튼
 			IconButton(
 				onClick = onRefresh,
-				enabled = !isRefreshing && !isLoading
+				enabled = !isRefreshing && !isLoading // 로딩 중에는 클릭 비활성화
 			) {
 				if (isRefreshing) {
+					// 새로고침 중에는 작게 로딩 표시
 					CircularProgressIndicator(
 						modifier = Modifier.size(20.dp),
 						strokeWidth = 2.dp
@@ -197,8 +196,9 @@ private fun CountryListAppBar(
 	)
 }
 
-// ── 검색바 컴포넌트 ────────────────────────────────────────────────────────────
-
+/**
+ * 국가 검색을 위한 커스텀 텍스트 필드
+ */
 @Composable
 private fun SearchBar(
 	query: String,
@@ -209,11 +209,12 @@ private fun SearchBar(
 		value = query,
 		onValueChange = onQueryChange,
 		modifier = modifier,
-		placeholder = { Text("국가명, 지역, 수도 검색") },
+		placeholder = { Text("국가, 수도, 지역 검색...") },
 		leadingIcon = {
-			Icon(Icons.Default.Search, contentDescription = "검색")
+			Icon(Icons.Default.Search, contentDescription = "검색 아이콘")
 		},
 		trailingIcon = {
+			// 검색어가 있을 때만 삭제 버튼(X) 표시
 			if (query.isNotBlank()) {
 				IconButton(onClick = { onQueryChange("") }) {
 					Icon(Icons.Default.Clear, contentDescription = "검색어 지우기")
@@ -225,8 +226,9 @@ private fun SearchBar(
 	)
 }
 
-// ── 국가 목록 아이템 ──────────────────────────────────────────────────────────
-
+/**
+ * 국가 목록에 표시될 개별 항목 카드
+ */
 @Composable
 private fun CountryItem(
 	country: Country,
@@ -245,13 +247,13 @@ private fun CountryItem(
 			verticalAlignment = Alignment.CenterVertically,
 			horizontalArrangement = Arrangement.spacedBy(12.dp)
 		) {
-			// 국기 이모지
+			// 국기 이모지 또는 기본 아이콘
 			Text(
-				text = country.flag ?: "🏳",
+				text = country.flag ?: "🏳️",
 				style = MaterialTheme.typography.headlineMedium
 			)
 
-			// 국가 정보
+			// 국가 기본 정보 (이름, 수도)
 			Column(modifier = Modifier.weight(1f)) {
 				Text(
 					text = country.name.common,
@@ -269,9 +271,9 @@ private fun CountryItem(
 				)
 			}
 
-			// 지역 뱃지
+			// 지역(대륙) 표시 뱃지
 			SuggestionChip(
-				onClick = {},
+				onClick = {}, // 클릭 기능 없음
 				label = {
 					Text(
 						text = country.region,
@@ -283,8 +285,9 @@ private fun CountryItem(
 	}
 }
 
-// ── 에러 컴포넌트 ─────────────────────────────────────────────────────────────
-
+/**
+ * 데이터 로딩 실패 시 표시되는 에러 화면
+ */
 @Composable
 private fun ErrorContent(
 	message: String,
@@ -297,8 +300,9 @@ private fun ErrorContent(
 		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		Text(
-			text = "오류가 발생했습니다",
-			style = MaterialTheme.typography.titleMedium
+			text = "데이터를 불러오지 못했습니다.",
+			style = MaterialTheme.typography.titleMedium,
+			color = MaterialTheme.colorScheme.error
 		)
 		Text(
 			text = message,

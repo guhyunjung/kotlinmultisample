@@ -16,13 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 /**
- * 홈 화면
+ * 홈 화면 컴포저블
  *
- * 앱의 메인 진입 화면으로 각 섹션으로의 빠른 이동 카드를 제공합니다.
+ * 앱의 메인 진입점으로, 간단한 환영 메시지와 다른 주요 섹션으로의 바로가기 카드를 제공합니다.
  *
- * @param onMenuClick 햄버거 버튼 클릭 시 드로어를 여는 콜백
- * @param onNavigateToCountries Countries 탭으로 이동하는 콜백
- * @param onNavigateToSimple Simple 탭으로 이동하는 콜백
+ * @param onMenuClick 햄버거 버튼 클릭 시 사이드 네비게이션 드로어를 여는 콜백
+ * @param onNavigateToCountries '국가 목록' 섹션으로 이동하는 콜백
+ * @param onNavigateToSimple 'Simple MVVM' 섹션으로 이동하는 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,10 +33,11 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = {
+            // 상단 앱 바 설정
             TopAppBar(
                 title = { Text("홈") },
                 navigationIcon = {
-                    // 햄버거 버튼
+                    // 메뉴 열기 버튼 (햄버거 아이콘)
                     IconButton(onClick = onMenuClick) {
                         Icon(
                             imageVector = Icons.Default.Menu,
@@ -52,18 +53,19 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
+        // 메인 컨텐츠 영역: 스크롤 가능한 컬럼 레이아웃
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()) // 컨텐츠가 많아질 경우를 대비한 스크롤 설정
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 환영 메시지
+            // 1. 환영 배너 섹션
             WelcomeBanner()
 
-            // 섹션 이동 카드
+            // 2. 바로가기 메뉴 섹션 타이틀
             Text(
                 text = "바로가기",
                 style = MaterialTheme.typography.titleMedium,
@@ -71,6 +73,7 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
+            // 3. 국가 목록 바로가기 카드
             HomeNavigationCard(
                 title = "국가 목록",
                 description = "세계 각국의 정보와 국기를 확인하고 검색해보세요.",
@@ -78,6 +81,7 @@ fun HomeScreen(
                 onClick = onNavigateToCountries
             )
 
+            // 4. Simple MVVM 예제 바로가기 카드
             HomeNavigationCard(
                 title = "Simple MVVM",
                 description = "간단한 MVVM 패턴 예제(과일 목록)를 확인해보세요.",
@@ -88,8 +92,9 @@ fun HomeScreen(
     }
 }
 
-// ── 환영 배너 ─────────────────────────────────────────────────────────────────
-
+/**
+ * 사용자 환영 메시지를 표시하는 배너 카드
+ */
 @Composable
 private fun WelcomeBanner() {
     Card(
@@ -117,8 +122,14 @@ private fun WelcomeBanner() {
     }
 }
 
-// ── 홈 네비게이션 카드 ─────────────────────────────────────────────────────────
-
+/**
+ * 다른 화면으로 이동하기 위한 공통 카드 레이아웃
+ *
+ * @param title 카드 제목
+ * @param description 카드에 대한 보조 설명
+ * @param icon 왼쪽에 표시될 아이콘
+ * @param onClick 카드 클릭 시 동작
+ */
 @Composable
 private fun HomeNavigationCard(
     title: String,
@@ -128,7 +139,7 @@ private fun HomeNavigationCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
+        onClick = onClick, // 카드 전체 클릭 가능
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -138,7 +149,7 @@ private fun HomeNavigationCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 아이콘 배경
+            // 아이콘 배경 및 아이콘
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -147,13 +158,14 @@ private fun HomeNavigationCard(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = null,
+                        contentDescription = null, // 장식용 아이콘이므로 설명 생략
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.size(26.dp)
                     )
                 }
             }
 
+            // 텍스트 정보 섹션
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,

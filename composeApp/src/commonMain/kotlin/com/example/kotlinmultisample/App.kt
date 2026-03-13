@@ -44,98 +44,110 @@ enum class AppDestinations(
 	PROFILE("Profile", Icons.Default.AccountBox)
 }
 
+/**
+ * 앱의 메인 엔트리 포인트 컴포저블
+ *
+ * 이 함수는 앱의 전체적인 테마 설정, 초기 데이터 로딩(스플래시 화면),
+ * 그리고 메인 화면으로의 전환을 관리합니다.
+ */
 @Composable
 fun App() {
-	// 테마 설정을 위한 ViewModel 주입
+	// Koin을 통해 설정 관련 ViewModel 주입 (다크모드 설정 등)
 	val settingsViewModel = koinInject<SettingsViewModel>()
 	val themeMode by settingsViewModel.themeMode.collectAsState()
 	val isSystemDark = isSystemInDarkTheme()
 
+	// 현재 테마 모드에 따른 다크모드 여부 결정
 	val isDarkTheme = when (themeMode) {
 		ThemeMode.SYSTEM -> isSystemDark
 		ThemeMode.LIGHT -> false
 		ThemeMode.DARK -> true
 	}
 
+	// Material3 테마 적용
 	MaterialTheme(
 		colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
 	) {
-		// 앱 실행 준비 상태 (스플래시 화면 표시 여부)
+		// 앱 실행 준비 상태 (false: 스플래시 표시, true: 메인 컨텐츠 표시)
 		var isAppReady by rememberSaveable { mutableStateOf(false) }
 
-		// 데이터 프리로딩을 위한 Repository 주입
+		// 프리로딩을 위한 Repository 주입
 		val countryRepository = koinInject<CountryRepository>()
 
-		// 초기 데이터 로딩 시뮬레이션
+		// 앱 초기화 로직: 데이터 프리로딩 및 지연 시간 부여
 		LaunchedEffect(Unit) {
-
-			// 실제 데이터 로딩: 캐시된 데이터가 있는지 확인하거나 API 호출을 미리 시도
 			try {
-				// 첫 화면에 필요한 데이터를 미리 로드하여 캐시에 저장해둡니다.
-				// 이 호출은 네트워크/DB 상황에 따라 시간이 걸릴 수 있습니다.
+				// 초기 화면에 필요한 국가 데이터를 미리 로드하여 캐시
 				countryRepository.getCountries()
 			} catch (_: Exception) {
-				// 에러 무시 (메인 화면에서 다시 처리)
+				// 로딩 중 발생한 에러는 여기서 잡고 메인 화면에서 재처리 가능하도록 함
 			} finally {
-				// 최소 노출 시간 보장 (너무 빨리 지나가면 깜빡임처럼 보임)
+				// 스플래시 화면이 너무 순식간에 지나가지 않도록 최소 노출 시간(1.5초) 보장
 				delay(1500)
 				isAppReady = true
 			}
 		}
 
-		// 스플래시 화면과 메인 화면 전환 애니메이션
+		// 스플래시 화면에서 메인 화면으로 전환될 때의 애니메이션 처리
 		AnimatedContent(
 			targetState = isAppReady,
 			transitionSpec = {
-				// 스플래시가 사라질 때: 페이드 아웃 + 위로 살짝 이동
+				// 나타날 때 페이드 인, 사라질 때 페이드 아웃 + 위로 살짝 이동
 				fadeIn(animationSpec = tween(500)) togetherWith
 					fadeOut(animationSpec = tween(500)) + slideOutVertically { -it / 5 }
 			},
 			label = "SplashScreenTransition"
 		) { ready ->
 			if (!ready) {
-				SplashScreen()
+				SplashScreen() // 로딩 중 표시될 화면
 			} else {
-				MainContent()
+				MainContent() // 로딩 완료 후 표시될 메인 구조
 			}
 		}
 	}
 }
 
+/**
+ * 앱의 실질적인 메인 구조를 담당하는 컴포저블
+ *
+ * 네비게이션 드로어, 상단 바, 하단 바, 그리고 각 화면 간의 전환 애니메이션을 포함합니다.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent() {
-    // Koin DI를 통해 현재 플랫폼에 맞는 ConnectivityObserver 구현체를 주입받습니다.
+    // 네트워크 상태 감시자 주입 (플랫폼별 구현체 사용)
     val connectivityObserver = koinInject<ConnectivityObserver>()
     
-    // Connectivity Flow를 관찰하여 UI 상태(State)로 변환합니다. 초기값은 'Available'로 설정합니다.
+    // 네트워크 연결 상태를 관찰하여 UI 상태로 변환
     val status by connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Available)
     
-    // Snackbar를 표시하기 위한 HostState 생성
+    // 하단 스낵바 표시를 위한 상태 관리
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // 네트워크 상태(status)가 변경될 때마다 실행되는 로직
+    // 네트워크 상태 변경 시 사용자에게 알림 메시지 표시
     LaunchedEffect(status) {
-        // 연결이 불안정하거나 끊긴 경우 사용자에게 알림
         if (status == ConnectivityObserver.Status.Unavailable || status == ConnectivityObserver.Status.Lost) {
             snackbarHostState.showSnackbar(
                 message = "인터넷 연결을 확인해주세요.",
-                duration = SnackbarDuration.Indefinite, // 사용자가 확인하거나 연결될 때까지 유지
-                withDismissAction = true // 닫기 버튼 표시
+                duration = SnackbarDuration.Indefinite,
+                withDismissAction = true
             )
         }
     }
 
+	// 현재 선택된 네비게이션 목적지 상태
 	var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+	// 국가 목록에서 선택된 상세 국가 정보 (null이면 목록 표시)
 	var selectedCountry by remember { mutableStateOf<Country?>(null) }
 
-	// 드로어 상태 관리
+	// 네비게이션 드로어(사이드 메뉴) 상태 및 제어 스코프
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 	val scope = rememberCoroutineScope()
 
+	// 드로어 열기 함수 (코루틴 내에서 실행 필요)
 	val openDrawer: () -> Unit = { scope.launch { drawerState.open() } }
 
-	// 국가 상세 화면이 열려 있으면 상세 화면만 표시
+	// [비즈니스 로직] 국가 상세 화면이 활성화된 경우 (목록보다 우선순위 높음)
 	if (selectedCountry != null && currentDestination == AppDestinations.COUNTRIES) {
 		CountryDetailScreen(
 			country = selectedCountry!!,
@@ -144,12 +156,15 @@ fun MainContent() {
 		return
 	}
 
+	// 메인 레이아웃: 드로어 내부에 스캐폴드 배치
 	ModalNavigationDrawer(
 		drawerState = drawerState,
 		drawerContent = {
+			// 사이드 메뉴 컨텐츠
 			AppDrawerContent(
 				currentRoute = currentDestination.label,
 				onDestinationClick = { label ->
+					// 클릭된 메뉴의 라벨에 맞는 목적지 탐색 및 변경
 					val destination = AppDestinations.entries.firstOrNull { it.label == label }
 					if (destination != null) currentDestination = destination
 					scope.launch { drawerState.close() }
@@ -158,21 +173,27 @@ fun MainContent() {
 		}
 	) {
 		Scaffold(
-			// 상단 상태 표시줄(Status Bar) 영역은 각 화면(HomeScreen 등)의 TopAppBar에서 처리하도록
-			// 외부 Scaffold에서는 상단 Inset을 제외합니다. (중복 패딩 방지)
+			// 시스템 바 인셋 처리 (중복 패딩 방지)
 			contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom),
             snackbarHost = { SnackbarHost(snackbarHostState) },
 			bottomBar = {
+				// 하단 네비게이션 탭
 				AppBottomNavigationBar(
 					currentDestination = currentDestination,
-					onDestinationClick = { currentDestination = it }
+					onDestinationClick = { 
+						currentDestination = it
+						// 탭 변경 시 선택된 국가 상세 정보는 초기화
+						if (it != AppDestinations.COUNTRIES) selectedCountry = null
+					}
 				)
 			}
 		) { innerPadding ->
+			// 메인 화면 영역 (화면 전환 애니메이션 적용)
 			Box(modifier = Modifier.padding(innerPadding)) {
 				AnimatedContent(
 					targetState = currentDestination,
 					transitionSpec = {
+						// 인덱스 비교를 통해 왼쪽/오른쪽 슬라이드 방향 결정
 						val direction = if (targetState.ordinal > initialState.ordinal) {
 							slideInHorizontally { width -> width } + fadeIn() togetherWith
 								slideOutHorizontally { width -> -width } + fadeOut()
@@ -184,6 +205,7 @@ fun MainContent() {
 					},
 					label = "NavigationTransition"
 				) { destination ->
+					// 목적지에 따른 화면 렌더링
 					when (destination) {
 						AppDestinations.HOME -> {
 							HomeScreen(
