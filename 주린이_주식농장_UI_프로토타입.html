@@ -1,0 +1,282 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-sans)}
+  .phone{max-width:375px;margin:0 auto;background:#87CEEB;min-height:700px;border-radius:24px;overflow:hidden;position:relative;border:3px solid #5a9ab5}
+  .sky{background:#87CEEB;padding:12px 16px 0;position:relative}
+  .cloud{display:inline-block;background:#fff;border-radius:20px;padding:6px 14px;font-size:11px;color:#5a9ab5;font-weight:500;margin-right:6px}
+  .farm-title{font-size:15px;font-weight:500;color:#1a4a2e;text-align:center;padding:6px 0;letter-spacing:1px}
+  .broker-tabs{display:flex;gap:0;padding:0 12px;overflow-x:auto;scrollbar-width:none}
+  .broker-tabs::-webkit-scrollbar{display:none}
+  .btab{background:#8B6914;color:#FFE87C;font-size:11px;font-weight:500;padding:6px 12px;border-radius:6px 6px 0 0;cursor:pointer;white-space:nowrap;border:2px solid #6B4F10;border-bottom:none;min-width:70px;text-align:center}
+  .btab.active{background:#5C8A3C;color:#E8FFD0;border-color:#3d6128}
+  .btab.add{background:#B8860B;color:#FFE87C;font-size:14px;padding:4px 10px}
+  .farm-area{background:#8B6914;padding:2px 12px 0;border-top:2px solid #3d6128}
+  .summary-bar{background:#5C8A3C;border-radius:8px;padding:8px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;border:1.5px solid #3d6128}
+  .sum-label{font-size:10px;color:#C8E6A0;font-weight:500}
+  .sum-val{font-size:13px;font-weight:500;color:#E8FFD0}
+  .sum-val.pos{color:#FFE87C}
+  .sum-val.neg{color:#FFB3B3}
+  .field-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-bottom:8px}
+  .field-card{background:#6B4F10;border-radius:10px;border:2px solid #4a3208;padding:8px 6px;cursor:pointer;text-align:center;transition:transform 0.1s}
+  .field-card:active{transform:scale(0.96)}
+  .field-emoji{font-size:24px;margin-bottom:2px}
+  .field-name{font-size:10px;color:#FFE87C;font-weight:500;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .field-pct{font-size:11px;font-weight:500}
+  .field-pct.pos{color:#A8E6A0}
+  .field-pct.neg{color:#FFB3B3}
+  .field-pct.zero{color:#D4C5A0}
+  .field-add{background:#4a3208;border:2px dashed #8B6914;border-radius:10px;padding:8px 6px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:85px}
+  .field-add-icon{font-size:20px;color:#8B6914;margin-bottom:2px}
+  .field-add-txt{font-size:10px;color:#8B6914}
+  .bottom-nav{background:#2d4a1e;display:flex;justify-content:space-around;padding:10px 0 14px;border-top:2px solid #1a2e12}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:0 8px}
+  .nav-icon{font-size:20px}
+  .nav-label{font-size:9px;color:#A0C880;font-weight:500}
+  .nav-item.active .nav-label{color:#FFE87C}
+  .nav-item.active .nav-icon{filter:brightness(1.3)}
+  .detail-overlay{display:none;position:absolute;inset:0;background:#4a7c2f;z-index:10;border-radius:22px;overflow:hidden;flex-direction:column}
+  .detail-overlay.show{display:flex}
+  .detail-header{background:#2d4a1e;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #1a2e12}
+  .back-btn{background:#5C8A3C;border:1.5px solid #3d6128;border-radius:6px;padding:4px 10px;font-size:12px;color:#E8FFD0;cursor:pointer}
+  .detail-title{font-size:14px;font-weight:500;color:#E8FFD0}
+  .detail-emoji{font-size:28px;text-align:center;padding:12px 0 4px}
+  .detail-body{padding:12px 16px;flex:1;overflow-y:auto}
+  .detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
+  .detail-row-label{font-size:12px;color:#C8E6A0}
+  .detail-row-val{font-size:12px;font-weight:500;color:#E8FFD0}
+  .detail-row-val.pos{color:#FFE87C}
+  .detail-row-val.neg{color:#FFB3B3}
+  .action-tabs{display:flex;gap:6px;margin:12px 0}
+  .atab{flex:1;padding:8px 4px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;border:1.5px solid transparent}
+  .atab.water{background:#3a6abf;color:#B8D4FF;border-color:#2a4f9f}
+  .atab.fire{background:#bf5a3a;color:#FFD4B8;border-color:#9f3a2a}
+  .atab.harvest{background:#5C8A3C;color:#E8FFD0;border-color:#3d6128}
+  .atab.cut{background:#6b3a8a;color:#E0B8FF;border-color:#4f2a6f}
+  .farmer-bubble{background:#2d4a1e;border-radius:10px;padding:10px 12px;margin:8px 0;border:1.5px solid #1a2e12;display:flex;gap:8px;align-items:flex-start}
+  .farmer-px{width:28px;height:28px;background:#8B6914;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #6B4F10}
+  .bubble-txt{font-size:11px;color:#C8E6A0;line-height:1.5}
+  .tutorial-overlay{display:none;position:absolute;inset:0;background:#1a4a2e;z-index:20;border-radius:22px;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .tutorial-overlay.show{display:flex}
+  .tut-scene{text-align:center;width:100%}
+  .tut-farmer{font-size:48px;margin-bottom:12px;display:block}
+  .tut-bubble{background:#2d4a1e;border-radius:12px;border:2px solid #5C8A3C;padding:16px;margin-bottom:16px;text-align:left}
+  .tut-step{font-size:10px;color:#5C8A3C;margin-bottom:6px;font-weight:500}
+  .tut-text{font-size:14px;color:#E8FFD0;line-height:1.6}
+  .tut-next{background:#5C8A3C;color:#E8FFD0;border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:500;cursor:pointer;width:100%;border:2px solid #3d6128}
+  .tut-dots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#2d4a1e;border:1.5px solid #5C8A3C}
+  .dot.active{background:#5C8A3C}
+  .warehouse-overlay{display:none;position:absolute;inset:0;background:#3a2d1e;z-index:10;border-radius:22px;overflow:hidden;flex-direction:column}
+  .warehouse-overlay.show{display:flex}
+  .wh-header{background:#2d1e0a;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #1a0e00}
+  .wh-title{font-size:14px;font-weight:500;color:#FFE87C}
+  .wh-body{padding:12px 16px;flex:1}
+  .wh-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  .wh-card{background:#2d1e0a;border-radius:8px;padding:10px;border:1.5px solid #4a3208;text-align:center}
+  .wh-card-label{font-size:10px;color:#C8A060;margin-bottom:4px}
+  .wh-card-val{font-size:16px;font-weight:500}
+  .wh-card-val.pos{color:#FFE87C}
+  .wh-card-val.neg{color:#FFB3B3}
+  .wh-chart{background:#2d1e0a;border-radius:8px;padding:12px;border:1.5px solid #4a3208;margin-bottom:12px}
+  .wh-chart-title{font-size:11px;color:#C8A060;margin-bottom:8px}
+  .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .bar-label{font-size:10px;color:#C8A060;width:60px;text-align:right}
+  .bar-track{flex:1;background:#1a0e00;border-radius:4px;height:14px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:4px}
+  .bar-val{font-size:9px;color:#fff;font-weight:500}
+  .wh-list-title{font-size:11px;color:#C8A060;margin-bottom:8px;font-weight:500}
+  .wh-item{background:#2d1e0a;border-radius:8px;padding:8px 10px;margin-bottom:6px;border:1.5px solid #4a3208;display:flex;justify-content:space-between;align-items:center}
+  .wh-item-left .name{font-size:12px;color:#FFE87C;font-weight:500}
+  .wh-item-left .date{font-size:10px;color:#C8A060}
+  .wh-item-right .pnl{font-size:13px;font-weight:500}
+  .wh-item-right .pct{font-size:10px;text-align:right}
+  .diary-overlay{display:none;position:absolute;inset:0;background:#1e2d3a;z-index:10;border-radius:22px;overflow:hidden;flex-direction:column}
+  .diary-overlay.show{display:flex}
+  .diary-header{background:#0a1e2d;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #00000030}
+  .diary-title{font-size:14px;font-weight:500;color:#87CEEB}
+  .diary-body{padding:12px 16px;flex:1}
+  .diary-tabs{display:flex;gap:6px;margin-bottom:12px}
+  .dtab{flex:1;padding:7px;border-radius:8px;font-size:11px;font-weight:500;cursor:pointer;text-align:center;background:#0a1e2d;color:#87CEEB;border:1.5px solid #1a3a4d}
+  .dtab.active{background:#1a4a6e;color:#C8E8FF;border-color:#2a6a9e}
+  .diary-entry{background:#0a1e2d;border-radius:10px;padding:12px;margin-bottom:8px;border:1.5px solid #1a3a4d}
+  .diary-date{font-size:10px;color:#87CEEB;margin-bottom:6px}
+  .diary-text{font-size:12px;color:#C8E8FF;line-height:1.6}
+  .watch-item{background:#0a1e2d;border-radius:8px;padding:8px 10px;margin-bottom:6px;border:1.5px solid #1a3a4d;display:flex;justify-content:space-between}
+  .watch-name{font-size:12px;color:#87CEEB;font-weight:500}
+  .watch-memo{font-size:10px;color:#6a9ab5}
+  .diary-input{width:100%;background:#0a1e2d;border:1.5px solid #1a3a4d;border-radius:8px;padding:10px;font-size:12px;color:#C8E8FF;resize:none;height:80px;margin-bottom:8px}
+  .diary-save{background:#1a4a6e;color:#C8E8FF;border:1.5px solid #2a6a9e;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;width:100%}
+</style>
+
+<div style="padding:12px 0;display:flex;justify-content:center">
+<div class="phone" id="phone">
+
+  <div class="tutorial-overlay show" id="tutorialOverlay">
+    <div class="tut-scene">
+      <span class="tut-farmer" id="tutFarmer">&#x1F9D1;&#x200D;&#x1F33E;</span>
+      <div class="tut-dots" id="tutDots"></div>
+      <div class="tut-bubble">
+        <div class="tut-step" id="tutStep">1 / 5 단계</div>
+        <div class="tut-text" id="tutText">안녕하세요! 저는 농장지기 씨앗이에요. 여러분의 첫 투자 여정을 함께할게요!</div>
+      </div>
+      <button class="tut-next" id="tutNext">다음 &#x2192;</button>
+    </div>
+  </div>
+
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-header">
+      <button class="back-btn" onclick="closeDetail()">&#x2190; 뒤로</button>
+      <div class="detail-title" id="detailTitle">한화에어로스페이스</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:0 16px 16px">
+      <div class="detail-emoji" id="detailEmoji">&#x1F33E;</div>
+      <div style="background:#2d4a1e;border-radius:10px;padding:12px;border:1.5px solid #1a2e12;margin-bottom:10px">
+        <div class="detail-row"><span class="detail-row-label">매수가</span><span class="detail-row-val">38,000원</span></div>
+        <div class="detail-row"><span class="detail-row-label">보유수량</span><span class="detail-row-val">5주</span></div>
+        <div class="detail-row"><span class="detail-row-label">매수금액</span><span class="detail-row-val">190,000원</span></div>
+        <div class="detail-row"><span class="detail-row-label">현재가</span><span class="detail-row-val">42,000원</span></div>
+        <div class="detail-row"><span class="detail-row-label">평가금액</span><span class="detail-row-val">210,000원</span></div>
+        <div class="detail-row"><span class="detail-row-label">손익</span><span class="detail-row-val pos">+20,000원 (+10.5%)</span></div>
+        <div class="detail-row" style="border:none"><span class="detail-row-label">매도가</span><span class="detail-row-val" style="color:#888">미정</span></div>
+      </div>
+      <div class="action-tabs">
+        <div class="atab water">&#x1F4A7; 물타기</div>
+        <div class="atab fire">&#x1F525; 불타기</div>
+        <div class="atab harvest">&#x2702;&#xFE0F; 익절</div>
+        <div class="atab cut">&#x1F480; 손절</div>
+      </div>
+      <div class="farmer-bubble">
+        <div class="farmer-px">&#x1F9D1;&#x200D;&#x1F33E;</div>
+        <div class="bubble-txt">+10% 수익 중이에요!<br>목표가까지 조금 더 기다려볼까요?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warehouse-overlay" id="warehouseOverlay">
+    <div class="wh-header">
+      <button class="back-btn" style="background:#4a3208;border-color:#2d1e0a;color:#FFE87C" onclick="closeWarehouse()">&#x2190; 뒤로</button>
+      <div class="wh-title">&#x1F4E6; 나의 창고</div>
+    </div>
+    <div class="wh-body" style="overflow-y:auto">
+      <div class="wh-summary">
+        <div class="wh-card"><div class="wh-card-label">총 실현손익</div><div class="wh-card-val pos">+77,000원</div></div>
+        <div class="wh-card"><div class="wh-card-label">수확 / 손절</div><div class="wh-card-val" style="color:#FFE87C">4회 / 1회</div></div>
+      </div>
+      <div class="wh-chart">
+        <div class="wh-chart-title">월별 실현손익</div>
+        <div class="bar-row"><div class="bar-label">1월</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:#5C8A3C"><span class="bar-val">+32,000</span></div></div></div>
+        <div class="bar-row"><div class="bar-label">2월</div><div class="bar-track"><div class="bar-fill" style="width:30%;background:#8a3c3c"><span class="bar-val">-18,000</span></div></div></div>
+        <div class="bar-row"><div class="bar-label">3월</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#5C8A3C"><span class="bar-val">+63,000</span></div></div></div>
+      </div>
+      <div class="wh-list-title">&#x2702;&#xFE0F; 수확 기록</div>
+      <div class="wh-item"><div class="wh-item-left"><div class="name">삼성전자</div><div class="date">2026.02.10 · 보유 30일</div></div><div class="wh-item-right"><div class="pnl" style="color:#FFE87C">+32,000원</div><div class="pct" style="color:#A8E6A0">+8.4%</div></div></div>
+      <div class="wh-item"><div class="wh-item-left"><div class="name">한화에어로</div><div class="date">2026.03.20 · 보유 25일</div></div><div class="wh-item-right"><div class="pnl" style="color:#FFE87C">+45,000원</div><div class="pct" style="color:#A8E6A0">+11.8%</div></div></div>
+      <div class="wh-list-title" style="margin-top:8px">&#x1F480; 손절 기록</div>
+      <div class="wh-item"><div class="wh-item-left"><div class="name">카카오</div><div class="date">2026.02.28 · 보유 15일</div></div><div class="wh-item-right"><div class="pnl" style="color:#FFB3B3">-18,000원</div><div class="pct" style="color:#FFB3B3">-6.2%</div></div></div>
+    </div>
+  </div>
+
+  <div class="diary-overlay" id="diaryOverlay">
+    <div class="diary-header">
+      <button class="back-btn" style="background:#1a4a6e;border-color:#0a1e2d;color:#87CEEB" onclick="closeDiary()">&#x2190; 뒤로</button>
+      <div class="diary-title">&#x1F4D4; 농부의 일기</div>
+    </div>
+    <div class="diary-body" style="overflow-y:auto">
+      <div class="diary-tabs">
+        <div class="dtab active">오늘일기</div>
+        <div class="dtab">관심종목</div>
+        <div class="dtab">공부노트</div>
+      </div>
+      <textarea class="diary-input" placeholder="오늘 투자하면서 느낀 점, 관심 종목 메모를 적어보세요..."></textarea>
+      <button class="diary-save">저장하기</button>
+      <div style="margin-top:12px">
+        <div class="diary-entry"><div class="diary-date">2026.03.13 &#x1F324;</div><div class="diary-text">한화에어로 방산 수출 뉴스 있었음. 좀 더 지켜보기로 함. 아직 확신은 없지만 업황이 좋은 것 같다.</div></div>
+        <div class="diary-entry"><div class="diary-date">2026.03.10 &#x2600;&#xFE0F;</div><div class="diary-text">삼성전자 수확 완료! 처음으로 수익 냈다. 다음엔 더 오래 기다려볼 것.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sky">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span class="cloud">&#x2601;&#xFE0F;</span>
+      <div class="farm-title">&#x1F33E; 주린이의 주식농장</div>
+      <span style="font-size:11px;color:#1a4a2e;background:rgba(255,255,255,0.6);padding:3px 8px;border-radius:10px">Lv.3 &#x1F331;</span>
+    </div>
+  </div>
+
+  <div class="broker-tabs" id="brokerTabs">
+    <div class="btab active" onclick="selectBroker(0)">토스농장</div>
+    <div class="btab" onclick="selectBroker(1)">키움밭</div>
+    <div class="btab" onclick="selectBroker(2)">전체&#x1F33E;</div>
+    <div class="btab add" onclick="addBroker()">+</div>
+  </div>
+
+  <div class="farm-area">
+    <div class="summary-bar">
+      <div><div class="sum-label">총 투자금</div><div class="sum-val">500,000원</div></div>
+      <div style="text-align:center"><div class="sum-label">평가금액</div><div class="sum-val">548,000원</div></div>
+      <div style="text-align:right"><div class="sum-label">총 손익</div><div class="sum-val pos">+48,000 +9.6%</div></div>
+    </div>
+    <div class="field-grid" id="fieldGrid">
+      <div class="field-card" onclick="openDetail('한화에어로스페이스','&#x1F33E;')"><div class="field-emoji">&#x1F33E;</div><div class="field-name">한화에어로</div><div class="field-pct pos">+10.5%</div></div>
+      <div class="field-card" onclick="openDetail('삼성전자','&#x1F33F;')"><div class="field-emoji">&#x1F33F;</div><div class="field-name">삼성전자</div><div class="field-pct pos">+8.4%</div></div>
+      <div class="field-card" onclick="openDetail('카카오','&#x1F342;')"><div class="field-emoji">&#x1F342;</div><div class="field-name">카카오</div><div class="field-pct neg">-3.2%</div></div>
+      <div class="field-card" onclick="openDetail('NAVER','&#x1F331;')"><div class="field-emoji">&#x1F331;</div><div class="field-name">NAVER</div><div class="field-pct pos">+5.1%</div></div>
+      <div class="field-card" onclick="openDetail('LG에너지솔루션','&#x1F940;')"><div class="field-emoji">&#x1F940;</div><div class="field-name">LG에너지</div><div class="field-pct neg">-11.2%</div></div>
+      <div class="field-add" onclick="addField()"><div class="field-add-icon">+</div><div class="field-add-txt">씨앗 심기</div></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="goNav('farm')"><div class="nav-icon">&#x1F33E;</div><div class="nav-label">내 밭</div></div>
+    <div class="nav-item" onclick="goNav('warehouse')"><div class="nav-icon">&#x1F4E6;</div><div class="nav-label">창고</div></div>
+    <div class="nav-item" onclick="goNav('diary')"><div class="nav-icon">&#x1F4D4;</div><div class="nav-label">농부일기</div></div>
+    <div class="nav-item" onclick="goNav('bag')"><div class="nav-icon">&#x1F45C;</div><div class="nav-label">가방</div></div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const tutSteps=[
+  {step:"1 / 5 단계",text:"안녕하세요! 저는 농장지기 씨앗이에요. 여러분의 첫 투자 여정을 함께할게요!",farmer:"&#x1F9D1;&#x200D;&#x1F33E;"},
+  {step:"2 / 5 단계",text:"주식이란 회사의 아주 작은 조각이에요. 삼성전자 1주를 사면 삼성의 주인이 되는 거예요!",farmer:"&#x1F9D1;&#x200D;&#x1F33E;"},
+  {step:"3 / 5 단계",text:"은행에 100만원 맡기면 1년에 이자 3만원. 하지만 물가는 오르고 있어요. 투자가 필요한 이유예요.",farmer:"&#x1F9D1;&#x200D;&#x1F33E;"},
+  {step:"4 / 5 단계",text:"한 달 커피값 10만원으로 삼성전자 1주를 살 수 있어요. 커피는 마시면 없어지지만 주식은 남아요!",farmer:"&#x1F9D1;&#x200D;&#x1F33E;"},
+  {step:"5 / 5 단계",text:"단, 모든 투자의 책임은 농부인 당신에게 있어요. 자, 이제 씨앗을 사러 가볼까요?",farmer:"&#x1F9D1;&#x200D;&#x1F33E;",last:true}
+];
+let tutIdx=0;
+function renderTut(){
+  const s=tutSteps[tutIdx];
+  document.getElementById('tutStep').textContent=s.step;
+  document.getElementById('tutText').innerHTML=s.text;
+  document.getElementById('tutFarmer').innerHTML=s.farmer;
+  document.getElementById('tutNext').textContent=s.last?'농장 시작하기 &#x1F33E;':'다음 &#x2192;';
+  const dots=document.getElementById('tutDots');
+  dots.innerHTML=tutSteps.map((_,i)=>`<div class="dot${i===tutIdx?' active':''}"></div>`).join('');
+}
+document.getElementById('tutNext').addEventListener('click',function(){
+  if(tutIdx<tutSteps.length-1){tutIdx++;renderTut();}
+  else{document.getElementById('tutorialOverlay').classList.remove('show');}
+});
+renderTut();
+
+function openDetail(name,emoji){
+  document.getElementById('detailTitle').textContent=name;
+  document.getElementById('detailEmoji').innerHTML=emoji;
+  document.getElementById('detailOverlay').classList.add('show');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('show');}
+function closeWarehouse(){document.getElementById('warehouseOverlay').classList.remove('show');}
+function closeDiary(){document.getElementById('diaryOverlay').classList.remove('show');}
+function goNav(tab){
+  if(tab==='warehouse')document.getElementById('warehouseOverlay').classList.add('show');
+  if(tab==='diary')document.getElementById('diaryOverlay').classList.add('show');
+}
+function selectBroker(idx){
+  document.querySelectorAll('.btab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+function addBroker(){alert('새 밭 이름을 입력하세요!');}
+function addField(){alert('씨앗 심기 화면으로 이동!');}
+</script>

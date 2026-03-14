@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample.di
 
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
+import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.simple.FruitRepository
 import com.example.kotlinmultisample.simple.FruitViewModel
@@ -24,6 +25,9 @@ val viewModelModule = module {
 
     // Theme 설정 (앱 전역 상태 공유를 위해 single로 등록)
     single { SettingsViewModel() }
+
+    // 농장 (Farm) - 튜토리얼 상태 유지 등을 위해 Single로 등록 (간단한 상태 관리)
+    single { FarmViewModel() }
 
     /**
      * 국가 관련 (Domain Layer + Presentation Layer)

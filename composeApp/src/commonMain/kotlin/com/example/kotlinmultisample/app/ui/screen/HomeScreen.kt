@@ -36,8 +36,9 @@ fun HomeScreen(
             // 상단 앱 바 설정
             TopAppBar(
                 title = { Text("홈") },
-                navigationIcon = {
-                    // 메뉴 열기 버튼 (햄버거 아이콘)
+                // navigationIcon에서 제거하고 actions로 이동
+                actions = {
+                    // 메뉴 열기 버튼 (햄버거 아이콘) - 우측 배치
                     IconButton(onClick = onMenuClick) {
                         Icon(
                             imageVector = Icons.Default.Menu,
@@ -48,7 +49,8 @@ fun HomeScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    // navigationIconContentColor는 더 이상 필요 없지만 actionsContentColor가 기본값이므로 유지하거나 삭제해도 무방
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
@@ -182,4 +184,3 @@ private fun HomeNavigationCard(
         }
     }
 }
-

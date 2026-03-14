@@ -31,8 +31,12 @@ fun FruitScreen(
         topBar = {
             TopAppBar(
                 title = { Text("간단한 과일 목록 (Simple MVVM)") },
-                navigationIcon = {
-                    // 햄버거 버튼
+                // navigationIcon 제거
+                actions = {
+                    IconButton(onClick = { viewModel.refresh() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "새로고침")
+                    }
+                    // 햄버거 버튼 추가 - 우측 배치
                     IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
                     }
@@ -40,12 +44,7 @@ fun FruitScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
-                actions = {
-                    IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "새로고침")
-                    }
-                }
+                )
             )
         }
     ) { innerPadding ->
@@ -107,4 +106,3 @@ fun FruitItemCard(fruit: Fruit) {
         }
     }
 }
-

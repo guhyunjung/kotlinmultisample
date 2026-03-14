@@ -9,9 +9,9 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -167,12 +167,6 @@ private fun CountryListAppBar(
 				modifier = Modifier.fillMaxWidth()
 			)
 		},
-		navigationIcon = {
-			// 드로어를 열기 위한 햄버거 아이콘
-			IconButton(onClick = onMenuClick) {
-				Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
-			}
-		},
 		actions = {
 			// 수동 새로고침 버튼
 			IconButton(
@@ -188,6 +182,11 @@ private fun CountryListAppBar(
 				} else {
 					Icon(Icons.Default.Refresh, contentDescription = "새로고침")
 				}
+			}
+            
+            // 드로어를 열기 위한 햄버거 아이콘 - 우측 배치
+			IconButton(onClick = onMenuClick) {
+				Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
 			}
 		},
 		colors = TopAppBarDefaults.topAppBarColors(

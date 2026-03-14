@@ -20,11 +20,12 @@ import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
 import com.example.kotlinmultisample.app.ui.screen.*
+import com.example.kotlinmultisample.app.ui.screen.farm.FarmScreen
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import com.example.kotlinmultisample.simple.FruitScreen
 import com.example.kotlinmultisample.simple.FruitViewModel
-import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -40,6 +41,7 @@ enum class AppDestinations(
 	HOME("Home", Icons.Default.Home),
 	COUNTRIES("Countries", Icons.Default.Place),
 	FAVORITES("Simple", Icons.Default.Favorite),
+	FARM("Farm", Icons.Default.Face),
 	SETTINGS("Settings", Icons.Default.Settings),
 	PROFILE("Profile", Icons.Default.AccountBox)
 }
@@ -232,6 +234,10 @@ fun MainContent() {
 							)
 						}
 
+						AppDestinations.FARM -> {
+							FarmScreen(onMenuClick = openDrawer)
+						}
+
 						AppDestinations.SETTINGS -> {
 							SettingsScreen(onMenuClick = openDrawer)
 						}
@@ -252,7 +258,8 @@ private fun AppBottomNavigationBar(
 	onDestinationClick: (AppDestinations) -> Unit
 ) {
 	NavigationBar {
-		AppDestinations.entries.forEach { destination ->
+		// Settings는 하단 탭에서 제외하고 햄버거 메뉴(Drawer)에서만 접근 가능하도록 필터링
+		AppDestinations.entries.filter { it != AppDestinations.SETTINGS }.forEach { destination ->
 			val isSelected = currentDestination == destination
 			NavigationBarItem(
 				icon = {
@@ -291,7 +298,9 @@ fun ScaffoldContent(destination: AppDestinations, onMenuClick: () -> Unit) {
 		topBar = {
 			TopAppBar(
 				title = { Text(destination.label) },
-				navigationIcon = {
+				// navigationIcon에서 제거
+				actions = {
+					// 햄버거 메뉴를 actions (우측)으로 이동
 					IconButton(onClick = onMenuClick) {
 						Icon(Icons.Default.Menu, contentDescription = "메뉴 열기")
 					}
@@ -299,7 +308,7 @@ fun ScaffoldContent(destination: AppDestinations, onMenuClick: () -> Unit) {
 				colors = TopAppBarDefaults.topAppBarColors(
 					containerColor = MaterialTheme.colorScheme.primaryContainer,
 					titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-					navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+					actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer // actions 색상 지정
 				)
 			)
 		}

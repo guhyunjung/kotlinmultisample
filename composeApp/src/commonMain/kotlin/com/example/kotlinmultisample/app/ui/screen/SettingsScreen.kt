@@ -28,7 +28,9 @@ fun SettingsScreen(
         topBar = {
             TopAppBar(
                 title = { Text("설정") },
-                navigationIcon = {
+                // navigationIcon 제거
+                actions = {
+                    // 메뉴 열기 버튼 (햄버거 아이콘) - 우측 배치
                     IconButton(onClick = onMenuClick) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "메뉴 열기")
                     }
@@ -121,4 +123,3 @@ fun ThemeRadioButton(
         )
     }
 }
-
