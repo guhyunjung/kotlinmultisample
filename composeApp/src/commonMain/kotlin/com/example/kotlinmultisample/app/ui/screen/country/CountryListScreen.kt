@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen
+package com.example.kotlinmultisample.app.ui.screen.country
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

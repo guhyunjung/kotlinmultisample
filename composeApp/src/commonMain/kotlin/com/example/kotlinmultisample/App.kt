@@ -19,7 +19,11 @@ import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
-import com.example.kotlinmultisample.app.ui.screen.*
+import com.example.kotlinmultisample.app.ui.screen.HomeScreen
+import com.example.kotlinmultisample.app.ui.screen.SettingsScreen
+import com.example.kotlinmultisample.app.ui.screen.SplashScreen
+import com.example.kotlinmultisample.app.ui.screen.country.CountryDetailScreen
+import com.example.kotlinmultisample.app.ui.screen.country.CountryListScreen
 import com.example.kotlinmultisample.app.ui.screen.farm.FarmScreen
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository

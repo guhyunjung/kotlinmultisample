@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen
+package com.example.kotlinmultisample.app.ui.screen.country
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
