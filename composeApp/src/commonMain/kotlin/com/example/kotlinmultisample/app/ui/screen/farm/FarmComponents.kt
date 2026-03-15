@@ -10,9 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
@@ -80,6 +82,8 @@ object FarmColors {
 
 	@Composable
 	private fun isDark(): Boolean {
+		if (LocalInspectionMode.current) return false // Preview 모드일 경우 기본값(Light) 반환
+
 		val settingsViewModel = koinInject<SettingsViewModel>()
 		val themeMode by settingsViewModel.themeMode.collectAsState()
 		return when (themeMode) {
@@ -166,5 +170,37 @@ fun PixelButton(
 				}
 			}
 		)
+	}
+}
+
+@Preview
+@Composable
+fun PixelCardPreview() {
+	Column(
+		modifier = Modifier.padding(16.dp),
+		verticalArrangement = Arrangement.spacedBy(16.dp)
+	) {
+		PixelCard {
+			Text("기본 카드", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+			Spacer(modifier = Modifier.height(8.dp))
+			Text("내용이 들어갑니다.")
+		}
+		
+		PixelCard(containerColor = FarmColors.getNight(), borderColor = FarmColors.getMoon()) {
+			Text("밤하늘 카드", color = FarmColors.getMoon(), fontSize = 14.sp)
+		}
+	}
+}
+
+@Preview
+@Composable
+fun PixelButtonPreview() {
+	Column(
+		modifier = Modifier.padding(16.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
+	) {
+		PixelButton("기본 버튼", onClick = {})
+		PixelButton("강조 버튼", containerColor = FarmColors.getFire(), contentColor = Color.White, onClick = {})
+		PixelButton("비활성 느낌", containerColor = Color.Gray, borderColor = Color.DarkGray, onClick = {})
 	}
 }

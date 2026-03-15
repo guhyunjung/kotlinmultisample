@@ -363,6 +363,7 @@ fun BottomMenuBar(onWarehouseClick: () -> Unit = {}, onDiaryClick: () -> Unit = 
 				BottomMenuItem("📦", "창고", onClick = onWarehouseClick)
 				BottomMenuItem("📔", "농부일기", onClick = onDiaryClick)
 				BottomMenuItem("🎒", "가방")
+				BottomMenuItem("🧮", "계산")
 			}
 		}
 	}
