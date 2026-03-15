@@ -27,7 +27,7 @@ kotlin {
 		androidMain.dependencies {
 			implementation(libs.compose.uiToolingPreview)
 			implementation(libs.androidx.activity.compose)
-            implementation(libs.kotlinx.coroutines.android) // Coroutines Android
+			implementation(libs.kotlinx.coroutines.android) // Coroutines Android
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.android)
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
@@ -42,7 +42,7 @@ kotlin {
 		commonMain.dependencies {
 			implementation(libs.compose.runtime)
 			implementation(libs.compose.foundation)
-            implementation(libs.kotlinx.coroutines.core) // Coroutines Core
+			implementation(libs.kotlinx.coroutines.core) // Coroutines Core
 			implementation(libs.compose.material.icons.extended)
 			implementation(libs.compose.material3)
 			implementation(libs.compose.ui)
@@ -87,7 +87,7 @@ android {
 	}
 	packaging {
 		resources {
-		 excludes += "/META-INF/{AL2.0,LGPL2.1}"
+			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
 	buildTypes {
