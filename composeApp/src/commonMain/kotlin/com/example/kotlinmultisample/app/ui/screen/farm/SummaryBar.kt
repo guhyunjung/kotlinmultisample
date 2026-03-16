@@ -16,7 +16,10 @@ import androidx.compose.ui.unit.sp
  * 총 투자금, 평가금액, 총 손익 등을 한눈에 보여주는 컴포넌트
  */
 @Composable
-fun SummaryBarNew() {
+fun SummaryBarNew(data: SummaryData = SummaryData()) {
+	val profitSign = if (data.totalProfit > 0) "+" else ""
+	val profitColor = if (data.totalProfit >= 0) FarmColors.getGold() else FarmColors.getSoftRed()
+
 	Surface(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -29,9 +32,9 @@ fun SummaryBarNew() {
 			modifier = Modifier.padding(12.dp),
 			horizontalArrangement = Arrangement.SpaceBetween
 		) {
-			SummaryItemNew("총 투자금", "500,000원")
-			SummaryItemNew("평가금액", "548,000원")
-			SummaryItemNew("총 손익", "+48,000", color = FarmColors.getGold())
+			SummaryItemNew("총 투자금", "${formatDecimal(data.totalInvest)}원")
+			SummaryItemNew("평가금액", "${formatDecimal(data.totalCurrent)}원")
+			SummaryItemNew("총 손익", "$profitSign${formatDecimal(data.totalProfit)}", color = profitColor)
 		}
 	}
 }

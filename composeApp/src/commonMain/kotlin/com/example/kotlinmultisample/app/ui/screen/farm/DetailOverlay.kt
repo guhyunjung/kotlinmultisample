@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun DetailOverlayNew(seed: FarmSeed, onDismiss: () -> Unit) {
-	// 임시 데이터 (HTML 프로토타입 기반의 더미 계산)
-	val buyingPrice = 38000
-	val quantity = 5
-	val totalBuying = buyingPrice * quantity
-	val currentPrice = (buyingPrice * (1 + seed.pct / 100)).toInt() // 단순 계산
-	val totalCurrent = currentPrice * quantity
-	val profit = totalCurrent - totalBuying
+	// FarmSeed 모델에서 데이터 가져오기
+	val buyingPrice = seed.buyingPrice.toInt()
+	val quantity = seed.quantity
+	val totalBuying = seed.totalBuyingValue.toInt()
+	val currentPrice = seed.currentPrice.toInt()
+	val totalCurrent = seed.totalCurrentValue.toInt()
+	val profit = seed.profit.toInt()
 	val profitSign = if (profit > 0) "+" else ""
 
 	Box(

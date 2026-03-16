@@ -10,8 +10,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import com.example.kotlinmultisample.app.ui.screen.farm.FarmSeed
+import com.example.kotlinmultisample.app.ui.screen.farm.SummaryData
 
 /**
  * 농장 화면의 상태를 관리하는 ViewModel
@@ -48,8 +54,54 @@ class FarmViewModel(
     /** 현재 선택된 증권사 (필터링 기준) */
     val selectedBroker = _selectedBroker.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val currentSeeds = selectedBroker.flatMapLatest { broker ->
+        flowOf(getFakeSeeds(broker?.id))
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val summaryInfo = currentSeeds.map { seeds ->
+        val totalInvest = seeds.sumOf { it.totalBuyingValue }
+        val totalCurrent = seeds.sumOf { it.totalCurrentValue }
+        val totalProfit = totalCurrent - totalInvest
+        
+        SummaryData(totalInvest, totalCurrent, totalProfit)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SummaryData())
+
     init {
         loadBrokers()
+    }
+
+    private fun getFakeSeeds(brokerId: Long?): List<FarmSeed> {
+        // 더미 데이터 생성 시뮬레이션
+        if (brokerId == null) {
+            // 전체 보기 (모든 데이터 합침)
+            return listOf(
+                FarmSeed("한화에어로", "🌾", 10.5, 50000.0, 10),
+                FarmSeed("삼성전자", "🌿", 8.4, 70000.0, 5),
+                FarmSeed("카카오", "🍂", -3.2, 55000.0, 8),
+                FarmSeed("NAVER", "🌱", 5.1, 180000.0, 2),
+                FarmSeed("LG에너지", "🥀", -11.2, 400000.0, 1),
+                FarmSeed("SK하이닉스", "🎋", 15.3, 120000.0, 3)
+            )
+        }
+
+        // 브로커 ID에 따라 다른 데이터 반환 (임의의 규칙 적용)
+        return when (brokerId % 3) {
+            0L -> listOf( // 키움증권 스타일
+                FarmSeed("한화에어로", "🌾", 10.5, 50000.0, 10),
+                FarmSeed("현대로템", "🚂", 22.1, 35000.0, 20),
+                FarmSeed("LIG넥스원", "🚀", 5.4, 98000.0, 5)
+            )
+            1L -> listOf( // 토스증권 스타일
+                FarmSeed("삼성전자", "🌿", 8.4, 70000.0, 5),
+                FarmSeed("카카오", "🍂", -3.2, 55000.0, 8),
+                FarmSeed("NAVER", "🌱", 5.1, 180000.0, 2)
+            )
+            else -> listOf( // 나무증권 스타일
+                FarmSeed("LG에너지", "🥀", -11.2, 400000.0, 1),
+                FarmSeed("POSCO홀딩스", "🏭", -1.5, 450000.0, 2)
+            )
+        }
     }
 
     /**
