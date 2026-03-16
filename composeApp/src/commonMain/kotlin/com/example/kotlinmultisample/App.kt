@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
+import com.example.kotlinmultisample.app.ui.theme.getTypography
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
 import com.example.kotlinmultisample.app.ui.screen.HomeScreen
 import com.example.kotlinmultisample.app.ui.screen.SettingsScreen
@@ -77,7 +78,8 @@ fun App(
 
 	// Material3 테마 적용
 	MaterialTheme(
-		colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+		colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme(),
+		typography = getTypography()
 	) {
 		// 앱 실행 준비 상태 (false: 스플래시 표시, true: 메인 컨텐츠 표시)
 		var isAppReady by rememberSaveable { mutableStateOf(false) }
