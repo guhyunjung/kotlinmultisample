@@ -28,21 +28,14 @@ fun main() = application {
 
 	/**
 	 * 애플리케이션 메인 윈도우(Window) 생성
-	 *
-	 * @param onCloseRequest 윈도우 닫기 버튼 클릭 시 호출되는 콜백.
-	 *   [exitApplication]을 통해 애플리케이션 프로세스를 종료합니다.
-	 * @param title 운영체제 타이틀 바에 표시될 애플리케이션 이름입니다.
 	 */
 	Window(
-		onCloseRequest = ::exitApplication, // 창 닫기 시 앱 종료
-		title = "kotlinmultisample",        // 타이틀 바 텍스트
+		onCloseRequest = ::exitApplication,
+		title = "KotlinMultiSample",
 	) {
-		/**
-		 * 실제 UI 컴포저블(Composable) 진입점
-		 *
-		 * [App]은 shared 모듈에 정의된 공통 루트 Composable로,
-		 * Android/iOS/Desktop 모든 플랫폼에서 동일한 UI를 렌더링합니다.
-		 */
-		App()
+		App(
+			onExit = ::exitApplication,
+			showToast = { println("Toast: $it") }
+		)
 	}
 }

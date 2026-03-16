@@ -30,6 +30,8 @@ import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import com.example.kotlinmultisample.simple.FruitScreen
 import com.example.kotlinmultisample.simple.FruitViewModel
+import com.example.kotlinmultisample.app.ui.util.BackHandler
+import com.example.kotlinmultisample.app.ui.util.getCurrentTimeMillis
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -57,7 +59,10 @@ enum class AppDestinations(
  * 그리고 메인 화면으로의 전환을 관리합니다.
  */
 @Composable
-fun App() {
+fun App(
+    onExit: () -> Unit = {},
+    showToast: (String) -> Unit = {}
+) {
 	// Koin을 통해 설정 관련 ViewModel 주입 (다크모드 설정 등)
 	val settingsViewModel = koinInject<SettingsViewModel>()
 	val themeMode by settingsViewModel.themeMode.collectAsState()
@@ -107,7 +112,7 @@ fun App() {
 			if (!ready) {
 				SplashScreen() // 로딩 중 표시될 화면
 			} else {
-				MainContent() // 로딩 완료 후 표시될 메인 구조
+				MainContent(onExit = onExit, showToast = showToast) // 로딩 완료 후 표시될 메인 구조
 			}
 		}
 	}
@@ -120,7 +125,10 @@ fun App() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainContent() {
+fun MainContent(
+    onExit: () -> Unit,
+    showToast: (String) -> Unit
+) {
     // 네트워크 상태 감시자 주입 (플랫폼별 구현체 사용)
     val connectivityObserver = koinInject<ConnectivityObserver>()
     
@@ -145,6 +153,23 @@ fun MainContent() {
 	var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
 	// 국가 목록에서 선택된 상세 국가 정보 (null이면 목록 표시)
 	var selectedCountry by remember { mutableStateOf<Country?>(null) }
+	var backPressedTime by remember { mutableStateOf(0L) }
+
+	BackHandler(enabled = true) {
+		if (selectedCountry != null) {
+			selectedCountry = null
+		} else if (currentDestination != AppDestinations.HOME) {
+			currentDestination = AppDestinations.HOME
+		} else {
+			val currentTime = getCurrentTimeMillis()
+			if (currentTime - backPressedTime <= 2000) {
+				onExit()
+			} else {
+				backPressedTime = currentTime
+				showToast("한 번 더 누르면 종료됩니다")
+			}
+		}
+	}
 
 	// 네비게이션 드로어(사이드 메뉴) 상태 및 제어 스코프
 	val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
