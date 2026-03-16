@@ -9,9 +9,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +40,7 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
 	var selectedSeed by remember { mutableStateOf<Seed?>(null) } // 선택된 종목(씨앗)
 	var showWarehouse by remember { mutableStateOf(false) }      // 창고(매매기록) 화면 표시 여부
 	var showDiary by remember { mutableStateOf(false) }          // 농부일기 화면 표시 여부
+	var showCalculate by remember { mutableStateOf(false) }      // 계산기 화면 표시 여부
 
 	// 더미 데이터: 실제 앱에서는 서버 또는 DB에서 가져와야 할 주식(씨앗) 목록
 	val seeds = remember {
@@ -73,7 +74,7 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
 			// weight(1f)를 주어 남은 세로 공간을 모두 차지하게 함
 			Column(
 				modifier = Modifier
-					.weight(1f) 
+					.weight(1f)
 					.fillMaxWidth()
 					.background(FarmColors.getGround()) // 농장 배경색(땅 색상)
 					.padding(horizontal = 12.dp)
@@ -89,7 +90,8 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
 			// 4. 하단 메뉴바 (내 밭, 창고, 일기, 가방 아이콘)
 			BottomMenuBar(
 				onWarehouseClick = { showWarehouse = true },
-				onDiaryClick = { showDiary = true }
+				onDiaryClick = { showDiary = true },
+				onCalculateClick = { showCalculate = true }
 			)
 		}
 
@@ -132,6 +134,15 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
 			exit = slideOutVertically(targetOffsetY = { it })
 		) {
 			DiaryOverlay(onDismiss = { showDiary = false })
+		}
+
+		// 계산기 오버레이
+		AnimatedVisibility(
+			visible = showCalculate,
+			enter = slideInVertically(initialOffsetY = { it }),
+			exit = slideOutVertically(targetOffsetY = { it })
+		) {
+			CalculateOverlay(onDismiss = { showCalculate = false })
 		}
 	}
 }
@@ -340,7 +351,7 @@ fun BrokerTabs() {
  * 내 밭, 창고, 농부일기 등을 이동할 수 있는 네비게이션 바 역할
  */
 @Composable
-fun BottomMenuBar(onWarehouseClick: () -> Unit = {}, onDiaryClick: () -> Unit = {}) {
+fun BottomMenuBar(onWarehouseClick: () -> Unit = {}, onDiaryClick: () -> Unit = {}, onCalculateClick: () -> Unit = {}) {
 	Column(modifier = Modifier.fillMaxWidth()) {
 		// 상단 구분선: 진한 잔디색 띠를 둘러 밭과 메뉴 영역을 명확히 구분 (땅의 단면 느낌 연출)
 		Box(
@@ -363,7 +374,7 @@ fun BottomMenuBar(onWarehouseClick: () -> Unit = {}, onDiaryClick: () -> Unit = 
 				BottomMenuItem("📦", "창고", onClick = onWarehouseClick)
 				BottomMenuItem("📔", "농부일기", onClick = onDiaryClick)
 				BottomMenuItem("🎒", "가방")
-				BottomMenuItem("🧮", "계산")
+				BottomMenuItem("🧮", "계산", onClick = onCalculateClick)
 			}
 		}
 	}
@@ -654,9 +665,14 @@ fun WarehouseOverlay(onDismiss: () -> Unit) {
 
 			// 월별 실현손익 차트 (바 차트 형태)
 			PixelCard(modifier = Modifier.fillMaxWidth(), containerColor = FarmColors.getNight()) {
-				Text("월별 실현손익", fontSize = 11.sp, color = Color.White.copy(alpha = 0.6f), modifier = Modifier.align(Alignment.Start))
+				Text(
+					"월별 실현손익",
+					fontSize = 11.sp,
+					color = Color.White.copy(alpha = 0.6f),
+					modifier = Modifier.align(Alignment.Start)
+				)
 				Spacer(modifier = Modifier.height(8.dp))
-				
+
 				// 더미 차트 데이터
 				val chartData = listOf("1월" to 32000, "2월" to -18000, "3월" to 63000)
 				chartData.forEach { (month, profit) ->
@@ -674,11 +690,19 @@ fun WarehouseOverlay(onDismiss: () -> Unit) {
 								modifier = Modifier
 									.fillMaxHeight()
 									.fillMaxWidth(widthPct)
-									.background(if (profit >= 0) FarmColors.getGrass() else FarmColors.getSoftRed(), RoundedCornerShape(4.dp))
+									.background(
+										if (profit >= 0) FarmColors.getGrass() else FarmColors.getSoftRed(),
+										RoundedCornerShape(4.dp)
+									)
 									.padding(start = 4.dp),
 								contentAlignment = Alignment.CenterStart
 							) {
-								Text("${if (profit > 0) "+" else ""}$profit", fontSize = 9.sp, color = Color.White, fontWeight = FontWeight.Bold)
+								Text(
+									"${if (profit > 0) "+" else ""}$profit",
+									fontSize = 9.sp,
+									color = Color.White,
+									fontWeight = FontWeight.Bold
+								)
 							}
 						}
 					}
@@ -692,7 +716,7 @@ fun WarehouseOverlay(onDismiss: () -> Unit) {
 			Spacer(modifier = Modifier.height(8.dp))
 			WarehouseItem("삼성전자", "2026.02.10 · 보유 30일", "+32,000원", "+8.4%", FarmColors.getLightGreen())
 			WarehouseItem("한화에어로", "2026.03.20 · 보유 25일", "+45,000원", "+11.8%", FarmColors.getLightGreen())
-			
+
 			Spacer(modifier = Modifier.height(8.dp))
 			Text("💀 손절 기록", fontSize = 11.sp, color = Color.White.copy(alpha = 0.6f), fontWeight = FontWeight.Bold)
 			Spacer(modifier = Modifier.height(8.dp))
@@ -704,7 +728,11 @@ fun WarehouseOverlay(onDismiss: () -> Unit) {
 @Composable
 fun WarehouseItem(name: String, date: String, profit: String, pct: String, color: Color) {
 	PixelCard(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), containerColor = FarmColors.getNight()) {
-		Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
+		) {
 			Column {
 				Text(name, fontSize = 12.sp, color = FarmColors.getGold(), fontWeight = FontWeight.Bold)
 				Text(date, fontSize = 10.sp, color = Color.White.copy(alpha = 0.5f))
@@ -746,7 +774,13 @@ fun DiaryOverlay(onDismiss: () -> Unit) {
 				verticalAlignment = Alignment.CenterVertically,
 				modifier = Modifier.fillMaxWidth()
 			) {
-				PixelButton("←", onClick = onDismiss, modifier = Modifier.width(40.dp), containerColor = Color(0xFF1A4A6E), contentColor = FarmColors.getMoon())
+				PixelButton(
+					"←",
+					onClick = onDismiss,
+					modifier = Modifier.width(40.dp),
+					containerColor = Color(0xFF1A4A6E),
+					contentColor = FarmColors.getMoon()
+				)
 				Spacer(modifier = Modifier.width(16.dp))
 				Text("📔 농부의 일기", color = FarmColors.getMoon(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
 			}
@@ -755,21 +789,45 @@ fun DiaryOverlay(onDismiss: () -> Unit) {
 
 			// 일기 카테고리 탭
 			Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-				PixelButton("오늘일기", modifier = Modifier.weight(1f), containerColor = Color(0xFF1A4A6E), contentColor = Color.White, onClick = {})
-				PixelButton("관심종목", modifier = Modifier.weight(1f), containerColor = Color(0xFF0A1E2D), contentColor = FarmColors.getMoon(), onClick = {})
-				PixelButton("공부노트", modifier = Modifier.weight(1f), containerColor = Color(0xFF0A1E2D), contentColor = FarmColors.getMoon(), onClick = {})
+				PixelButton(
+					"오늘일기",
+					modifier = Modifier.weight(1f),
+					containerColor = Color(0xFF1A4A6E),
+					contentColor = Color.White,
+					onClick = {})
+				PixelButton(
+					"관심종목",
+					modifier = Modifier.weight(1f),
+					containerColor = Color(0xFF0A1E2D),
+					contentColor = FarmColors.getMoon(),
+					onClick = {})
+				PixelButton(
+					"공부노트",
+					modifier = Modifier.weight(1f),
+					containerColor = Color(0xFF0A1E2D),
+					contentColor = FarmColors.getMoon(),
+					onClick = {})
 			}
 
 			Spacer(modifier = Modifier.height(12.dp))
 
 			// 새 일기 작성 영역
-			PixelCard(modifier = Modifier.fillMaxWidth(), containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
+			PixelCard(
+				modifier = Modifier.fillMaxWidth(),
+				containerColor = Color(0xFF0A1E2D),
+				borderColor = Color(0xFF1A3A4D)
+			) {
 				Box(modifier = Modifier.fillMaxWidth().height(80.dp).padding(4.dp)) {
 					Text("오늘 투자하면서 느낀 점, 관심 종목 메모를 적어보세요...", color = Color.White.copy(alpha = 0.3f), fontSize = 12.sp)
 				}
 			}
 			Spacer(modifier = Modifier.height(8.dp))
-			PixelButton("저장하기", modifier = Modifier.fillMaxWidth(), containerColor = Color(0xFF1A4A6E), contentColor = Color.White, onClick = {})
+			PixelButton(
+				"저장하기",
+				modifier = Modifier.fillMaxWidth(),
+				containerColor = Color(0xFF1A4A6E),
+				contentColor = Color.White,
+				onClick = {})
 
 			Spacer(modifier = Modifier.height(16.dp))
 
@@ -782,7 +840,11 @@ fun DiaryOverlay(onDismiss: () -> Unit) {
 
 @Composable
 fun DiaryEntry(date: String, text: String) {
-	PixelCard(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
+	PixelCard(
+		modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+		containerColor = Color(0xFF0A1E2D),
+		borderColor = Color(0xFF1A3A4D)
+	) {
 		Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
 			Text(date, fontSize = 10.sp, color = FarmColors.getMoon())
 			Spacer(modifier = Modifier.height(6.dp))
@@ -806,3 +868,204 @@ fun DetailRow(label: String, value: String, color: Color = Color.White) {
 }
 
 
+@Composable
+fun CalculateOverlay(onDismiss: () -> Unit) {
+	// 현재 보유 중인 단가 및 수량 (상태 보존)
+	var holdPrice by rememberSaveable { mutableStateOf("") }
+	var holdQuantity by rememberSaveable { mutableStateOf("") }
+
+	// 추가 매수할 단가 및 수량 (상태 보존)
+	var addPrice by rememberSaveable { mutableStateOf("") }
+	var addQuantity by rememberSaveable { mutableStateOf("") }
+
+	// 총 보유 수량 계산 (현재 보유 + 추가 매수)
+	val totalQuantity = (holdQuantity.toLongOrNull() ?: 0) + (addQuantity.toLongOrNull() ?: 0)
+
+	// 현재 총 매수 금액
+	val currentAmount = (holdPrice.toBiggerDecimal() ?: 0.0) * (holdQuantity.toLongOrNull() ?: 0)
+	// 추가 매수 금액
+	val addAmount = (addPrice.toBiggerDecimal() ?: 0.0) * (addQuantity.toLongOrNull() ?: 0)
+	// 최종 총 매수 금액
+	val totalAmount = currentAmount + addAmount
+
+	// 최종 평단가 계산 (총 금액 / 총 수량)
+	val averagePrice = if (totalQuantity > 0) totalAmount / totalQuantity else 0.0
+
+	Box(
+		modifier = Modifier
+			.fillMaxSize()
+			.background(FarmColors.getNight()) // 밤하늘 배경색
+			.clickable(
+				interactionSource = remember { MutableInteractionSource() },
+				indication = null,
+				onClick = {}
+			)
+			.statusBarsPadding()
+			.padding(16.dp)
+	) {
+		Column(
+			modifier = Modifier
+				.fillMaxSize()
+				.verticalScroll(rememberScrollState())
+		) {
+			// 헤더 영역
+			Row(
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier.fillMaxWidth()
+			) {
+				PixelButton("←", onClick = onDismiss, modifier = Modifier.width(40.dp))
+				Spacer(modifier = Modifier.width(16.dp))
+				Text("🧮 물타기/불타기", color = FarmColors.getGold(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
+			}
+
+			Spacer(modifier = Modifier.height(24.dp))
+
+			// 1. 보유 주식 (Current Holding)
+			Text("현재 보유 농산물", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+			Spacer(modifier = Modifier.height(8.dp))
+			PixelCard(containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
+				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+					// Material TextField 사용 (스타일 커스텀)
+					CalculatorTextField(
+						value = holdPrice,
+						onValueChange = { holdPrice = it },
+						label = "평단가(₩)",
+						modifier = Modifier.weight(1f)
+					)
+					CalculatorTextField(
+						value = holdQuantity,
+						onValueChange = { holdQuantity = it },
+						label = "수량(주)",
+						modifier = Modifier.weight(1f)
+					)
+				}
+			}
+
+			Spacer(modifier = Modifier.height(24.dp))
+
+			// 2. 추가 매수 (Additional Buy)
+			Text("추가 매수(물타기/불타기)", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+			Spacer(modifier = Modifier.height(8.dp))
+			PixelCard(containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
+				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+					CalculatorTextField(
+						value = addPrice,
+						onValueChange = { addPrice = it },
+						label = "매수단가(₩)",
+						modifier = Modifier.weight(1f)
+					)
+					CalculatorTextField(
+						value = addQuantity,
+						onValueChange = { addQuantity = it },
+						label = "매수수량(주)",
+						modifier = Modifier.weight(1f)
+					)
+				}
+			}
+
+			Spacer(modifier = Modifier.height(32.dp))
+
+			// 3. 결과 (Result)
+			PixelCard(containerColor = FarmColors.getGrass(), borderColor = FarmColors.getDarkGrass()) {
+				Column(
+					modifier = Modifier.fillMaxWidth().padding(8.dp),
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
+					Text(
+						text = "예상 최종 평단가",
+						style = MaterialTheme.typography.labelLarge,
+						color = Color.White.copy(alpha = 0.8f)
+					)
+					Spacer(modifier = Modifier.height(4.dp))
+					Text(
+						text = "${formatDecimal(averagePrice)}원",
+						style = MaterialTheme.typography.displaySmall,
+						fontWeight = FontWeight.Bold,
+						color = Color.White
+					)
+
+					Spacer(modifier = Modifier.height(16.dp))
+					Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color.White.copy(alpha = 0.3f)))
+					Spacer(modifier = Modifier.height(16.dp))
+
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+						horizontalArrangement = Arrangement.SpaceBetween
+					) {
+						Column(horizontalAlignment = Alignment.Start) {
+							Text("총 수량", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+							Text(
+								"${formatInteger(totalQuantity)}주",
+								style = MaterialTheme.typography.titleMedium,
+								fontWeight = FontWeight.SemiBold,
+								color = FarmColors.getGold()
+							)
+						}
+
+						Column(horizontalAlignment = Alignment.End) {
+							Text("총 매수 금액", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+							Text(
+								"${formatDecimal(totalAmount)}원",
+								style = MaterialTheme.typography.titleMedium,
+								fontWeight = FontWeight.SemiBold,
+								color = FarmColors.getGold()
+							)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@Composable
+fun CalculatorTextField(
+	value: String,
+	onValueChange: (String) -> Unit,
+	label: String,
+	modifier: Modifier = Modifier
+) {
+	OutlinedTextField(
+		value = value,
+		onValueChange = { if (it.all { char -> char.isDigit() || char == '.' }) onValueChange(it) },
+		label = { Text(label, color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp) },
+		modifier = modifier,
+		singleLine = true,
+		colors = OutlinedTextFieldDefaults.colors(
+			focusedBorderColor = FarmColors.getGold(),
+			unfocusedBorderColor = Color(0xFF1A3A4D),
+			focusedTextColor = Color.White,
+			unfocusedTextColor = Color.White,
+			cursorColor = FarmColors.getGold(),
+			focusedLabelColor = FarmColors.getGold(),
+			unfocusedLabelColor = Color.White.copy(alpha = 0.5f)
+		)
+	)
+}
+
+// 간단한 파싱 확장 함수
+private fun String.toBiggerDecimal(): Double? {
+	return this.toDoubleOrNull()
+}
+
+// KMP 호환용 간단 포맷터
+private fun formatDecimal(value: Double): String {
+	if (value.isNaN()) return "0"
+	val integerPart = value.toLong()
+	val fraction = value - integerPart
+	val fractionPart = (fraction * 100).toInt() // 소수점 2자리 간소화
+
+	// 0.05 -> 5, 0.5 -> 50
+	val fractionStr = if (fractionPart < 10) "0$fractionPart" else fractionPart.toString()
+	
+	// 소수점이 00이면 정수만 표시
+	return if (fractionPart == 0) {
+		formatInteger(integerPart)
+	} else {
+		"${formatInteger(integerPart)}.$fractionStr"
+	}
+}
+
+private fun formatInteger(value: Long): String {
+	return value.toString().reversed().chunked(3).joinToString(",").reversed()
+}
