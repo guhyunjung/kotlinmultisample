@@ -1,0 +1,65 @@
+package com.example.kotlinmultisample.shared.data.local.database
+
+import androidx.room.*
+import com.example.kotlinmultisample.shared.domain.model.Broker
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * 증권사 Room Entity (JVM Desktop)
+ *
+ * 로컬 데이터베이스의 'brokers' 테이블과 매핑됩니다.
+ * JVM 환경에서 Room이 이 클래스를 사용하여 테이블 스키마를 생성합니다.
+ */
+@Entity(tableName = "brokers")
+data class BrokerEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val name: String
+)
+
+/**
+ * Entity -> Domain 변환 확장 함수
+ */
+fun BrokerEntity.toDomain(): Broker {
+    return Broker(
+        id = id,
+        name = name
+    )
+}
+
+/**
+ * Domain -> Entity 변환 확장 함수
+ */
+fun Broker.toEntity(): BrokerEntity {
+    return BrokerEntity(
+        id = id,
+        name = name
+    )
+}
+
+/**
+ * 증권사 데이터 접근 객체 (DAO)
+ *
+ * JVM Desktop 환경에서의 SQL 쿼리를 정의합니다.
+ */
+@Dao
+interface BrokerDao {
+    /**
+     * 모든 증권사 목록 조회 (Reactive Flow)
+     * 테이블 변경 시 자동으로 새로운 리스트를 방출합니다.
+     */
+    @Query("SELECT * FROM brokers")
+    fun getAllBrokers(): Flow<List<BrokerEntity>>
+
+    /**
+     * 증권사 추가 또는 갱신
+     * 충돌 시 대체(REPLACE) 전략 사용
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBroker(broker: BrokerEntity)
+
+    /**
+     * 이름으로 증권사 삭제
+     */
+    @Query("DELETE FROM brokers WHERE name = :name")
+    suspend fun deleteBrokerByName(name: String)
+}

@@ -27,7 +27,7 @@ val viewModelModule = module {
     single { SettingsViewModel(get()) }
 
     // 농장 (Farm) - 튜토리얼 상태 유지 등을 위해 Single로 등록 (간단한 상태 관리)
-    single { FarmViewModel(get()) }
+    single { FarmViewModel(get(), get()) }
 
     /**
      * 국가 관련 (Domain Layer + Presentation Layer)

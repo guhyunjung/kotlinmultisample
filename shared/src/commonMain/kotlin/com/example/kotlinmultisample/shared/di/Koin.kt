@@ -1,6 +1,8 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.repository.FarmRepositoryImpl
 import com.example.kotlinmultisample.shared.data.repository.SettingsRepositoryImpl
+import com.example.kotlinmultisample.shared.domain.repository.FarmRepository
 import com.example.kotlinmultisample.shared.domain.repository.SettingsRepository
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesByRegionUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
@@ -55,4 +57,7 @@ val commonModule = module {
 
     // Settings
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
+
+    // Farm
+    single<FarmRepository> { FarmRepositoryImpl(get()) }
 }

@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.example.kotlinmultisample.shared.data.local.database.AppDatabase
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSourceImpl
+import com.example.kotlinmultisample.shared.data.local.datasource.LocalFarmDataSource
+import com.example.kotlinmultisample.shared.data.local.datasource.LocalFarmDataSourceImpl
 import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImpl
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
@@ -36,12 +38,20 @@ val androidDatabaseModule = module {
     /** CountryDao 싱글톤 등록 */
     single { get<AppDatabase>().countryDao() }
 
+    /** BrokerDao 싱글톤 등록 */
+    single { get<AppDatabase>().brokerDao() }
+
     /**
      * LocalCountryDataSource → LocalCountryDataSourceImpl 바인딩
      *
      * Room CountryDao를 주입받아 로컬 캐시를 담당합니다.
      */
     single<LocalCountryDataSource> { LocalCountryDataSourceImpl(get()) }
+
+    /**
+     * LocalFarmDataSource → LocalFarmDataSourceImpl 바인딩
+     */
+    single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get()) }
 }
 
 /**

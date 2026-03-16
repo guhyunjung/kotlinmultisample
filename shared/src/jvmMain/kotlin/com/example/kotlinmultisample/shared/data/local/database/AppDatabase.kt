@@ -12,9 +12,10 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [
-        CountryEntity::class  // 국가 정보 캐시 테이블
+        CountryEntity::class,  // 국가 정보 캐시 테이블
+        BrokerEntity::class    // 브로커 정보 캐시 테이블
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -26,6 +27,12 @@ abstract class AppDatabase : RoomDatabase() {
      * Koin 모듈에서 single { get<AppDatabase>().countryDao() } 로 등록하세요.
      */
     abstract fun countryDao(): CountryDao
+
+    /**
+     * 브로커 DAO 접근자
+     *
+     * Room이 컴파일 타임에 [BrokerDao] 구현체를 자동 생성합니다.
+     * Koin 모듈에서 single { get<AppDatabase>().brokerDao() } 로 등록하세요.
+     */
+    abstract fun brokerDao(): BrokerDao
 }
-
-
