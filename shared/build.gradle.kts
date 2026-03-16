@@ -32,6 +32,8 @@ kotlin {
 			implementation(libs.kotlinx.coroutines.core) // Coroutines Core
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.core)
+			implementation(libs.multiplatform.settings)
+			implementation(libs.multiplatform.settings.coroutines)
 		}
 		commonTest.dependencies {
 			implementation(libs.kotlin.test)

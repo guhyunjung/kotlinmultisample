@@ -24,10 +24,10 @@ val viewModelModule = module {
     viewModel { FruitViewModel(get()) }
 
     // Theme 설정 (앱 전역 상태 공유를 위해 single로 등록)
-    single { SettingsViewModel() }
+    single { SettingsViewModel(get()) }
 
     // 농장 (Farm) - 튜토리얼 상태 유지 등을 위해 Single로 등록 (간단한 상태 관리)
-    single { FarmViewModel() }
+    single { FarmViewModel(get()) }
 
     /**
      * 국가 관련 (Domain Layer + Presentation Layer)

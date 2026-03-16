@@ -23,6 +23,7 @@ fun SettingsScreen(
     // 앱 전역 상태 공유를 위해 single로 등록된 ViewModel 주입
     val viewModel = koinInject<SettingsViewModel>()
     val themeMode by viewModel.themeMode.collectAsState()
+    val isTutorialEnabled by viewModel.isTutorialEnabled.collectAsState()
 
     Scaffold(
         topBar = {
@@ -81,6 +82,47 @@ fun SettingsScreen(
                         description = "항상 어두운 화면을 유지합니다",
                         isSelected = themeMode == ThemeMode.DARK,
                         onClick = { viewModel.updateTheme(ThemeMode.DARK) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "앱 설정",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.setTutorialEnabled(!isTutorialEnabled) }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "농장 튜토리얼 보기",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "농장 화면 진입 시 도움말을 표시합니다",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = isTutorialEnabled,
+                        onCheckedChange = { viewModel.setTutorialEnabled(it) }
                     )
                 }
             }

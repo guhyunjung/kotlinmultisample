@@ -1,5 +1,7 @@
 package com.example.kotlinmultisample.shared.di
 
+import com.example.kotlinmultisample.shared.data.repository.SettingsRepositoryImpl
+import com.example.kotlinmultisample.shared.domain.repository.SettingsRepository
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesByRegionUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountryByCodeUseCase
@@ -50,4 +52,7 @@ val commonModule = module {
 	factory { RefreshCountriesUseCase(get()) }
 	factory { SearchCountriesUseCase() }
 	factory { GetCountriesByRegionUseCase() }
+
+    // Settings
+    single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 }

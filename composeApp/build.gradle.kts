@@ -30,6 +30,7 @@ kotlin {
 			implementation(libs.kotlinx.coroutines.android) // Coroutines Android
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.android)
+            implementation(libs.multiplatform.settings) // Add this
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.room.ktx)
@@ -62,6 +63,7 @@ kotlin {
 		jvmMain.dependencies {
 			implementation(compose.desktop.currentOs)
 			implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.multiplatform.settings) // Add this
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.sqlite.bundled)
@@ -87,7 +89,7 @@ android {
 	}
 	packaging {
 		resources {
-			excludes += "/META-INF/{AL2.0,LGPL2.1}"
+		 excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
 	buildTypes {

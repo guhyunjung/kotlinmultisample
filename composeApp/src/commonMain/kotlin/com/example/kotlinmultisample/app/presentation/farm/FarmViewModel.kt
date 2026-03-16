@@ -1,15 +1,26 @@
 package com.example.kotlinmultisample.app.presentation.farm
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.kotlinmultisample.shared.domain.repository.SettingsRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class FarmViewModel : ViewModel() {
-    private val _showTutorial = MutableStateFlow(true)
-    val showTutorial = _showTutorial.asStateFlow()
+class FarmViewModel(
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
+    val showTutorial = combine(
+        settingsRepository.isTutorialCompleted(),
+        settingsRepository.isTutorialEnabled()
+    ) { completed, enabled ->
+        !completed && enabled
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     fun completeTutorial() {
-        _showTutorial.value = false
+        viewModelScope.launch {
+            settingsRepository.setTutorialCompleted(true)
+        }
     }
 }
-

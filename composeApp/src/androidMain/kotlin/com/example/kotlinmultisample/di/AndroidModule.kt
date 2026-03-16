@@ -1,5 +1,6 @@
 package com.example.kotlinmultisample.di
 
+import android.content.Context
 import androidx.room.Room
 import com.example.kotlinmultisample.shared.data.local.database.AppDatabase
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
@@ -9,6 +10,8 @@ import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import com.example.kotlinmultisample.util.AndroidConnectivityObserver
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.SharedPreferencesSettings
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -64,6 +67,11 @@ val androidModules = listOf(
 
         single<ConnectivityObserver> {
             AndroidConnectivityObserver(androidContext())
+        }
+
+        single<ObservableSettings> {
+            val sharedPrefs = androidContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+            SharedPreferencesSettings(sharedPrefs)
         }
     }
 )

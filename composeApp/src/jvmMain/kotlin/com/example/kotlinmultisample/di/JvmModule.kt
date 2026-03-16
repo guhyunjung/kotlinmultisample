@@ -12,6 +12,9 @@ import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import com.example.kotlinmultisample.util.JvmConnectivityObserver
 import org.koin.dsl.module
 import java.io.File
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.PreferencesSettings
+import java.util.prefs.Preferences
 
 /**
  * JVM(Desktop) 전용 Room 데이터베이스 Koin 모듈
@@ -78,6 +81,13 @@ val jvmConnectivityModule = module {
     single<ConnectivityObserver> { JvmConnectivityObserver() }
 }
 
+val settingsModule = module {
+    single<ObservableSettings> {
+        val delegate = Preferences.userRoot()
+        PreferencesSettings(delegate)
+    }
+}
+
 /**
  * JVM(Desktop) 전용 Koin 모듈 목록
  *
@@ -95,5 +105,6 @@ val jvmModules = listOf(
     jvmDatabaseModule,  // Room Database
     jvmCountryModule,   // CountryRepository
     viewModelModule,    // ViewModel 등록
-    jvmConnectivityModule
+    jvmConnectivityModule,
+    settingsModule
 )
