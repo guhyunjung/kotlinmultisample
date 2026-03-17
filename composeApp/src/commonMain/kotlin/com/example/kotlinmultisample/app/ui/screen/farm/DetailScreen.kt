@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
  * 매수가, 평가금액, 손익 등의 상세 정보와 매매 버튼(물타기, 불타기 등)을 포함합니다.
  */
 @Composable
-fun DetailOverlayNew(seed: FarmSeed, onDismiss: () -> Unit) {
+fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 	// FarmSeed 모델에서 데이터 가져오기
 	val buyingPrice = seed.buyingPrice.toInt()
 	val quantity = seed.quantity

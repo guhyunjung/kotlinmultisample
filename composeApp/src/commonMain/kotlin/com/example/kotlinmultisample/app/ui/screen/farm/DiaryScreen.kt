@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
  * 어두운 밤하늘 색상 테마를 사용합니다.
  */
 @Composable
-fun DiaryOverlayNew(onDismiss: () -> Unit) {
+fun DiaryScreen(onDismiss: () -> Unit) {
 	Box(
 		modifier = Modifier
 			.fillMaxSize()
@@ -99,14 +99,14 @@ fun DiaryOverlayNew(onDismiss: () -> Unit) {
 			Spacer(modifier = Modifier.height(16.dp))
 
 			// 이전 일기 리스트 표시
-			DiaryEntryNew("2026.03.13 ⛅", "한화에어로 방산 수출 뉴스 있었음. 좀 더 지켜보기로 함. 아직 확신은 없지만 업황이 좋은 것 같다.")
-			DiaryEntryNew("2026.03.10 ☀️", "삼성전자 수확 완료! 처음으로 수익 냈다. 다음엔 더 오래 기다려볼 것.")
+			DiaryEntry("2026.03.13 ⛅", "한화에어로 방산 수출 뉴스 있었음. 좀 더 지켜보기로 함. 아직 확신은 없지만 업황이 좋은 것 같다.")
+			DiaryEntry("2026.03.10 ☀️", "삼성전자 수확 완료! 처음으로 수익 냈다. 다음엔 더 오래 기다려볼 것.")
 		}
 	}
 }
 
 @Composable
-fun DiaryEntryNew(date: String, text: String) {
+fun DiaryEntry(date: String, text: String) {
 	PixelCard(
 		modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
 		containerColor = Color(0xFF0A1E2D),

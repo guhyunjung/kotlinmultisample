@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CalculateOverlayNew(onDismiss: () -> Unit) {
+fun CalculateScreen(onDismiss: () -> Unit) {
 	// 현재 보유 중인 단가 및 수량 (상태 보존)
 	var holdPrice by rememberSaveable { mutableStateOf("") }
 	var holdQuantity by rememberSaveable { mutableStateOf("") }

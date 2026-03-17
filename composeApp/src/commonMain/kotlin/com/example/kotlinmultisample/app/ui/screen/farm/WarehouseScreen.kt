@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
  * 실현 손익과 월별 차트, 과거 매매 이력을 보여주는 화면입니다.
  */
 @Composable
-fun WarehouseOverlayNew(onDismiss: () -> Unit) {
+fun WarehouseScreen(onDismiss: () -> Unit) {
 	Box(
 		modifier = Modifier
 			.fillMaxSize()

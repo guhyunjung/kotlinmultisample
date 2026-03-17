@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
  * 타이핑 효과와 단계 이동 기능을 포함합니다.
  */
 @Composable
-fun TutorialOverlayNew(onDismiss: () -> Unit) {
+fun TutorialModal(onDismiss: () -> Unit) {
 	// 튜토리얼 단계별 텍스트 리스트
 	val tutSteps = listOf(
 		"안녕하세요! 저는 농장지기 씨앗이에요. 여러분의 첫 투자 여정을 함께할게요!",
