@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample.shared.data.local.datasource
 
 import com.example.kotlinmultisample.shared.data.local.database.BrokerDao
+import com.example.kotlinmultisample.shared.data.local.database.DiaryDao
 import com.example.kotlinmultisample.shared.data.local.database.FarmSeedDao
 import com.example.kotlinmultisample.shared.data.local.database.toDomain
 import com.example.kotlinmultisample.shared.data.local.database.toEntity
@@ -21,7 +22,8 @@ import com.example.kotlinmultisample.getPlatform
  */
 class LocalFarmDataSourceImpl(
     private val brokerDao: BrokerDao,
-    private val farmSeedDao: FarmSeedDao
+    private val farmSeedDao: FarmSeedDao,
+    private val diaryDao: DiaryDao
 ) : LocalFarmDataSource {
     private val logger = Logger.withTag("[${getPlatform().name}][LocalFarmDataSourceImpl]")
 
@@ -82,6 +84,32 @@ class LocalFarmDataSourceImpl(
     override suspend fun deleteSeed(seed: FarmSeed) {
         withContext(Dispatchers.IO) {
             farmSeedDao.deleteSeed(seed.toEntity())
+        }
+    }
+
+    // --- Diary 관련 구현 ---
+
+    override fun getDiaries(): Flow<List<com.example.kotlinmultisample.shared.domain.model.DiaryEntry>> {
+        return diaryDao.getAllDiaries().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun insertDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+        withContext(Dispatchers.IO) {
+            diaryDao.insertDiary(entry.toEntity())
+        }
+    }
+
+    override suspend fun updateDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+        withContext(Dispatchers.IO) {
+            diaryDao.updateDiary(entry.toEntity())
+        }
+    }
+
+    override suspend fun deleteDiary(id: Long) {
+        withContext(Dispatchers.IO) {
+            diaryDao.deleteDiaryById(id)
         }
     }
 }

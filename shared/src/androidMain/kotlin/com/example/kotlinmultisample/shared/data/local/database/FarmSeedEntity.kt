@@ -2,6 +2,7 @@ package com.example.kotlinmultisample.shared.data.local.database
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 
@@ -21,7 +22,8 @@ import com.example.kotlinmultisample.shared.domain.model.FarmSeed
             childColumns = ["brokerId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["brokerId"])]
 )
 data class FarmSeedEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

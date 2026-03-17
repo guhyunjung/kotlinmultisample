@@ -14,9 +14,10 @@ import androidx.room.RoomDatabase
     entities = [
         CountryEntity::class,  // 국가 정보 캐시 테이블
         BrokerEntity::class,   // 브로커 정보 캐시 테이블
-        FarmSeedEntity::class  // 농작물(주식) 테이블
+        FarmSeedEntity::class, // 농작물(주식) 테이블
+        DiaryEntity::class     // 일기 데이터 테이블
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,4 +45,9 @@ abstract class AppDatabase : RoomDatabase() {
      * Koin 모듈에서 single { get<AppDatabase>().farmSeedDao() } 로 등록하세요.
      */
     abstract fun farmSeedDao(): FarmSeedDao
+    
+    /**
+     * 일기 DAO 접근자 (JVM)
+     */
+    abstract fun diaryDao(): DiaryDao
 }

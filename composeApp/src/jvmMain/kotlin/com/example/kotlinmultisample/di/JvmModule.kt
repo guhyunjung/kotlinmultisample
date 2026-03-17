@@ -2,6 +2,8 @@ package com.example.kotlinmultisample.di
 
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 import com.example.kotlinmultisample.shared.data.local.database.AppDatabase
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSource
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalCountryDataSourceImpl
@@ -11,8 +13,6 @@ import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImp
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.shared.network.ConnectivityObserver
-import co.touchlab.kermit.Logger
-import com.example.kotlinmultisample.getPlatform
 import com.example.kotlinmultisample.util.JvmConnectivityObserver
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.PreferencesSettings
@@ -64,6 +64,9 @@ val jvmDatabaseModule = module {
     /** FarmSeedDao 싱글톤 등록 */
     single { get<AppDatabase>().farmSeedDao() }
 
+	/** DiaryDao 싱글톤 등록 */
+	single { get<AppDatabase>().diaryDao() }
+
 	/**
 	 * LocalCountryDataSource → LocalCountryDataSourceImpl 바인딩
 	 *
@@ -74,7 +77,7 @@ val jvmDatabaseModule = module {
 	/**
 	 * LocalFarmDataSource → LocalFarmDataSourceImpl 바인딩
 	 */
-	single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get(), get()) }
+	single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get(), get(), get()) }
 }
 
 /**

@@ -43,6 +43,9 @@ val androidDatabaseModule = module {
 
     /** FarmSeedDao 싱글톤 등록 */
     single { get<AppDatabase>().farmSeedDao() }
+    
+    /** DiaryDao 싱글톤 등록 */
+    single { get<AppDatabase>().diaryDao() }
 
     /**
      * LocalCountryDataSource → LocalCountryDataSourceImpl 바인딩
@@ -54,7 +57,7 @@ val androidDatabaseModule = module {
     /**
      * LocalFarmDataSource → LocalFarmDataSourceImpl 바인딩
      */
-    single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get(), get()) }
+    single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get(), get(), get()) }
 }
 
 /**

@@ -1,12 +1,12 @@
 package com.example.kotlinmultisample.shared.data.repository
 
+import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalFarmDataSource
 import com.example.kotlinmultisample.shared.domain.model.Broker
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import com.example.kotlinmultisample.shared.domain.repository.FarmRepository
 import kotlinx.coroutines.flow.Flow
-import co.touchlab.kermit.Logger
-import com.example.kotlinmultisample.getPlatform
 
 /**
  * 농장 데이터 저장소 구현체
@@ -53,6 +53,24 @@ class FarmRepositoryImpl(
 
     override fun getSeeds(): Flow<List<FarmSeed>> {
         return localDataSource.getSeeds()
+    }
+
+    // --- Diary 관련 구현 ---
+
+    override fun getDiaries(): Flow<List<com.example.kotlinmultisample.shared.domain.model.DiaryEntry>> {
+        return localDataSource.getDiaries()
+    }
+
+    override suspend fun addDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+        localDataSource.insertDiary(entry)
+    }
+
+    override suspend fun updateDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+        localDataSource.updateDiary(entry)
+    }
+
+    override suspend fun deleteDiary(id: Long) {
+        localDataSource.deleteDiary(id)
     }
 
     override fun getSeedsByBroker(brokerId: Long): Flow<List<FarmSeed>> {
