@@ -1,9 +1,11 @@
 package com.example.kotlinmultisample.app.ui.screen.farm
 
 data class FarmSeed(
+    val id: Long = 0, // 고유 ID (Room 등에서 자동생성을 위해 필요)
+    val brokerId: Long, // 부모 증권사 ID
     val name: String,
     val emoji: String,
-    val pct: Double,
+    val pct: Double = 0.0,
     val buyingPrice: Double = 0.0,
     val quantity: Int = 0
 ) {

@@ -2,6 +2,7 @@ package com.example.kotlinmultisample.shared.data.repository
 
 import com.example.kotlinmultisample.shared.data.local.datasource.LocalFarmDataSource
 import com.example.kotlinmultisample.shared.domain.model.Broker
+import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import com.example.kotlinmultisample.shared.domain.repository.FarmRepository
 import kotlinx.coroutines.flow.Flow
 import co.touchlab.kermit.Logger
@@ -48,5 +49,25 @@ class FarmRepositoryImpl(
     override suspend fun updateBroker(broker: Broker) {
         logger.d { "updateBroker(broker=$broker) 호출" }
         localDataSource.updateBroker(broker)
+    }
+
+    override fun getSeeds(): Flow<List<FarmSeed>> {
+        return localDataSource.getSeeds()
+    }
+
+    override fun getSeedsByBroker(brokerId: Long): Flow<List<FarmSeed>> {
+        return localDataSource.getSeedsByBroker(brokerId)
+    }
+
+    override suspend fun addSeed(seed: FarmSeed) {
+        localDataSource.insertSeed(seed)
+    }
+
+    override suspend fun updateSeed(seed: FarmSeed) {
+        localDataSource.updateSeed(seed)
+    }
+
+    override suspend fun deleteSeed(seed: FarmSeed) {
+        localDataSource.deleteSeed(seed)
     }
 }

@@ -29,7 +29,6 @@ import com.example.kotlinmultisample.shared.domain.model.Broker
  * @param onDeleteBroker 증권사 삭제 콜백
  */
 @Composable
-
 fun BrokerTabs(
 	brokers: List<Broker>,
 	selectedBroker: Broker?,

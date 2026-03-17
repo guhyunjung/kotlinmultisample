@@ -1,6 +1,7 @@
 package com.example.kotlinmultisample.shared.data.local.datasource
 
 import com.example.kotlinmultisample.shared.domain.model.Broker
+import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -27,4 +28,16 @@ interface LocalFarmDataSource {
      * 증권사 정보 수정
      */
     suspend fun updateBroker(broker: Broker)
+    
+    // --- Seed 관련 메서드 추가 ---
+    
+    fun getSeeds(): Flow<List<FarmSeed>>
+    
+    fun getSeedsByBroker(brokerId: Long): Flow<List<FarmSeed>>
+    
+    suspend fun insertSeed(seed: FarmSeed)
+    
+    suspend fun updateSeed(seed: FarmSeed)
+    
+    suspend fun deleteSeed(seed: FarmSeed)
 }

@@ -36,4 +36,29 @@ interface FarmRepository {
      * @param broker 수정할 증권사 객체 (변경된 내용 포함)
      */
     suspend fun updateBroker(broker: Broker)
+
+    /**
+     * 모든 농작물(씨앗) 목록을 실시간으로 가져옵니다.
+     */
+    fun getSeeds(): Flow<List<com.example.kotlinmultisample.shared.domain.model.FarmSeed>>
+
+    /**
+     * 특정 증권사에 속한 농작물 목록을 가져옵니다.
+     */
+    fun getSeedsByBroker(brokerId: Long): Flow<List<com.example.kotlinmultisample.shared.domain.model.FarmSeed>>
+
+    /**
+     * 새로운 농작물을 키웁니다 (추가).
+     */
+    suspend fun addSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
+
+    /**
+     * 농작물 정보를 수정합니다.
+     */
+    suspend fun updateSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
+    
+    /**
+     * 농작물을 제거합니다.
+     */
+    suspend fun deleteSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
 }
