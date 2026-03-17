@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*

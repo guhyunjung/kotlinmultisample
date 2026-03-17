@@ -15,10 +15,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import com.example.kotlinmultisample.app.ui.screen.farm.FarmSeed
-import com.example.kotlinmultisample.app.ui.screen.farm.SummaryData
-import com.example.kotlinmultisample.app.ui.screen.farm.DiaryEntry
-import com.example.kotlinmultisample.app.ui.screen.farm.DiaryType
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
+import com.example.kotlinmultisample.app.ui.screen.farm.model.SummaryData
+import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryEntry
+import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType
+import kotlin.collections.map
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed as DomainFarmSeed
 
 /**

@@ -1,4 +1,7 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.tabs
+
+import com.example.kotlinmultisample.app.ui.screen.farm.components.*
+import com.example.kotlinmultisample.app.ui.screen.farm.model.*
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource

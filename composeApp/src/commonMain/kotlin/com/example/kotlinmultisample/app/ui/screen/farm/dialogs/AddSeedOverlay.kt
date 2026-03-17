@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
 
 @Composable
 fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {

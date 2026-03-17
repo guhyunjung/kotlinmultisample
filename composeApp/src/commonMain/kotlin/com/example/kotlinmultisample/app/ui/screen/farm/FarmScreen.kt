@@ -10,6 +10,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
+import com.example.kotlinmultisample.app.ui.screen.farm.components.*
+import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.AddSeedOverlay
+import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.DetailScreen
+import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.TutorialModal
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmDestination
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
+import com.example.kotlinmultisample.app.ui.screen.farm.tabs.BagScreen
+import com.example.kotlinmultisample.app.ui.screen.farm.tabs.CalculateScreen
+import com.example.kotlinmultisample.app.ui.screen.farm.tabs.DiaryScreen
+import com.example.kotlinmultisample.app.ui.screen.farm.tabs.WarehouseScreen
 import com.example.kotlinmultisample.app.ui.util.BackHandler
 import org.koin.compose.koinInject
 

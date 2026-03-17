@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.model
 
 data class FarmSeed(
     val id: Long = 0, // 고유 ID (Room 등에서 자동생성을 위해 필요)

@@ -1,4 +1,6 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.components
+
+import com.example.kotlinmultisample.app.ui.screen.farm.model.SummaryData
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlinmultisample.app.ui.screen.farm.util.formatDecimal
 
 /**
  * 상단 요약 바

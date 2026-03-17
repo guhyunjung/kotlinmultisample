@@ -1,4 +1,6 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.components
+
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

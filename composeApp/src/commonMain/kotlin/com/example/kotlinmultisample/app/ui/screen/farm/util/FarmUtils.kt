@@ -1,4 +1,4 @@
-package com.example.kotlinmultisample.app.ui.screen.farm
+package com.example.kotlinmultisample.app.ui.screen.farm.util
 
 // 간단한 파싱 확장 함수
 internal fun String.toBiggerDecimal(): Double? {
