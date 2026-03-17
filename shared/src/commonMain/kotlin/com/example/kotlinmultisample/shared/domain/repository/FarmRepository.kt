@@ -29,4 +29,11 @@ interface FarmRepository {
      * @param name 삭제할 증권사 이름
      */
     suspend fun deleteBroker(name: String)
+
+    /**
+     * 기존 증권사 정보를 수정합니다.
+     *
+     * @param broker 수정할 증권사 객체 (변경된 내용 포함)
+     */
+    suspend fun updateBroker(broker: Broker)
 }

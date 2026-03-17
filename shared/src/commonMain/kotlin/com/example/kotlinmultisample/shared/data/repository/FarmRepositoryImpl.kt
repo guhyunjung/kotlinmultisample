@@ -35,4 +35,11 @@ class FarmRepositoryImpl(
     override suspend fun deleteBroker(name: String) {
         localDataSource.deleteBrokerByName(name)
     }
+
+    /**
+     * 증권사 수정
+     */
+    override suspend fun updateBroker(broker: Broker) {
+        localDataSource.updateBroker(broker)
+    }
 }

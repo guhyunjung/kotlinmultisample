@@ -147,4 +147,27 @@ class FarmViewModel(
             settingsRepository.setTutorialCompleted(true)
         }
     }
+
+    /**
+     * 증권사 삭제
+     * @param broker 삭제할 증권사 객체
+     */
+    fun deleteBroker(broker: Broker) {
+        viewModelScope.launch {
+            farmRepository.deleteBroker(broker.name)
+        }
+    }
+
+    /**
+     * 증권사 이름 수정
+     * @param broker 수정할 증권사 객체
+     * @param newName 새로운 이름
+     */
+    fun updateBroker(broker: Broker, newName: String) {
+        viewModelScope.launch {
+            // Broker 데이터 클래스의 copy 메서드를 활용하여 이름만 변경한 새 객체 생성 (ID 유지)
+            val updatedBroker = broker.copy(name = newName)
+            farmRepository.updateBroker(updatedBroker)
+        }
+    }
 }

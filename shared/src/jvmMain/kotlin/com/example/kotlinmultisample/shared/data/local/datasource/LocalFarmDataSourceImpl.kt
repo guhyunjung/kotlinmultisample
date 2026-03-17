@@ -35,4 +35,12 @@ class LocalFarmDataSourceImpl(
             brokerDao.deleteBrokerByName(name)
         }
     }
+
+    override suspend fun updateBroker(broker: Broker) {
+        withContext(Dispatchers.IO) {
+            // REPLACE 전략 사용으로 insertBroker 재사용 또는 명시적 update 쿼리 사용
+           // 여기서는 Dao의 insert(REPLACE) 활용
+            brokerDao.insertBroker(broker.toEntity())
+        }
+    }
 }

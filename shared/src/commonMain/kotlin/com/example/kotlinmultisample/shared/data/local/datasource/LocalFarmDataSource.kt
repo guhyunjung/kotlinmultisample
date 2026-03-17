@@ -22,4 +22,9 @@ interface LocalFarmDataSource {
      * 이름으로 증권사 삭제
      */
     suspend fun deleteBrokerByName(name: String)
+
+    /**
+     * 증권사 정보 수정
+     */
+    suspend fun updateBroker(broker: Broker)
 }

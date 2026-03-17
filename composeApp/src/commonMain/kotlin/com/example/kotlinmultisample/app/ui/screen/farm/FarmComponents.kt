@@ -138,18 +138,23 @@ fun PixelButton(
 	containerColor: Color? = null,
 	contentColor: Color? = null,
 	borderColor: Color? = null,
-	onClick: () -> Unit
+	onClick: (() -> Unit)? = null
 ) {
 	val actualContainerColor = containerColor ?: FarmColors.getGrass()
 	val actualContentColor = contentColor ?: FarmColors.getGold()
 	val actualBorderColor = borderColor ?: FarmColors.getDarkGrass()
 
+	val clickableModifier = if (onClick != null) {
+		modifier.clickable(onClick = onClick)
+	} else {
+		modifier
+	}
+
 	Box(
-		modifier = modifier
+		modifier = clickableModifier
 			.height(40.dp)
 			.background(actualContainerColor, PixelShape)
 			.border(BorderStroke(2.dp, actualBorderColor), PixelShape)
-			.clickable(onClick = onClick)
 			.padding(horizontal = 4.dp), // 내부 패딩 축소하여 공간 확보
 		contentAlignment = Alignment.Center
 	) {

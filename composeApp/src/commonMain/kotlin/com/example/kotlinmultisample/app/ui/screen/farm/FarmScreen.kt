@@ -63,7 +63,11 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
 				brokers = brokers,
 				selectedBroker = selectedBroker,
 				onBrokerSelected = { viewModel.selectBroker(it) },
-				onAddBroker = { viewModel.addBroker(it) }
+				onAddBroker = { viewModel.addBroker(it) },
+				onEditBroker = { broker, newName ->
+					viewModel.updateBroker(broker, newName)
+				},
+				onDeleteBroker = { viewModel.deleteBroker(it) } // 삭제 콜백 연결
 			)
 
 			// 3. 농장 영역 (메인 콘텐츠: 요약정보 + 작물 그리드)
