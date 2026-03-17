@@ -17,6 +17,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import com.example.kotlinmultisample.app.ui.screen.farm.FarmSeed
 import com.example.kotlinmultisample.app.ui.screen.farm.SummaryData
+import com.example.kotlinmultisample.app.ui.screen.farm.DiaryEntry
+import com.example.kotlinmultisample.app.ui.screen.farm.DiaryType
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed as DomainFarmSeed
 
 /**
@@ -73,6 +75,15 @@ class FarmViewModel(
         SummaryData(totalInvest, totalCurrent, totalProfit)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SummaryData())
 
+    // 다이어리 목록 (임시 메모리 저장)
+    private val _diaryEntries = MutableStateFlow<List<DiaryEntry>>(
+        listOf(
+            DiaryEntry(1, "2026-03-13", "한화에어로 방산 수출 뉴스 있었음. 좀 더 지켜보기로 함. 아직 확신은 없지만 업황이 좋은 것 같다.", DiaryType.DAILY),
+            DiaryEntry(2, "2026-03-10", "삼성전자 수확 완료! 처음으로 수익 냈다. 다음엔 더 오래 기다려볼 것.", DiaryType.DAILY)
+        )
+    )
+    val diaryEntries = _diaryEntries.asStateFlow()
+
     init {
         loadBrokers()
     }
@@ -82,6 +93,35 @@ class FarmViewModel(
         viewModelScope.launch {
             farmRepository.addSeed(seed.toDomainModel(broker.id))
         }
+    }
+
+    /**
+     * 다이어리에 새로운 항목 추가
+     * @param entry 추가할 다이어리 항목
+     */
+    fun addDiary(entry: DiaryEntry) {
+        val current = _diaryEntries.value.toMutableList()
+        val nextId = (current.maxOfOrNull { it.id } ?: 0L) + 1
+        current.add(0, entry.copy(id = nextId))
+        _diaryEntries.value = current
+    }
+
+    /**
+     * 다이어리 항목 수정
+     * @param entry 수정할 다이어리 항목
+     */
+    fun updateDiary(entry: DiaryEntry) {
+         _diaryEntries.value = _diaryEntries.value.map {
+            if (it.id == entry.id) entry else it
+        }
+    }
+
+    /**
+     * 다이어리 항목 삭제
+     * @param id 삭제할 다이어리 항목의 ID
+     */
+    fun deleteDiary(id: Long) {
+        _diaryEntries.value = _diaryEntries.value.filter { it.id != id }
     }
 
     /**

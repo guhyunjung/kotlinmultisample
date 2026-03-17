@@ -1,12 +1,10 @@
 package com.example.kotlinmultisample.app.ui.screen.farm
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -25,15 +23,15 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SkySection(onMenuClick: () -> Unit = {}) {
     // 구름 좌우 반복 이동 애니메이션 (2초 간격으로 20dp 범위 왕복)
-    val infiniteTransition = rememberInfiniteTransition()
-    val cloudOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 20f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearOutSlowInEasing), // 2초간 이동 (천천히 출발 후 빠르게)
-            repeatMode = RepeatMode.Reverse // 왕복 반복
-        )
-    )
+    // val infiniteTransition = rememberInfiniteTransition()
+    // val cloudOffset by infiniteTransition.animateFloat(
+    //     initialValue = 0f,
+    //     targetValue = 20f,
+    //     animationSpec = infiniteRepeatable(
+    //         animation = tween(2000, easing = LinearOutSlowInEasing), // 2초간 이동 (천천히 출발 후 빠르게)
+    //         repeatMode = RepeatMode.Reverse // 왕복 반복
+    //     )
+    // )
 
     Box(
         modifier = Modifier
@@ -69,19 +67,19 @@ fun SkySection(onMenuClick: () -> Unit = {}) {
         }
 
         // 좌측 요소: 둥둥 떠다니는 구름 아이콘 (애니메이션 적용)
-        Surface(
-            shape = PixelShape,
-            color = FarmColors.getCloud(),
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .offset(y = cloudOffset.dp) // Y축으로 움직여 둥둥 떠다니는 느낌 연출
-        ) {
-            Text(
-                "☁️",
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                fontSize = 12.sp
-            )
-        }
+        // Surface(
+        //     shape = PixelShape,
+        //     color = FarmColors.getCloud(),
+        //     modifier = Modifier
+        //         .align(Alignment.CenterStart)
+        //         .offset(y = cloudOffset.dp) // Y축으로 움직여 둥둥 떠다니는 느낌 연출
+        // ) {
+        //     Text(
+        //         "☁️",
+        //         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        //         fontSize = 12.sp
+        //     )
+        // }
 
         // 우측 요소: 햄버거 메뉴 버튼 (누르면 설정 메뉴 등으로 이동)
         Surface(

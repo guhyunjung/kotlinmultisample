@@ -26,7 +26,7 @@ import org.koin.compose.koinInject
  * - 하단: [BottomMenuBarNew] (항상 표시)
  */
 @Composable
-fun FarmScreen(onMenuClick: () -> Unit = {}) {
+fun FarmScreen(onMenuClick: () -> Unit = {}, showToast: (String) -> Unit = {}) {
 	// Koin을 통해 싱글톤 ViewModel 주입 (앱 실행 중 튜토리얼 상태 유지 등의 역할)
 	val viewModel = koinInject<FarmViewModel>()
 
@@ -108,7 +108,7 @@ fun FarmScreen(onMenuClick: () -> Unit = {}) {
                                             if (selectedBroker != null) {
                                                 showAddSeed = true 
                                             } else {
-                                                // TODO: '증권사를 먼저 선택해주세요' 토스트 메시지 등 필요
+                                                showToast("증권사를 먼저 선택해주세요 😅")
                                             }
                                         }
                                     )

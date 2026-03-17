@@ -4,14 +4,17 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
 
 /**
  * 종목 상세 정보 오버레이
@@ -21,13 +24,14 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 	// FarmSeed 모델에서 데이터 가져오기
-	val buyingPrice = seed.buyingPrice.toInt()
-	val quantity = seed.quantity
-	val totalBuying = seed.totalBuyingValue.toInt()
-	val currentPrice = seed.currentPrice.toInt()
-	val totalCurrent = seed.totalCurrentValue.toInt()
-	val profit = seed.profit.toInt()
-	val profitSign = if (profit > 0) "+" else ""
+	val buyingPrice = formatNumber(seed.buyingPrice.toLong())
+	val quantity = formatNumber(seed.quantity.toLong())
+	val totalBuying = formatNumber(seed.totalBuyingValue.toLong())
+	val currentPrice = formatNumber(seed.currentPrice.toLong())
+	val totalCurrent = formatNumber(seed.totalCurrentValue.toLong())
+	val profitVal = seed.profit.toLong()
+	val profit = formatNumber(profitVal)
+	val profitSign = if (profitVal > 0) "+" else ""
 
 	Box(
 		modifier = Modifier
@@ -60,22 +64,20 @@ fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 
 			Spacer(modifier = Modifier.height(20.dp))
 
-			// 2. 상세 정보: 2열 그리드 배치로 변경 (화면 높이 절약을 위한 레이아웃 최적화)
+			// 2. 상세 정보: 1열 리스트 배치로 변경 (가독성 향상을 위해 큼직하게 표시)
 			PixelCard(containerColor = FarmColors.getDarkGrass()) {
-				Row(modifier = Modifier.fillMaxWidth()) {
-					// 왼쪽 열
-					Column(modifier = Modifier.weight(1f)) {
-						DetailRowNew("매수가", "${buyingPrice}원")
-						DetailRowNew("매수금액", "${totalBuying}원")
-						DetailRowNew("평가금액", "${totalCurrent}원")
-					}
-					Spacer(modifier = Modifier.width(16.dp))
-					// 오른쪽 열
-					Column(modifier = Modifier.weight(1f)) {
-						DetailRowNew("보유수량", "${quantity}주")
-						DetailRowNew("현재가", "${currentPrice}원")
-						DetailRowNew("매도가", "미정", color = Color.Gray)
-					}
+				Column(modifier = Modifier.fillMaxWidth()) {
+					DetailRowNew("매수가", "${buyingPrice}원")
+					DetailRowNew("보유수량", "${quantity}주")
+					DetailRowNew("현재가", "${currentPrice}원")
+					
+					Spacer(modifier = Modifier.height(8.dp))
+					Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(FarmColors.getGround().copy(alpha = 0.5f)))
+					Spacer(modifier = Modifier.height(8.dp))
+
+					DetailRowNew("매수금액", "${totalBuying}원")
+					DetailRowNew("평가금액", "${totalCurrent}원")
+					DetailRowNew("매도가", "미정", color = Color.Gray)
 				}
 
 				Spacer(modifier = Modifier.height(8.dp))
@@ -87,38 +89,46 @@ fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 				DetailRowNew(
 					"손익",
 					"$profitSign${profit}원 (${if (seed.pct > 0) "+" else ""}${seed.pct}%)",
-					color = if (profit >= 0) FarmColors.getGold() else FarmColors.getSoftRed()
+					color = if (profitVal >= 0) FarmColors.getGold() else FarmColors.getSoftRed(),
+					isBold = true
 				)
 			}
 
 			Spacer(modifier = Modifier.height(16.dp))
 
-			// 3. 액션 버튼 (매수/매도 관련 재미있는 네이밍 사용)
-			Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-				PixelButton(
-					"💧물타기", // 추가 매수 (가격 하락 시)
-					modifier = Modifier.weight(1f),
-					containerColor = FarmColors.getWater(),
-					contentColor = Color(0xFFB8D4FF),
-					onClick = {})
-				PixelButton(
-					"🔥불타기", // 추가 매수 (가격 상승 시)
-					modifier = Modifier.weight(1f),
-					containerColor = FarmColors.getFire(),
-					contentColor = Color(0xFFFFD4B8),
-					onClick = {})
-				PixelButton(
-					"✂️익절", // 이익 실현 매도
-					modifier = Modifier.weight(1f),
-					containerColor = FarmColors.getHarvest(),
-					contentColor = Color(0xFFE8FFD0),
-					onClick = {})
-				PixelButton(
-					"💀손절", // 손실 확정 매도
-					modifier = Modifier.weight(1f),
-					containerColor = FarmColors.getCut(),
-					contentColor = Color(0xFFE0B8FF),
-					onClick = {})
+			// 3. 액션 버튼 (매수/매도 관련 재미있는 네이밍 사용, 2줄 배치)
+			Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+				// 첫 번째 줄: 매수 관련 (물타기, 불타기)
+				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+					PixelButton(
+						"💧물타기", // 추가 매수 (가격 하락 시)
+						modifier = Modifier.weight(1f),
+						containerColor = FarmColors.getWater(),
+						contentColor = Color(0xFFB8D4FF),
+						onClick = {})
+					PixelButton(
+						"🔥불타기", // 추가 매수 (가격 상승 시)
+						modifier = Modifier.weight(1f),
+						containerColor = FarmColors.getFire(),
+						contentColor = Color(0xFFFFD4B8),
+						onClick = {})
+				}
+				
+				// 두 번째 줄: 매도 관련 (익절, 손절)
+				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+					PixelButton(
+						"✂️익절", // 이익 실현 매도
+						modifier = Modifier.weight(1f),
+						containerColor = FarmColors.getHarvest(),
+						contentColor = Color(0xFFE8FFD0),
+						onClick = {})
+					PixelButton(
+						"💀손절", // 손실 확정 매도
+						modifier = Modifier.weight(1f),
+						containerColor = FarmColors.getCut(),
+						contentColor = Color(0xFFE0B8FF),
+						onClick = {})
+				}
 			}
 
 			// 4. 농부 말풍선: 현재 수익 상태에 따른 코멘트 표시
@@ -144,10 +154,10 @@ fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 					// 말풍선 텍스트 (수익 여부에 따라 다른 메시지 출력)
 					Column {
 						Text(
-							text = if (profit >= 0) "수익 중이에요! 👏\n목표가까지 조금 더 기다려볼까요?"
+							text = if (profitVal >= 0) "수익 중이에요! 👏\n목표가까지 조금 더 기다려볼까요?"
 							else "어라..? 비가 오네요 ☔\n힘내세요 농부님! 해는 다시 뜰 거예요.",
 							color = FarmColors.getLightGreen(),
-							fontSize = 12.sp,
+							fontSize = 14.sp,
 							lineHeight = 18.sp
 						)
 					}
@@ -158,15 +168,27 @@ fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun DetailRowNew(label: String, value: String, color: Color = Color.White) {
+fun DetailRowNew(label: String, value: String, color: Color = Color.White, isBold: Boolean = false) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 4.dp),
+			.padding(vertical = 8.dp), // 간격 넓힘
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		Text(label, fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
-		Text(value, fontSize = 12.sp, color = color, fontWeight = FontWeight.Bold)
+		Text(label, fontSize = 16.sp, color = Color.White.copy(alpha = 0.7f)) // 폰트 키움
+		Text(
+			value, 
+			fontSize = if (isBold) 20.sp else 18.sp, // 값 폰트 더 키움
+			color = color, 
+			fontWeight = FontWeight.Bold
+		)
 	}
+}
+
+// 천단위 콤마 포맷터 (KMP 호환)
+fun formatNumber(amount: Long): String {
+	val str = abs(amount).toString()
+	val formatted = str.reversed().chunked(3).joinToString(",").reversed()
+	return if (amount < 0) "-$formatted" else formatted
 }

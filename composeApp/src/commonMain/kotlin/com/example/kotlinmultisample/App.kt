@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.country.CountryViewModel
 import com.example.kotlinmultisample.app.presentation.settings.SettingsViewModel
 import com.example.kotlinmultisample.app.presentation.settings.ThemeMode
-import com.example.kotlinmultisample.app.ui.theme.getTypography
 import com.example.kotlinmultisample.app.ui.component.AppDrawerContent
 import com.example.kotlinmultisample.app.ui.screen.HomeScreen
 import com.example.kotlinmultisample.app.ui.screen.SettingsScreen
@@ -26,13 +25,14 @@ import com.example.kotlinmultisample.app.ui.screen.SplashScreen
 import com.example.kotlinmultisample.app.ui.screen.country.CountryDetailScreen
 import com.example.kotlinmultisample.app.ui.screen.country.CountryListScreen
 import com.example.kotlinmultisample.app.ui.screen.farm.FarmScreen
+import com.example.kotlinmultisample.app.ui.theme.getTypography
+import com.example.kotlinmultisample.app.ui.util.BackHandler
+import com.example.kotlinmultisample.app.ui.util.getCurrentTimeMillis
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.shared.network.ConnectivityObserver
 import com.example.kotlinmultisample.simple.FruitScreen
 import com.example.kotlinmultisample.simple.FruitViewModel
-import com.example.kotlinmultisample.app.ui.util.BackHandler
-import com.example.kotlinmultisample.app.ui.util.getCurrentTimeMillis
 import kotlinmultisample.composeapp.generated.resources.Res
 import kotlinmultisample.composeapp.generated.resources.compose_multiplatform
 import kotlinx.coroutines.delay
@@ -95,8 +95,8 @@ fun App(
 			} catch (_: Exception) {
 				// 로딩 중 발생한 에러는 여기서 잡고 메인 화면에서 재처리 가능하도록 함
 			} finally {
-				// 스플래시 화면이 너무 순식간에 지나가지 않도록 최소 노출 시간(1.5초) 보장
-				delay(1500)
+				// 스플래시 화면이 너무 순식간에 지나가지 않도록 최소 노출 시간(3초) 보장
+				delay(3000)
 				isAppReady = true
 			}
 		}
@@ -266,7 +266,7 @@ fun MainContent(
 						}
 
 						AppDestinations.FARM -> {
-							FarmScreen(onMenuClick = openDrawer)
+							FarmScreen(onMenuClick = openDrawer, showToast = showToast)
 						}
 
 						AppDestinations.SETTINGS -> {

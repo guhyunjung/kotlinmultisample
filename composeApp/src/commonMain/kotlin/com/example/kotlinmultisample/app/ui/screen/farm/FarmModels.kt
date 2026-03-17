@@ -27,3 +27,16 @@ data class SummaryData(
     val totalCurrent: Double = 0.0,
     val totalProfit: Double = 0.0
 )
+
+enum class DiaryType(val label: String) {
+    DAILY("오늘일기"),
+    INTEREST("관심종목"),
+    STUDY("공부노트")
+}
+
+data class DiaryEntry(
+    val id: Long = 0,
+    val date: String, // YYYY-MM-DD
+    val content: String,
+    val type: DiaryType = DiaryType.DAILY
+)

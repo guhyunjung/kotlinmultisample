@@ -48,7 +48,7 @@ fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "새로운 씨앗 심기",
+                    "🌲새로운 씨앗 심기",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = FarmColors.getGold()
@@ -62,7 +62,11 @@ fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        unfocusedContainerColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.DarkGray,
+                        unfocusedLabelColor = Color.Gray
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +78,11 @@ fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {
                     singleLine = true,
                      colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        unfocusedContainerColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.DarkGray,
+                        unfocusedLabelColor = Color.Gray
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -86,7 +94,11 @@ fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {
                     singleLine = true,
                      colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
+                        unfocusedContainerColor = Color.White,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.DarkGray,
+                        unfocusedLabelColor = Color.Gray
                     )
                 )
                 
@@ -111,10 +123,9 @@ fun AddSeedOverlay(onDismiss: () -> Unit, onAdd: (FarmSeed) -> Unit) {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = FarmColors.getGrass())
                 ) {
-                    Text("심기", color = Color.White)
+                    Text("🌱심기", color = Color.White)
                 }
             }
         }
     }
 }
-
