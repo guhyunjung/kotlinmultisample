@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import com.example.kotlinmultisample.app.ui.screen.farm.FarmSeed
 import com.example.kotlinmultisample.app.ui.screen.farm.SummaryData
+import com.example.kotlinmultisample.shared.domain.model.FarmSeed as DomainFarmSeed
 
 /**
  * 농장 화면의 상태를 관리하는 ViewModel

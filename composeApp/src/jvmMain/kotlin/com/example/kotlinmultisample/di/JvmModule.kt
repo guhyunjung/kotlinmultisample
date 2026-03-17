@@ -57,9 +57,12 @@ val jvmDatabaseModule = module {
 
 	/** CountryDao 싱글톤 등록 */
 	single { get<AppDatabase>().countryDao() }
+    
+    /** BrokerDao 싱글톤 등록 */
+    single { get<AppDatabase>().brokerDao() }
 
-	/** BrokerDao 싱글톤 등록 */
-	single { get<AppDatabase>().brokerDao() }
+    /** FarmSeedDao 싱글톤 등록 */
+    single { get<AppDatabase>().farmSeedDao() }
 
 	/**
 	 * LocalCountryDataSource → LocalCountryDataSourceImpl 바인딩
@@ -71,7 +74,7 @@ val jvmDatabaseModule = module {
 	/**
 	 * LocalFarmDataSource → LocalFarmDataSourceImpl 바인딩
 	 */
-	single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get()) }
+	single<LocalFarmDataSource> { LocalFarmDataSourceImpl(get(), get()) }
 }
 
 /**
