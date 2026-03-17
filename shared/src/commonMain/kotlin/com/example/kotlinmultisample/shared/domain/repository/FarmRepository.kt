@@ -1,9 +1,12 @@
 package com.example.kotlinmultisample.shared.domain.repository
 
 import com.example.kotlinmultisample.shared.domain.model.Broker
+import com.example.kotlinmultisample.shared.domain.model.DiaryEntry
+import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import kotlinx.coroutines.flow.Flow
 
 /**
+ * 농부의 주식농장 저장소 인터페이스
  * 농장(포트폴리오) 관련 데이터 저장소 인터페이스입니다.
  * 증권사 목록 및 작물(주식/코인) 관리 기능을 제공합니다.
  */
@@ -36,29 +39,53 @@ interface FarmRepository {
      * @param broker 수정할 증권사 객체 (변경된 내용 포함)
      */
     suspend fun updateBroker(broker: Broker)
-
+    
+    // --- Seed 관련 메서드 추가 ---
+    
     /**
      * 모든 농작물(씨앗) 목록을 실시간으로 가져옵니다.
      */
-    fun getSeeds(): Flow<List<com.example.kotlinmultisample.shared.domain.model.FarmSeed>>
+    fun getSeeds(): Flow<List<FarmSeed>>
 
     /**
      * 특정 증권사에 속한 농작물 목록을 가져옵니다.
      */
-    fun getSeedsByBroker(brokerId: Long): Flow<List<com.example.kotlinmultisample.shared.domain.model.FarmSeed>>
+    fun getSeedsByBroker(brokerId: Long): Flow<List<FarmSeed>>
 
     /**
      * 새로운 농작물을 키웁니다 (추가).
      */
-    suspend fun addSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
+    suspend fun addSeed(seed: FarmSeed)
 
     /**
      * 농작물 정보를 수정합니다.
      */
-    suspend fun updateSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
+    suspend fun updateSeed(seed: FarmSeed)
     
     /**
      * 농작물을 제거합니다.
      */
-    suspend fun deleteSeed(seed: com.example.kotlinmultisample.shared.domain.model.FarmSeed)
+    suspend fun deleteSeed(seed: FarmSeed)
+
+    // --- Diary 관련 메서드 추가 ---
+
+    /**
+     * 모든 일기 목록을 실시간으로 가져옵니다.
+     */
+    fun getDiaries(): Flow<List<DiaryEntry>>
+
+    /**
+     * 새로운 일기를 추가합니다.
+     */
+    suspend fun addDiary(entry: DiaryEntry)
+
+    /**
+     * 일기 정보를 수정합니다.
+     */
+    suspend fun updateDiary(entry: DiaryEntry)
+
+    /**
+     * 일기를 삭제합니다.
+     */
+    suspend fun deleteDiary(id: Long)
 }
