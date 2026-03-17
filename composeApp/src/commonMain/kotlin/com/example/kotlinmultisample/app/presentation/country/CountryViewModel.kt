@@ -6,7 +6,7 @@ import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.RefreshCountriesUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.SearchCountriesUseCase
-import com.example.kotlinmultisample.shared.util.Logger
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -45,14 +45,14 @@ class CountryViewModel(
      */
     fun loadCountries() {
         viewModelScope.launch {
-            Logger.i(TAG, "loadCountries() 시작")
+            Logger.i(TAG) { "loadCountries() 시작" }
             _state.value = _state.value.copy(isLoading = true, error = null)
             try {
                 val countries = getCountriesUseCase()
-                Logger.i(TAG, "국가 목록 로드 성공: ${countries.size}개")
+                Logger.i(TAG) { "국가 목록 로드 성공: ${countries.size}개" }
                 applyCountriesWithQuery(countries, _state.value.searchQuery.ifBlank { "kor" })
             } catch (e: Exception) {
-                Logger.e(TAG, "국가 목록 로드 실패: ${e.message}", e)
+                Logger.e(TAG, e) { "국가 목록 로드 실패: ${e.message}" }
                 _state.value = _state.value.copy(
                     isLoading = false,
                     error = e.message ?: "알 수 없는 오류가 발생했습니다"
@@ -69,14 +69,14 @@ class CountryViewModel(
      */
     fun refresh() {
         viewModelScope.launch {
-            Logger.i(TAG, "refresh() 시작 - 강제 API 호출")
+            Logger.i(TAG) { "refresh() 시작 - 강제 API 호출" }
             _state.value = _state.value.copy(isRefreshing = true, error = null)
             try {
                 val countries = refreshCountriesUseCase()
-                Logger.i(TAG, "강제 갱신 성공: ${countries.size}개")
+                Logger.i(TAG) { "강제 갱신 성공: ${countries.size}개" }
                 applyCountriesWithQuery(countries, _state.value.searchQuery)
             } catch (e: Exception) {
-                Logger.e(TAG, "강제 갱신 실패: ${e.message}", e)
+                Logger.e(TAG, e) { "강제 갱신 실패: ${e.message}" }
                 _state.value = _state.value.copy(
                     isRefreshing = false,
                     error = e.message ?: "갱신 중 오류가 발생했습니다"
@@ -94,7 +94,7 @@ class CountryViewModel(
      * @param query 검색어
      */
     fun search(query: String) {
-        Logger.d(TAG, "search() query=\"$query\"")
+        Logger.d(TAG) { "search() query=\"$query\"" }
         val filtered = searchCountriesUseCase(_state.value.countries, query)
         _state.value = _state.value.copy(
             searchQuery = query,
@@ -111,7 +111,7 @@ class CountryViewModel(
      */
     private fun applyCountriesWithQuery(countries: List<Country>, query: String) {
         val filtered = searchCountriesUseCase(countries, query)
-        Logger.i(TAG, "\"$query\" 필터링 결과: ${filtered.size}개")
+        Logger.i(TAG) { "\"$query\" 필터링 결과: ${filtered.size}개" }
         _state.value = _state.value.copy(
             isLoading = false,
             isRefreshing = false,
@@ -125,4 +125,3 @@ class CountryViewModel(
         private const val TAG = "CountryViewModel"
     }
 }
-

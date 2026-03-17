@@ -11,6 +11,7 @@ import com.example.kotlinmultisample.shared.data.repository.CountryRepositoryImp
 import com.example.kotlinmultisample.shared.di.networkModule
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import com.example.kotlinmultisample.shared.network.ConnectivityObserver
+import co.touchlab.kermit.Logger
 import com.example.kotlinmultisample.util.JvmConnectivityObserver
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.PreferencesSettings
@@ -39,7 +40,7 @@ val jvmDatabaseModule = module {
 		val dbFile = File(dbDir, "app_database.db")
 
 		// 개발 중 DB 파일 위치를 쉽게 확인하기 위해 로그 출력
-		println("📦 [JVM DB] Database Path: ${dbFile.absolutePath}")
+		Logger.i("JvmModule") { "📦 [JVM DB] Database Path: ${dbFile.absolutePath}" }
 
 		Room.databaseBuilder<AppDatabase>(
 			name = dbFile.absolutePath

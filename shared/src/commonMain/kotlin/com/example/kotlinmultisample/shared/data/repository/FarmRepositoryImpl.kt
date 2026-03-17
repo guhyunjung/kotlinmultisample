@@ -4,6 +4,7 @@ import com.example.kotlinmultisample.shared.data.local.datasource.LocalFarmDataS
 import com.example.kotlinmultisample.shared.domain.model.Broker
 import com.example.kotlinmultisample.shared.domain.repository.FarmRepository
 import kotlinx.coroutines.flow.Flow
+import co.touchlab.kermit.Logger
 
 /**
  * 농장 데이터 저장소 구현체
@@ -14,11 +15,13 @@ import kotlinx.coroutines.flow.Flow
 class FarmRepositoryImpl(
     private val localDataSource: LocalFarmDataSource
 ) : FarmRepository {
+    private val logger = Logger.withTag("FarmRepositoryImpl")
     
     /**
      * 모든 증권사 목록 실시간 조회
      */
     override fun getBrokers(): Flow<List<Broker>> {
+        logger.d { "getBrokers() 호출" }
         return localDataSource.getBrokers()
     }
 
@@ -26,6 +29,7 @@ class FarmRepositoryImpl(
      * 증권사 추가 (ID는 DB에서 자동 생성되므로 0으로 전달)
      */
     override suspend fun addBroker(name: String) {
+        logger.d { "addBroker(name=$name) 호출" }
         localDataSource.insertBroker(Broker(id = 0, name = name))
     }
 
@@ -33,6 +37,7 @@ class FarmRepositoryImpl(
      * 증권사 삭제
      */
     override suspend fun deleteBroker(name: String) {
+        logger.d { "deleteBroker(name=$name) 호출" }
         localDataSource.deleteBrokerByName(name)
     }
 
@@ -40,6 +45,7 @@ class FarmRepositoryImpl(
      * 증권사 수정
      */
     override suspend fun updateBroker(broker: Broker) {
+        logger.d { "updateBroker(broker=$broker) 호출" }
         localDataSource.updateBroker(broker)
     }
 }

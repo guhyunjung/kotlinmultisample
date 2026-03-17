@@ -5,6 +5,7 @@ import com.example.kotlinmultisample.shared.data.remote.datasource.RemoteCountry
 import com.example.kotlinmultisample.shared.data.remote.dto.toDomain
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
+import co.touchlab.kermit.Logger
 
 /**
  * [CountryRepository] 구현체 - Offline-First 캐시 전략
@@ -36,6 +37,7 @@ class CountryRepositoryImpl(
     private val remoteDataSource: RemoteCountryDataSource,
     private val localDataSource: LocalCountryDataSource
 ) : CountryRepository {
+    private val logger = Logger.withTag("CountryRepositoryImpl")
 
     /**
      * 전체 국가 목록 조회 (Cache-First)
@@ -46,6 +48,7 @@ class CountryRepositoryImpl(
      * @return 도메인 모델 [Country] 목록
      */
     override suspend fun getCountries(): List<Country> {
+        logger.d { "getCountries() 호출" }
         // 1. 로컬 캐시 확인
         val cached = localDataSource.getCountries()
         if (cached.isNotEmpty()) {
@@ -66,6 +69,7 @@ class CountryRepositoryImpl(
      * @return 도메인 모델 [Country], 없으면 null
      */
     override suspend fun getCountryByCode(code: String): Country? {
+        logger.d { "getCountryByCode(cca2=$code) 호출" }
         // 1. 로컬 캐시에서 alpha-2 코드로 조회
         val cached = localDataSource.getCountryByCode(code)
         if (cached != null) {
@@ -91,8 +95,10 @@ class CountryRepositoryImpl(
      *
      * @return 갱신된 [Country] 목록
      */
-    override suspend fun refreshCountries(): List<Country> =
-        fetchAndCacheCountries()
+    override suspend fun refreshCountries(): List<Country> {
+        logger.d { "refreshCountries() 호출" }
+        return fetchAndCacheCountries()
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // 내부 헬퍼

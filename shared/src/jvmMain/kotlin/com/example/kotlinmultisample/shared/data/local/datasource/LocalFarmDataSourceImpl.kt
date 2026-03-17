@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
+import co.touchlab.kermit.Logger
 
 /**
  * JVM Desktop 로컬 데이터 소스 구현체
@@ -18,28 +19,34 @@ import kotlinx.coroutines.Dispatchers
 class LocalFarmDataSourceImpl(
     private val brokerDao: BrokerDao
 ) : LocalFarmDataSource {
+    private val logger = Logger.withTag("LocalFarmDataSourceImpl(JVM)")
+
     override fun getBrokers(): Flow<List<Broker>> {
+        logger.d { "getBrokers() 호출" }
         return brokerDao.getAllBrokers().map { entities -> 
             entities.map { it.toDomain() } 
         }
     }
 
     override suspend fun insertBroker(broker: Broker) {
+        logger.d { "insertBroker(broker=$broker) 호출" }
         withContext(Dispatchers.IO) {
             brokerDao.insertBroker(broker.toEntity())
         }
     }
 
     override suspend fun deleteBrokerByName(name: String) {
+        logger.d { "deleteBrokerByName(name=$name) 호출" }
         withContext(Dispatchers.IO) {
             brokerDao.deleteBrokerByName(name)
         }
     }
 
     override suspend fun updateBroker(broker: Broker) {
+        logger.d { "updateBroker(broker=$broker) 호출" }
         withContext(Dispatchers.IO) {
             // REPLACE 전략 사용으로 insertBroker 재사용 또는 명시적 update 쿼리 사용
-           // 여기서는 Dao의 insert(REPLACE) 활용
+            // 여기서는 Dao의 insert(REPLACE) 활용
             brokerDao.insertBroker(broker.toEntity())
         }
     }

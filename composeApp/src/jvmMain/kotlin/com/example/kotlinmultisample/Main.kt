@@ -2,6 +2,7 @@ package com.example.kotlinmultisample
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import co.touchlab.kermit.Logger
 import com.example.kotlinmultisample.di.jvmModules
 import com.example.kotlinmultisample.shared.di.initKoin
 
@@ -13,7 +14,6 @@ import com.example.kotlinmultisample.shared.di.initKoin
  * 이 블록 내에서 Window를 생성하고 DI를 초기화합니다.
  */
 fun main() = application {
-
 	/**
 	 * Koin DI(Dependency Injection) 초기화
 	 *
@@ -29,13 +29,14 @@ fun main() = application {
 	/**
 	 * 애플리케이션 메인 윈도우(Window) 생성
 	 */
+	val logger = Logger.withTag("Main")
 	Window(
 		onCloseRequest = ::exitApplication,
 		title = "KotlinMultiSample",
 	) {
 		App(
 			onExit = ::exitApplication,
-			showToast = { println("Toast: $it") }
+			showToast = { logger.i { "Toast: $it" } }
 		)
 	}
 }

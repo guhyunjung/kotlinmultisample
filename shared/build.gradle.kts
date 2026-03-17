@@ -34,6 +34,7 @@ kotlin {
 			implementation(libs.koin.core)
 			implementation(libs.multiplatform.settings)
 			implementation(libs.multiplatform.settings.coroutines)
+			api(libs.kermit) // 로깅 라이브러리 (api로 노출하여 의존하는 모듈에서도 사용 가능하게 함)
 		}
 		commonTest.dependencies {
 			implementation(libs.kotlin.test)
