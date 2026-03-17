@@ -1,8 +1,5 @@
 package com.example.kotlinmultisample.app.ui.screen.farm.dialogs
 
-import com.example.kotlinmultisample.app.ui.screen.farm.components.*
-import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -17,6 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
+import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
+import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
 import kotlin.math.abs
 
 /**
@@ -25,7 +26,7 @@ import kotlin.math.abs
  * 매수가, 평가금액, 손익 등의 상세 정보와 매매 버튼(물타기, 불타기 등)을 포함합니다.
  */
 @Composable
-fun DetailScreen(seed: FarmSeed, onDismiss: () -> Unit) {
+fun DetailOverlay(seed: FarmSeed, onDismiss: () -> Unit) {
 	// FarmSeed 모델에서 데이터 가져오기
 	val buyingPrice = formatNumber(seed.buyingPrice.toLong())
 	val quantity = formatNumber(seed.quantity.toLong())

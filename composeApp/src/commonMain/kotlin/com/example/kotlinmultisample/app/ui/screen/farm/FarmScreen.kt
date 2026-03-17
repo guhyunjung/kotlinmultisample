@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
 import com.example.kotlinmultisample.app.ui.screen.farm.components.*
 import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.AddSeedOverlay
-import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.DetailScreen
-import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.TutorialModal
+import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.DetailOverlay
+import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.TutorialOverlay
 import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmDestination
 import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
 import com.example.kotlinmultisample.app.ui.screen.farm.tabs.BagScreen
@@ -161,7 +161,7 @@ fun FarmScreen(onMenuClick: () -> Unit = {}, showToast: (String) -> Unit = {}) {
 			enter = fadeIn() + scaleIn(initialScale = 0.9f),
 			exit = fadeOut() + scaleOut(targetScale = 0.9f)
 		) {
-			TutorialModal(onDismiss = { viewModel.completeTutorial() })
+			TutorialOverlay(onDismiss = { viewModel.completeTutorial() })
 		}
 
 		// 상세 정보 오버레이 (Grid 아이템 클릭 시)
@@ -171,7 +171,7 @@ fun FarmScreen(onMenuClick: () -> Unit = {}, showToast: (String) -> Unit = {}) {
 			exit = slideOutVertically(targetOffsetY = { it })
 		) {
 			selectedSeed?.let { seed ->
-				DetailScreen(seed = seed, onDismiss = { selectedSeed = null })
+				DetailOverlay(seed = seed, onDismiss = { selectedSeed = null })
 			}
 		}
 
