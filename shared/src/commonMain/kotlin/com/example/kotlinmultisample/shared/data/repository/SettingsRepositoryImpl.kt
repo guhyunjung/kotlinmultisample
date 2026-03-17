@@ -6,12 +6,13 @@ import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.coroutines.getBooleanFlow
 import kotlinx.coroutines.flow.Flow
 import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 
 @OptIn(ExperimentalSettingsApi::class)
 class SettingsRepositoryImpl(
     private val settings: ObservableSettings
 ) : SettingsRepository {
-    private val logger = Logger.withTag("SettingsRepositoryImpl")
+    private val logger = Logger.withTag("[${getPlatform().name}][SettingsRepositoryImpl]")
 
     private val KEY_TUTORIAL_COMPLETED = "tutorial_completed"
     private val KEY_TUTORIAL_ENABLED = "tutorial_enabled"

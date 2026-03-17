@@ -5,6 +5,7 @@ import com.example.kotlinmultisample.shared.domain.model.Broker
 import com.example.kotlinmultisample.shared.domain.repository.FarmRepository
 import kotlinx.coroutines.flow.Flow
 import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 
 /**
  * 농장 데이터 저장소 구현체
@@ -15,7 +16,7 @@ import co.touchlab.kermit.Logger
 class FarmRepositoryImpl(
     private val localDataSource: LocalFarmDataSource
 ) : FarmRepository {
-    private val logger = Logger.withTag("FarmRepositoryImpl")
+    private val logger = Logger.withTag("[${getPlatform().name}][FarmRepositoryImpl]")
     
     /**
      * 모든 증권사 목록 실시간 조회

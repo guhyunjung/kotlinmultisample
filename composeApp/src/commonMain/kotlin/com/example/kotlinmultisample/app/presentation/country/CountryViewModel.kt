@@ -7,6 +7,7 @@ import com.example.kotlinmultisample.shared.domain.usecase.GetCountriesUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.RefreshCountriesUseCase
 import com.example.kotlinmultisample.shared.domain.usecase.SearchCountriesUseCase
 import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -122,6 +123,6 @@ class CountryViewModel(
     }
 
     companion object {
-        private const val TAG = "CountryViewModel"
+        private val TAG = "[${getPlatform().name}][CountryViewModel]"
     }
 }

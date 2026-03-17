@@ -4,11 +4,12 @@ import com.example.kotlinmultisample.shared.data.local.database.BrokerDao
 import com.example.kotlinmultisample.shared.data.local.database.toDomain
 import com.example.kotlinmultisample.shared.data.local.database.toEntity
 import com.example.kotlinmultisample.shared.domain.model.Broker
+import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
-import co.touchlab.kermit.Logger
 
 /**
  * JVM Desktop 로컬 데이터 소스 구현체
@@ -19,7 +20,7 @@ import co.touchlab.kermit.Logger
 class LocalFarmDataSourceImpl(
     private val brokerDao: BrokerDao
 ) : LocalFarmDataSource {
-    private val logger = Logger.withTag("LocalFarmDataSourceImpl(JVM)")
+    private val logger = Logger.withTag("[${getPlatform().name}][LocalFarmDataSourceImpl]")
 
     override fun getBrokers(): Flow<List<Broker>> {
         logger.d { "getBrokers() 호출" }

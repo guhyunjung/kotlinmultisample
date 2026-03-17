@@ -31,3 +31,7 @@ dependencies {
 	// PostgreSQL JDBC Driver
 	runtimeOnly(libs.postgresql)
 }
+
+tasks.withType<JavaExec> {
+    jvmArgs("-Dfile.encoding=UTF-8")
+}

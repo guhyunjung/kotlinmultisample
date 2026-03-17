@@ -5,6 +5,7 @@ import com.example.kotlinmultisample.shared.data.local.database.toDomain
 import com.example.kotlinmultisample.shared.data.local.database.toEntity
 import com.example.kotlinmultisample.shared.domain.model.Country
 import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 
 /**
  * [LocalCountryDataSource] Room 구현체 (Android 전용)
@@ -17,7 +18,7 @@ import co.touchlab.kermit.Logger
 class LocalCountryDataSourceImpl(
     private val dao: CountryDao
 ) : LocalCountryDataSource {
-    private val logger = Logger.withTag("LocalCountryDataSourceImpl(Android)")
+    private val logger = Logger.withTag("[${getPlatform().name}][LocalCountryDataSourceImpl]")
 
     /**
      * 로컬 DB에서 전체 국가 목록 조회

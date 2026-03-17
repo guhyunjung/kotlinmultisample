@@ -6,6 +6,7 @@ import com.example.kotlinmultisample.shared.data.remote.dto.toDomain
 import com.example.kotlinmultisample.shared.domain.model.Country
 import com.example.kotlinmultisample.shared.domain.repository.CountryRepository
 import co.touchlab.kermit.Logger
+import com.example.kotlinmultisample.getPlatform
 
 /**
  * [CountryRepository] 구현체 - Offline-First 캐시 전략
@@ -37,7 +38,7 @@ class CountryRepositoryImpl(
     private val remoteDataSource: RemoteCountryDataSource,
     private val localDataSource: LocalCountryDataSource
 ) : CountryRepository {
-    private val logger = Logger.withTag("CountryRepositoryImpl")
+    private val logger = Logger.withTag("[${getPlatform().name}][CountryRepositoryImpl]")
 
     /**
      * 전체 국가 목록 조회 (Cache-First)

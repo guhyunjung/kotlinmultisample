@@ -109,6 +109,10 @@ dependencies {
 	// Room KSP는 shared 모듈에서 처리하므로 여기서는 제거
 }
 
+tasks.withType<JavaExec> {
+    jvmArgs("-Dfile.encoding=UTF-8")
+}
+
 compose.desktop {
 	application {
 		mainClass = "com.example.kotlinmultisample.MainKt"
