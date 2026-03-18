@@ -1,13 +1,13 @@
 package com.example.kotlinmultisample.app.ui.screen.farm.tabs
 
-import com.example.kotlinmultisample.app.ui.screen.farm.components.*
-import com.example.kotlinmultisample.app.ui.screen.farm.model.*
-
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarToday
@@ -22,7 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
-import kotlinx.datetime.*
+import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
+import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
+import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryUiModel
+import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.koinInject
 
 /**
@@ -39,7 +47,7 @@ fun DiaryScreen(
 	val diaryEntries by viewModel.diaryEntries.collectAsState()
 
 	// 편집 모드 상태 (null이면 리스트 모드, 객체가 있으면 편집/추가 모드)
-	var editingEntry by remember { mutableStateOf<DiaryEntry?>(null) }
+	var editingEntry by remember { mutableStateOf<DiaryUiModel?>(null) }
 
 	Box(
 		modifier = Modifier
@@ -75,7 +83,7 @@ fun DiaryScreen(
 				onAddClick = {
 					// 새 항목 생성 (오늘 날짜 기본)
 					val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
-					editingEntry = DiaryEntry(id = 0, date = today, content = "", type = DiaryType.DAILY)
+					editingEntry = DiaryUiModel(id = 0, date = today, content = "", type = DiaryType.DAILY)
 				},
 				onEntryClick = { editingEntry = it }
 			)
@@ -85,10 +93,10 @@ fun DiaryScreen(
 
 @Composable
 fun DiaryList(
-	entries: List<DiaryEntry>,
+	entries: List<DiaryUiModel>,
 	onDismiss: () -> Unit,
 	onAddClick: () -> Unit,
-	onEntryClick: (DiaryEntry) -> Unit
+	onEntryClick: (DiaryUiModel) -> Unit
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize()
@@ -137,7 +145,7 @@ fun DiaryList(
 }
 
 @Composable
-fun DiaryEntryItem(entry: DiaryEntry, onClick: () -> Unit) {
+fun DiaryEntryItem(entry: DiaryUiModel, onClick: () -> Unit) {
 	val typeColor = when (entry.type) {
 		DiaryType.DAILY -> Color(0xFF4FC3F7) // Light Blue
 		DiaryType.INTEREST -> Color(0xFFFFB74D) // Orange
@@ -183,10 +191,10 @@ fun DiaryEntryItem(entry: DiaryEntry, onClick: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryEditor(
-	entry: DiaryEntry,
-	onSave: (DiaryEntry) -> Unit,
+	entry: DiaryUiModel,
+	onSave: (DiaryUiModel) -> Unit,
 	onCancel: () -> Unit,
-	onDelete: (DiaryEntry) -> Unit
+	onDelete: (DiaryUiModel) -> Unit
 ) {
 	var content by remember { mutableStateOf(entry.content) }
 	var selectedType by remember { mutableStateOf(entry.type) }

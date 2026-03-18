@@ -1,7 +1,7 @@
 package com.example.kotlinmultisample.shared.domain.repository
 
 import com.example.kotlinmultisample.shared.domain.model.Broker
-import com.example.kotlinmultisample.shared.domain.model.DiaryEntry
+import com.example.kotlinmultisample.shared.domain.model.Diary
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import kotlinx.coroutines.flow.Flow
 
@@ -72,17 +72,17 @@ interface FarmRepository {
     /**
      * 모든 일기 목록을 실시간으로 가져옵니다.
      */
-    fun getDiaries(): Flow<List<DiaryEntry>>
+    fun getDiaries(): Flow<List<Diary>>
 
     /**
      * 새로운 일기를 추가합니다.
      */
-    suspend fun addDiary(entry: DiaryEntry)
+    suspend fun addDiary(entry: Diary)
 
     /**
      * 일기 정보를 수정합니다.
      */
-    suspend fun updateDiary(entry: DiaryEntry)
+    suspend fun updateDiary(entry: Diary)
 
     /**
      * 일기를 삭제합니다.

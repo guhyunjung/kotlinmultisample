@@ -57,15 +57,15 @@ class FarmRepositoryImpl(
 
     // --- Diary 관련 구현 ---
 
-    override fun getDiaries(): Flow<List<com.example.kotlinmultisample.shared.domain.model.DiaryEntry>> {
+    override fun getDiaries(): Flow<List<com.example.kotlinmultisample.shared.domain.model.Diary>> {
         return localDataSource.getDiaries()
     }
 
-    override suspend fun addDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+    override suspend fun addDiary(entry: com.example.kotlinmultisample.shared.domain.model.Diary) {
         localDataSource.insertDiary(entry)
     }
 
-    override suspend fun updateDiary(entry: com.example.kotlinmultisample.shared.domain.model.DiaryEntry) {
+    override suspend fun updateDiary(entry: com.example.kotlinmultisample.shared.domain.model.Diary) {
         localDataSource.updateDiary(entry)
     }
 

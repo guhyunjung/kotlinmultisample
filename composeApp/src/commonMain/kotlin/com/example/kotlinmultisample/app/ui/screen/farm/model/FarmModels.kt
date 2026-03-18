@@ -34,7 +34,7 @@ enum class DiaryType(val label: String) {
     STUDY("공부노트")
 }
 
-data class DiaryEntry(
+data class DiaryUiModel(
     val id: Long = 0,
     val date: String, // YYYY-MM-DD
     val content: String,

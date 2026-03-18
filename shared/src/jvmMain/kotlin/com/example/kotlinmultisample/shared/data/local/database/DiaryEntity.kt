@@ -2,7 +2,7 @@ package com.example.kotlinmultisample.shared.data.local.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.kotlinmultisample.shared.domain.model.DiaryEntry
+import com.example.kotlinmultisample.shared.domain.model.Diary
 import com.example.kotlinmultisample.shared.domain.model.DiaryType
 
 @Entity(tableName = "diary")
@@ -13,16 +13,20 @@ data class DiaryEntity(
     val type: String 
 )
 
-fun DiaryEntity.toDomain(): DiaryEntry {
-    return DiaryEntry(
+fun DiaryEntity.toDomain(): Diary {
+    return Diary(
         id = id,
         date = date,
         content = content,
-        type = try { DiaryType.valueOf(type) } catch (e: Exception) { DiaryType.DAILY }
+        type = try { 
+                DiaryType.entries.find { it.name == type } ?: DiaryType.DAILY 
+            } catch (e: Exception) { 
+                DiaryType.DAILY 
+            }
     )
 }
 
-fun DiaryEntry.toEntity(): DiaryEntity {
+fun Diary.toEntity(): DiaryEntity {
     return DiaryEntity(
         id = id,
         date = date,

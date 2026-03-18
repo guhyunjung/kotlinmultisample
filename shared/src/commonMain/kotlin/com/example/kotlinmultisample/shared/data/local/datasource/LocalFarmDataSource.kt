@@ -1,7 +1,7 @@
 package com.example.kotlinmultisample.shared.data.local.datasource
 
 import com.example.kotlinmultisample.shared.domain.model.Broker
-import com.example.kotlinmultisample.shared.domain.model.DiaryEntry
+import com.example.kotlinmultisample.shared.domain.model.Diary
 import com.example.kotlinmultisample.shared.domain.model.FarmSeed
 import kotlinx.coroutines.flow.Flow
 
@@ -44,11 +44,11 @@ interface LocalFarmDataSource {
 
     // --- Diary 관련 메서드 추가 ---
 
-    fun getDiaries(): Flow<List<DiaryEntry>>
+    fun getDiaries(): Flow<List<Diary>>
 
-    suspend fun insertDiary(entry: DiaryEntry)
+    suspend fun insertDiary(entry: Diary)
 
-    suspend fun updateDiary(entry: DiaryEntry)
+    suspend fun updateDiary(entry: Diary)
 
     suspend fun deleteDiary(id: Long)
 }

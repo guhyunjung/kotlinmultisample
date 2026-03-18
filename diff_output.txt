@@ -1,0 +1,248 @@
+diff --git a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/presentation/farm/FarmViewModel.kt b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/presentation/farm/FarmViewModel.kt
+index c088686..aee1d58 100644
+--- a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/presentation/farm/FarmViewModel.kt
++++ b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/presentation/farm/FarmViewModel.kt
+@@ -17,9 +17,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
+ import kotlinx.coroutines.launch
+ import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
+ import com.example.kotlinmultisample.app.ui.screen.farm.model.SummaryData
+-import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryEntry
+-import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType
+-import kotlin.collections.map
++import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType as UiDiaryType
++import com.example.kotlinmultisample.shared.domain.model.DiaryType as DomainDiaryType
++import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryEntry as UiDiaryEntry
++import com.example.kotlinmultisample.shared.domain.model.DiaryEntry as DomainDiaryEntry
+ import com.example.kotlinmultisample.shared.domain.model.FarmSeed as DomainFarmSeed
+ 
+ /**
+@@ -76,14 +77,13 @@ class FarmViewModel(
+         SummaryData(totalInvest, totalCurrent, totalProfit)
+     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SummaryData())
+ 
+-    // 다이어리 목록 (임시 메모리 저장)
+-    private val _diaryEntries = MutableStateFlow<List<DiaryEntry>>(
+-        listOf(
+-            DiaryEntry(1, "2026-03-13", "한화에어로 방산 수출 뉴스 있었음. 좀 더 지켜보기로 함. 아직 확신은 없지만 업황이 좋은 것 같다.", DiaryType.DAILY),
+-            DiaryEntry(2, "2026-03-10", "삼성전자 수확 완료! 처음으로 수익 냈다. 다음엔 더 오래 기다려볼 것.", DiaryType.DAILY)
+-        )
+-    )
+-    val diaryEntries = _diaryEntries.asStateFlow()
++    // 다이어리 목록 (DB 연동)
++    val diaryEntries = farmRepository.getDiaries()
++        .map { domainDiaries ->
++            domainDiaries.map { it.toUiModel() }
++        }
++        .catch { /* 에러 처리 */ }
++        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+ 
+     init {
+         loadBrokers()
+@@ -97,32 +97,33 @@ class FarmViewModel(
+     }
+ 
+     /**
+-     * 다이어리에 새로운 항목 추가
++     * 다이어리에 새로운 항목 추가 (DB 저장)
+      * @param entry 추가할 다이어리 항목
+      */
+-    fun addDiary(entry: DiaryEntry) {
+-        val current = _diaryEntries.value.toMutableList()
+-        val nextId = (current.maxOfOrNull { it.id } ?: 0L) + 1
+-        current.add(0, entry.copy(id = nextId))
+-        _diaryEntries.value = current
++    fun addDiary(entry: UiDiaryEntry) {
++        viewModelScope.launch {
++            farmRepository.addDiary(entry.toDomainModel())
++        }
+     }
+ 
+     /**
+-     * 다이어리 항목 수정
++     * 다이어리 항목 수정 (DB 저장)
+      * @param entry 수정할 다이어리 항목
+      */
+-    fun updateDiary(entry: DiaryEntry) {
+-         _diaryEntries.value = _diaryEntries.value.map {
+-            if (it.id == entry.id) entry else it
++    fun updateDiary(entry: UiDiaryEntry) {
++        viewModelScope.launch {
++            farmRepository.updateDiary(entry.toDomainModel())
+         }
+     }
+ 
+     /**
+-     * 다이어리 항목 삭제
++     * 다이어리 항목 삭제 (DB 저장)
+      * @param id 삭제할 다이어리 항목의 ID
+      */
+     fun deleteDiary(id: Long) {
+-        _diaryEntries.value = _diaryEntries.value.filter { it.id != id }
++        viewModelScope.launch {
++            farmRepository.deleteDiary(id)
++        }
+     }
+ 
+     /**
+@@ -219,4 +220,38 @@ class FarmViewModel(
+             quantity = quantity
+         )
+     }
++
++    private fun DomainDiaryEntry.toUiModel(): UiDiaryEntry {
++        return UiDiaryEntry(
++            id = id,
++            date = date,
++            content = content,
++            type = type.toUiModel()
++        )
++    }
++
++    private fun UiDiaryEntry.toDomainModel(): DomainDiaryEntry {
++        return DomainDiaryEntry(
++            id = id,
++            date = date,
++            content = content,
++            type = type.toDomainModel()
++        )
++    }
++
++    private fun DomainDiaryType.toUiModel(): UiDiaryType {
++        return when (this) {
++            DomainDiaryType.DAILY -> UiDiaryType.DAILY
++            DomainDiaryType.INTEREST -> UiDiaryType.INTEREST
++            DomainDiaryType.STUDY -> UiDiaryType.STUDY
++        }
++    }
++
++    private fun UiDiaryType.toDomainModel(): DomainDiaryType {
++        return when (this) {
++            UiDiaryType.DAILY -> DomainDiaryType.DAILY
++            UiDiaryType.INTEREST -> DomainDiaryType.INTEREST
++            UiDiaryType.STUDY -> DomainDiaryType.STUDY
++        }
++    }
+ }
+diff --git a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/CalculateScreen.kt b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/CalculateScreen.kt
+index a3bdd77..65f1484 100644
+--- a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/CalculateScreen.kt
++++ b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/CalculateScreen.kt
+@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.unit.sp
+-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+ import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
+ import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
++import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
+ import com.example.kotlinmultisample.app.ui.screen.farm.util.formatDecimal
+ import com.example.kotlinmultisample.app.ui.screen.farm.util.formatInteger
+ import com.example.kotlinmultisample.app.ui.screen.farm.util.toBiggerDecimal
+@@ -101,7 +101,12 @@ fun CalculateScreen(onDismiss: () -> Unit) {
+ 			Spacer(modifier = Modifier.height(24.dp))
+ 
+ 			// 2. 추가 매수 (Additional Buy)
+-			Text("추가 매수(물타기/불타기)", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
++			Text(
++				"추가 매수(물타기/불타기)",
++				color = Color.White.copy(alpha = 0.7f),
++				fontSize = 12.sp,
++				fontWeight = FontWeight.Bold
++			)
+ 			Spacer(modifier = Modifier.height(8.dp))
+ 			PixelCard(containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
+ 				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+@@ -150,7 +155,11 @@ fun CalculateScreen(onDismiss: () -> Unit) {
+ 						horizontalArrangement = Arrangement.SpaceBetween
+ 					) {
+ 						Column(horizontalAlignment = Alignment.Start) {
+-							Text("총 수량", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
++							Text(
++								"총 수량",
++								style = MaterialTheme.typography.bodyMedium,
++								color = Color.White.copy(alpha = 0.8f)
++							)
+ 							Text(
+ 								"${formatInteger(totalQuantity)}주",
+ 								style = MaterialTheme.typography.titleMedium,
+@@ -160,7 +169,11 @@ fun CalculateScreen(onDismiss: () -> Unit) {
+ 						}
+ 
+ 						Column(horizontalAlignment = Alignment.End) {
+-							Text("총 매수 금액", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
++							Text(
++								"총 매수 금액",
++								style = MaterialTheme.typography.bodyMedium,
++								color = Color.White.copy(alpha = 0.8f)
++							)
+ 							Text(
+ 								"${formatDecimal(totalAmount)}원",
+ 								style = MaterialTheme.typography.titleMedium,
+diff --git a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/DiaryScreen.kt b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/DiaryScreen.kt
+index 3788ee3..a9698e5 100644
+--- a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/DiaryScreen.kt
++++ b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/DiaryScreen.kt
+@@ -1,13 +1,13 @@
+ package com.example.kotlinmultisample.app.ui.screen.farm.tabs
+ 
+-import com.example.kotlinmultisample.app.ui.screen.farm.components.*
+-import com.example.kotlinmultisample.app.ui.screen.farm.model.*
+-
+-import androidx.compose.foundation.*
++import androidx.compose.foundation.background
++import androidx.compose.foundation.clickable
+ import androidx.compose.foundation.interaction.MutableInteractionSource
+ import androidx.compose.foundation.layout.*
+ import androidx.compose.foundation.lazy.LazyColumn
++import androidx.compose.foundation.rememberScrollState
+ import androidx.compose.foundation.shape.RoundedCornerShape
++import androidx.compose.foundation.verticalScroll
+ import androidx.compose.material.icons.Icons
+ import androidx.compose.material.icons.filled.Add
+ import androidx.compose.material.icons.filled.CalendarToday
+@@ -22,7 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.unit.sp
+ import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
+-import kotlinx.datetime.*
++import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
++import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
++import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryEntry
++import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType
++import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
++import kotlinx.datetime.Clock
++import kotlinx.datetime.Instant
++import kotlinx.datetime.TimeZone
++import kotlinx.datetime.toLocalDateTime
+ import org.koin.compose.koinInject
+ 
+ /**
+diff --git a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/WarehouseScreen.kt b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/WarehouseScreen.kt
+index e5ef134..b74150b 100644
+--- a/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/WarehouseScreen.kt
++++ b/composeApp/src/commonMain/kotlin/com/example/kotlinmultisample/app/ui/screen/farm/tabs/WarehouseScreen.kt
+@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.unit.sp
+-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+ import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
+ import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
++import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
+ 
+ /**
+  * 창고 오버레이 (매매 기록 확인)
+@@ -83,7 +83,12 @@ fun WarehouseScreen(onDismiss: () -> Unit) {
+ 				val chartData = listOf("1월" to 32000, "2월" to -18000, "3월" to 63000)
+ 				chartData.forEach { (month, profit) ->
+ 					Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+-						Text(month, fontSize = 10.sp, color = Color.White.copy(alpha = 0.6f), modifier = Modifier.width(40.dp))
++						Text(
++							month,
++							fontSize = 10.sp,
++							color = Color.White.copy(alpha = 0.6f),
++							modifier = Modifier.width(40.dp)
++						)
+ 						// 바 차트 막대 (손익 규모에 따라 너비, 색상 조절)
+ 						Box(
+ 							modifier = Modifier

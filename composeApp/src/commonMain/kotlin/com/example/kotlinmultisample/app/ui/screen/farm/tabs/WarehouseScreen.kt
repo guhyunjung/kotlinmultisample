@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
 import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
 import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 
 /**
  * 창고 오버레이 (매매 기록 확인)
@@ -83,7 +83,12 @@ fun WarehouseScreen(onDismiss: () -> Unit) {
 				val chartData = listOf("1월" to 32000, "2월" to -18000, "3월" to 63000)
 				chartData.forEach { (month, profit) ->
 					Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
-						Text(month, fontSize = 10.sp, color = Color.White.copy(alpha = 0.6f), modifier = Modifier.width(40.dp))
+						Text(
+							month,
+							fontSize = 10.sp,
+							color = Color.White.copy(alpha = 0.6f),
+							modifier = Modifier.width(40.dp)
+						)
 						// 바 차트 막대 (손익 규모에 따라 너비, 색상 조절)
 						Box(
 							modifier = Modifier

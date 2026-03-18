@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
 import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelButton
 import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 import com.example.kotlinmultisample.app.ui.screen.farm.util.formatDecimal
 import com.example.kotlinmultisample.app.ui.screen.farm.util.formatInteger
 import com.example.kotlinmultisample.app.ui.screen.farm.util.toBiggerDecimal
@@ -101,7 +101,12 @@ fun CalculateScreen(onDismiss: () -> Unit) {
 			Spacer(modifier = Modifier.height(24.dp))
 
 			// 2. 추가 매수 (Additional Buy)
-			Text("추가 매수(물타기/불타기)", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+			Text(
+				"추가 매수(물타기/불타기)",
+				color = Color.White.copy(alpha = 0.7f),
+				fontSize = 12.sp,
+				fontWeight = FontWeight.Bold
+			)
 			Spacer(modifier = Modifier.height(8.dp))
 			PixelCard(containerColor = Color(0xFF0A1E2D), borderColor = Color(0xFF1A3A4D)) {
 				Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -150,7 +155,11 @@ fun CalculateScreen(onDismiss: () -> Unit) {
 						horizontalArrangement = Arrangement.SpaceBetween
 					) {
 						Column(horizontalAlignment = Alignment.Start) {
-							Text("총 수량", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+							Text(
+								"총 수량",
+								style = MaterialTheme.typography.bodyMedium,
+								color = Color.White.copy(alpha = 0.8f)
+							)
 							Text(
 								"${formatInteger(totalQuantity)}주",
 								style = MaterialTheme.typography.titleMedium,
@@ -160,7 +169,11 @@ fun CalculateScreen(onDismiss: () -> Unit) {
 						}
 
 						Column(horizontalAlignment = Alignment.End) {
-							Text("총 매수 금액", style = MaterialTheme.typography.bodyMedium, color = Color.White.copy(alpha = 0.8f))
+							Text(
+								"총 매수 금액",
+								style = MaterialTheme.typography.bodyMedium,
+								color = Color.White.copy(alpha = 0.8f)
+							)
 							Text(
 								"${formatDecimal(totalAmount)}원",
 								style = MaterialTheme.typography.titleMedium,
