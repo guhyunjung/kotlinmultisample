@@ -13,6 +13,7 @@ import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 import com.example.kotlinmultisample.getPlatform
 import com.example.kotlinmultisample.shared.domain.model.Broker
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 import com.example.kotlinmultisample.app.ui.screen.farm.model.FarmSeed
 
 @Composable

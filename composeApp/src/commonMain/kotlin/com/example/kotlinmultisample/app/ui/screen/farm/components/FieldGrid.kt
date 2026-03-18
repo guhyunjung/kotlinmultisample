@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 
 /**
  * 주식 종목(씨앗)들이 심어져 있는 밭을 표현하는 그리드

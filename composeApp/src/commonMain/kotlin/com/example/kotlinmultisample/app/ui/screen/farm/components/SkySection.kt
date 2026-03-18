@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.PixelShape
 
 /**
  * 상단 하늘 영역 컴포저블

@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 import com.example.kotlinmultisample.app.ui.screen.farm.components.*
 import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.AddSeedOverlay
 import com.example.kotlinmultisample.app.ui.screen.farm.dialogs.DetailOverlay

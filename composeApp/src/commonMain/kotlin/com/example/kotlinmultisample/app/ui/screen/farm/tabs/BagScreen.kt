@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import com.example.kotlinmultisample.app.ui.screen.farm.components.FarmColors
+import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
 
 @Composable
 fun BagScreen(onDismiss: () -> Unit) {
