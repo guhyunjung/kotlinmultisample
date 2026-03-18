@@ -24,10 +24,13 @@ import org.koin.dsl.module
  */
 fun initKoin(
 	additionalModules: List<Module> = emptyList(),
-	appDeclaration: KoinAppDeclaration = {}
+	appDeclaration: KoinAppDeclaration = {},
+	properties: Map<String, Any> = emptyMap()
 ) {
 	startKoin {
 		appDeclaration()
+		// properties가 제공되면 Koin에 전달하여 모듈에서 getOrNull 등으로 접근 가능
+		if (properties.isNotEmpty()) properties(properties)
 		// 공통 모듈 + 플랫폼별 추가 모듈을 합쳐서 등록
 		modules(commonModule + additionalModules)
 	}
@@ -60,4 +63,9 @@ val commonModule = module {
 
     // Farm
     single<FarmRepository> { FarmRepositoryImpl(get()) }
+
+	// Stock repository binding (실제 구현은 플랫폼 모듈에서 RemoteStockDataSource를 제공해야 합니다)
+	single<com.example.kotlinmultisample.shared.domain.repository.StockRepository> {
+		com.example.kotlinmultisample.shared.data.repository.StockRepositoryImpl(get())
+	}
 }

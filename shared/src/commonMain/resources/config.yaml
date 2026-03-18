@@ -1,0 +1,14 @@
+# 공통 설정 (YAML)
+# 위치: shared/src/commonMain/resources/config.yaml
+# 주의: 민감한 키(serviceKey)는 가능한 VCS에 커밋하지 마세요.
+
+stock:
+  apiBase: "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/"
+  # 실제 서비스키는 보안상 비워두거나 CI/환경변수로 주입하세요.
+  serviceKey: ""
+
+# 추가 설정 예시
+# features:
+#   enableCharts: true
+#   defaultPageSize: 100
+

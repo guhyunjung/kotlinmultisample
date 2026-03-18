@@ -32,4 +32,22 @@ actual val networkModule = module {
 
     /** RemoteCountryDataSource 싱글톤 등록 */
     single<RemoteCountryDataSource> { RemoteCountryDataSourceImpl(get()) }
+
+    // ── Stock API (공공데이터포털) 등록 예시 (Android)
+    single<Retrofit>(named("stock")) {
+        buildRetrofit(get(), "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/")
+    }
+
+    single {
+        get<Retrofit>(named("stock")).create(com.example.kotlinmultisample.shared.data.remote.api.StockApiService::class.java)
+    }
+
+    single<com.example.kotlinmultisample.shared.data.remote.datasource.RemoteStockDataSource> {
+        val key: String? = getOrNull(named("stockServiceKey")) as? String
+        if (key.isNullOrBlank()) {
+            com.example.kotlinmultisample.shared.data.remote.datasource.NoopRemoteStockDataSource()
+        } else {
+            com.example.kotlinmultisample.shared.data.remote.datasource.RemoteStockDataSourceImpl(get(), key)
+        }
+    }
 }

@@ -19,12 +19,27 @@ class MainApplication : Application() {
 		super.onCreate()
 
 		// Android 전용 모듈(Network + Database)을 포함하여 Koin 초기화
-		// androidModules = listOf(networkModule, androidDatabaseModule)
-		initKoin(
-			additionalModules = androidModules
-		) {
-			androidLogger()
-			androidContext(this@MainApplication)
+		// serviceKey는 BuildConfig 또는 환경변수/시스템 프로퍼티에서 읽어 전달할 수 있습니다.
+		val stockKey: String? = try {
+			// BuildConfig.STOCK_SERVICE_KEY가 gradle에서 설정되어 있으면 사용
+			val bc = Class.forName("${applicationContext.packageName}.BuildConfig")
+			val f = bc.getField("STOCK_SERVICE_KEY")
+			f.get(null) as? String
+		} catch (_: Throwable) {
+			null
+		} ?: System.getenv("STOCK_SERVICE_KEY") ?: System.getProperty("stock.service.key")
+
+		if (stockKey != null) {
+			initKoin(additionalModules = androidModules, properties = mapOf("stockServiceKey" to stockKey)) {
+				androidLogger()
+				androidContext(this@MainApplication)
+			}
+		} else {
+			// 키가 없더라도 Noop 구현 덕분에 앱은 계속 실행됩니다.
+			initKoin(additionalModules = androidModules) {
+				androidLogger()
+				androidContext(this@MainApplication)
+			}
 		}
 	}
 }

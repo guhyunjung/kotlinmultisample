@@ -24,7 +24,14 @@ fun main() = application {
 	 *
 	 * ※ DI 초기화는 반드시 UI 렌더링(Window 생성) 이전에 호출해야 의존성 주입이 올바르게 동작합니다.
 	 */
-	initKoin(additionalModules = jvmModules)
+	// 환경변수 또는 시스템 프로퍼티에서 STOCK_SERVICE_KEY를 읽어 Koin에 전달
+	val stockKey = System.getenv("STOCK_SERVICE_KEY") ?: System.getProperty("stock.service.key")
+	if (stockKey != null) {
+		initKoin(additionalModules = jvmModules, properties = mapOf("stockServiceKey" to stockKey))
+	} else {
+		// 키가 없더라도 Noop 구현 덕분에 앱은 계속 실행됩니다.
+		initKoin(additionalModules = jvmModules)
+	}
 
 	/**
 	 * 애플리케이션 메인 윈도우(Window) 생성
