@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kotlinmultisample.app.presentation.farm.FarmViewModel
@@ -27,10 +28,7 @@ import com.example.kotlinmultisample.app.ui.screen.farm.components.PixelCard
 import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryUiModel
 import com.example.kotlinmultisample.app.ui.screen.farm.model.DiaryType
 import com.example.kotlinmultisample.app.ui.screen.farm.theme.FarmColors
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import com.example.kotlinmultisample.app.util.DateTimeProvider
 import org.koin.compose.koinInject
 
 /**
@@ -82,7 +80,7 @@ fun DiaryScreen(
 				onDismiss = onDismiss,
 				onAddClick = {
 					// 새 항목 생성 (오늘 날짜 기본)
-					val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+					val today = DateTimeProvider.currentDateString()
 					editingEntry = DiaryUiModel(id = 0, date = today, content = "", type = DiaryType.DAILY)
 				},
 				onEntryClick = { editingEntry = it }
@@ -182,7 +180,7 @@ fun DiaryEntryItem(entry: DiaryUiModel, onClick: () -> Unit) {
 				color = Color(0xFFC8E8FF),
 				lineHeight = 20.sp,
 				maxLines = 3,
-				overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+				overflow = TextOverflow.Ellipsis
 			)
 		}
 	}
@@ -210,10 +208,8 @@ fun DiaryEditor(
 			confirmButton = {
 				TextButton(onClick = {
 					datePickerState.selectedDateMillis?.let { millis ->
-						// Millis to YYYY-MM-DD string
-						val instant = Instant.fromEpochMilliseconds(millis)
-						val date = instant.toLocalDateTime(TimeZone.UTC).date
-						selectedDateStr = date.toString()
+						// Millis to YYYY-MM-DD string (UTC)
+						selectedDateStr = DateTimeProvider.epochMillisToUtcDateString(millis)
 					}
 					showDatePicker = false
 				}) {

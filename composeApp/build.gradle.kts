@@ -44,7 +44,6 @@ kotlin {
 			implementation(libs.compose.runtime)
 			implementation(libs.compose.foundation)
 			implementation(libs.kotlinx.coroutines.core) // Coroutines Core
-			implementation(libs.kotlinx.datetime) // Add Kotlinx DateTime
 			implementation(libs.compose.material.icons.extended)
 			implementation(libs.compose.material3)
 			implementation(libs.compose.ui)
