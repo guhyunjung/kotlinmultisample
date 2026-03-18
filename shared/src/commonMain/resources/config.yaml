@@ -5,10 +5,11 @@
 stock:
   apiBase: "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/"
   # 실제 서비스키는 보안상 비워두거나 CI/환경변수로 주입하세요.
-  serviceKey: ""
+  serviceKey: "1949f8255f11b20dc74c6b8bb2c4db487e746b728a7f7568f935f40b4671cce1"
 
 # 추가 설정 예시
 # features:
 #   enableCharts: true
 #   defaultPageSize: 100
 
+# Koin properties

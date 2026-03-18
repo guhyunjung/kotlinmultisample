@@ -9,21 +9,21 @@ import com.example.kotlinmultisample.shared.domain.model.Stock
  *    hipr, lopr, trqu, trPrc, lstgStCnt, mrktTotAmt
  */
 data class StockItemDto(
-    val basDt: String? = null,
-    val srtnCd: String? = null,
-    val isinCd: String? = null,
-    val itmsNm: String? = null,
-    val mrktCtg: String? = null,
-    val clpr: String? = null,    // 종가(또는 현재가)
-    val vs: String? = null,
-    val fltRt: String? = null,   // 등락률
-    val mkp: String? = null,     // 등락(절대)
-    val hipr: String? = null,
-    val lopr: String? = null,
-    val trqu: String? = null,    // 거래량
-    val trPrc: String? = null,   // 거래대금
-    val lstgStCnt: String? = null,
-    val mrktTotAmt: String? = null
+    val basDt: String? = null,      // 기준일자
+    val srtnCd: String? = null,     // 단축코드
+    val isinCd: String? = null,     // ISIN코드
+    val itmsNm: String? = null,     // 종목명
+    val mrktCtg: String? = null,    // 시장구분
+    val clpr: String? = null,       // 종가(또는 현재가)
+    val vs: String? = null, 	    // 대비(전일대비)
+    val fltRt: String? = null,      // 등락률
+    val mkp: String? = null,        // 시가
+    val hipr: String? = null,       // 고가
+    val lopr: String? = null,	    // 저가
+    val trqu: String? = null,       // 거래량
+    val trPrc: String? = null,      // 거래대금
+    val lstgStCnt: String? = null,  // 상장주식수
+    val mrktTotAmt: String? = null  // 시가총액
 )
 
 private fun String?.toDoubleClean(): Double? = this?.replace(",", "")?.toDoubleOrNull()
@@ -42,4 +42,3 @@ fun StockItemDto.toDomain(): Stock = Stock(
     volume = trqu.toLongClean(),
     baseDate = basDt
 )
-
