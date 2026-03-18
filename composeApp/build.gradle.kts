@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -23,14 +24,26 @@ kotlin {
 		}
 	}
 
+	js {
+		browser()
+		binaries.executable()
+	}
+
+	@OptIn(ExperimentalWasmDsl::class)
+	wasmJs {
+		browser()
+		binaries.executable()
+	}
+
 	sourceSets {
 		androidMain.dependencies {
+			implementation(libs.compose.uiTooling)
 			implementation(libs.compose.uiToolingPreview)
 			implementation(libs.androidx.activity.compose)
 			implementation(libs.kotlinx.coroutines.android) // Coroutines Android
 			implementation(project.dependencies.platform(libs.koin.bom))
 			implementation(libs.koin.android)
-            implementation(libs.multiplatform.settings) // Add this
+			implementation(libs.multiplatform.settings) // Add this
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.room.ktx)
@@ -48,7 +61,6 @@ kotlin {
 			implementation(libs.compose.material3)
 			implementation(libs.compose.ui)
 			implementation(libs.compose.components.resources)
-			implementation(libs.compose.uiTooling)
 			implementation(libs.compose.uiToolingPreview)
 			implementation(libs.androidx.lifecycle.viewmodelCompose)
 			implementation(libs.androidx.lifecycle.runtimeCompose)
@@ -64,7 +76,7 @@ kotlin {
 		jvmMain.dependencies {
 			implementation(compose.desktop.currentOs)
 			implementation(libs.kotlinx.coroutinesSwing)
-            implementation(libs.multiplatform.settings) // Add this
+			implementation(libs.multiplatform.settings) // Add this
 			// Room - DI 모듈에서 Room.databaseBuilder() 사용
 			implementation(libs.androidx.room.runtime)
 			implementation(libs.androidx.sqlite.bundled)
@@ -90,7 +102,7 @@ android {
 	}
 	packaging {
 		resources {
-		 excludes += "/META-INF/{AL2.0,LGPL2.1}"
+			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
 	buildTypes {
@@ -110,7 +122,7 @@ dependencies {
 }
 
 tasks.withType<JavaExec> {
-    jvmArgs("-Dfile.encoding=UTF-8")
+	jvmArgs("-Dfile.encoding=UTF-8")
 }
 
 compose.desktop {

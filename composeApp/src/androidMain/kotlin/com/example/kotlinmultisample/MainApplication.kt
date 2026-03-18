@@ -1,10 +1,6 @@
 package com.example.kotlinmultisample
 
 import android.app.Application
-import com.example.kotlinmultisample.di.androidModules
-import com.example.kotlinmultisample.shared.di.initKoin
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
 
 /**
  * Android 애플리케이션의 진입점 클래스입니다.
@@ -18,7 +14,7 @@ class MainApplication : Application() {
 	override fun onCreate() {
 		super.onCreate()
 
-		// Android 전용 모듈(Network + Database)을 포함하여 Koin 초기화
+		/*// Android 전용 모듈(Network + Database)을 포함하여 Koin 초기화
 		// serviceKey는 BuildConfig 또는 환경변수/시스템 프로퍼티에서 읽어 전달할 수 있습니다.
 		val stockKey: String? = try {
 			// BuildConfig.STOCK_SERVICE_KEY가 gradle에서 설정되어 있으면 사용
@@ -40,6 +36,6 @@ class MainApplication : Application() {
 				androidLogger()
 				androidContext(this@MainApplication)
 			}
-		}
+		}*/
 	}
 }

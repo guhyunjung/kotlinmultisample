@@ -16,8 +16,4 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
-node_modules/
-/build_err.txt
-/build_out.txt
-/run_err.txt
-/run_out.txt
+

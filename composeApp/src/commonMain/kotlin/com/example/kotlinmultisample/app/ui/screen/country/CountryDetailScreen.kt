@@ -13,6 +13,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.kotlinmultisample.shared.domain.model.Country
+import kotlin.math.abs
+import kotlin.math.round
+import kotlin.math.pow
 
 /**
  * 국가 상세 정보 화면 컴포저블
@@ -89,7 +92,7 @@ fun CountryDetailScreen(
 				DetailRow("지역", country.region)
 				country.subregion?.let { DetailRow("세부 지역", it) }
 				DetailRow("수도", country.capital.joinToString().ifBlank { "정보 없음" })
-				DetailRow("면적", "${"%,.0f".format(country.area)} km²")
+				DetailRow("면적", "${formatDoubleWithCommas(country.area, 0)} km²")
 				DetailRow("내륙국 여부", if (country.landlocked) "예" else "아니오")
 				if (country.borders.isNotEmpty()) {
 					DetailRow("인접 국가", country.borders.joinToString())
@@ -99,7 +102,7 @@ fun CountryDetailScreen(
 
 			// ── 3. 인구 및 경제 정보 섹션 ───────────────────────────────────────────
 			SectionCard(title = "👥 인구 / 경제") {
-				DetailRow("인구수", "%,d 명".format(country.population))
+				DetailRow("인구수", "${formatIntegerWithCommas(country.population.toLong())} 명")
 				country.gini.entries.firstOrNull()?.let {
 					DetailRow("지니계수 (${it.key}년)", "${it.value}")
 				}
@@ -152,6 +155,36 @@ fun CountryDetailScreen(
 			// 하단 여백 추가
 			Spacer(modifier = Modifier.height(16.dp))
 		}
+	}
+}
+
+/**
+ * 정수에 천 단위 콤마를 추가합니다. 플랫폼 무관하게 동작합니다.
+ */
+private fun formatIntegerWithCommas(value: Long): String {
+	val s = value.toString()
+	if (s.length <= 3 || (s.startsWith("-") && s.length <= 4)) return s
+	val negative = s.startsWith("-")
+	val absStr = if (negative) s.substring(1) else s
+	val rev = absStr.reversed().chunked(3).joinToString(",").reversed()
+	return if (negative) "-$rev" else rev
+}
+
+/**
+ * 실수 숫자를 소수점 자리수(decimals)까지 반올림하고 천 단위 콤마를 적용합니다.
+ */
+private fun formatDoubleWithCommas(value: Double, decimals: Int = 0): String {
+	val factor = 10.0.pow(decimals.toDouble())
+	val rounded = round(value * factor) / factor
+
+	val integerPart = rounded.toLong()
+	val fractionalPartValue = abs(((rounded - integerPart) * factor).toLong())
+	val integerStr = formatIntegerWithCommas(integerPart)
+	return if (decimals <= 0) {
+		integerStr
+	} else {
+		val fracStr = fractionalPartValue.toString().padStart(decimals, '0')
+		"$integerStr.$fracStr"
 	}
 }
 

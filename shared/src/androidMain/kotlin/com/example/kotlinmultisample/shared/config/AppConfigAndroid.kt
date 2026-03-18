@@ -7,7 +7,7 @@ object AndroidConfigLoader {
     var appContext: Context? = null
 }
 
-actual fun loadResourceText(path: String): String? {
+/*actual fun loadResourceText(path: String): String? {
     // 1) 클래스패스 리소스 시도
     val clsRes = object {}.javaClass.getResource(path)
     if (clsRes != null) return clsRes.readText()
@@ -19,6 +19,6 @@ actual fun loadResourceText(path: String): String? {
     } catch (_: Exception) {
         null
     }
-}
+}*/
 
 

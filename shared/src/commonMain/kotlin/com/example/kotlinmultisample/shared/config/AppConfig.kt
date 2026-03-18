@@ -13,7 +13,7 @@ data class AppConfigDto(
     val stock: StockConfig = StockConfig()
 )
 
-/** 플랫폼별 actual 구현이 제공해야 하는 리소스 로더 */
+/* 플랫폼별 actual 구현이 제공해야 하는 리소스 로더
 expect fun loadResourceText(path: String): String?
 
 /**
@@ -54,5 +54,5 @@ fun loadAppConfig(): AppConfigDto? {
 
     return AppConfigDto(stock = StockConfig(apiBase = apiBase, serviceKey = serviceKey))
 }
-
+*/
 
